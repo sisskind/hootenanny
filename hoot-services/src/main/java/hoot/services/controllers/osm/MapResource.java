@@ -36,6 +36,7 @@ import hoot.services.models.osm.Map;
 import hoot.services.models.osm.MapLayers;
 import hoot.services.models.osm.ModelDaoUtils;
 import hoot.services.utils.ResourceErrorHandler;
+import hoot.services.utils.XmlDocumentBuilder;
 import hoot.services.writers.osm.MapQueryResponseWriter;
 
 import java.io.StringWriter;
@@ -179,7 +180,7 @@ public class MapResource
     Date now = new Date();
     String strDate = sdfDate.format(now);
 
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory dbf = XmlDocumentBuilder.getSecureDocBuilderFactory();
     dbf.setValidating(false);
     DocumentBuilder db = dbf.newDocumentBuilder();
     Document doc = db.newDocument();
@@ -271,6 +272,8 @@ public class MapResource
     osmElem.appendChild(wayElem);
 
     Transformer tf = TransformerFactory.newInstance().newTransformer();
+    //TODO: Fortify may require this instead but it doesn't work.
+    //TransformerFactory transformerFactory = XmlDocumentBuilder.getSecureTransformerFactory();
     tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
     tf.setOutputProperty(OutputKeys.INDENT, "yes");
     Writer out = new StringWriter();
