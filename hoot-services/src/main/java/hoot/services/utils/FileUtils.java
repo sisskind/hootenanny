@@ -73,6 +73,10 @@ public class FileUtils
     }
     finally
     {
+    	if (fileScanner != null)
+    	{
+    		fileScanner.close();
+    	}
     	if (out != null)
     	{
     		out.close();
