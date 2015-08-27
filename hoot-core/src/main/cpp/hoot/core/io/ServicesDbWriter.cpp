@@ -43,8 +43,6 @@ HOOT_FACTORY_REGISTER(OsmMapWriter, ServicesDbWriter)
 
 ServicesDbWriter::ServicesDbWriter()
 {
-  _mapId = -1;
-  _numChangeSetChanges = 0;
   _open = false;
   _remapIds = true;
   setConfiguration(conf());
@@ -71,22 +69,14 @@ void ServicesDbWriter::close()
 
 void ServicesDbWriter::_countChange()
 {
-  _numChangeSetChanges++;
-
-  if (_numChangeSetChanges >= ServicesDb::maximumChangeSetEdits())
-  {
-    _startNewChangeSet();
-  }
+  _sdb.incrementChangesetChangeCount();
 }
 
 void ServicesDbWriter::finalizePartial()
 {
   if (_open)
   {
-    if (_numChangeSetChanges > 0)
-    {
-      _sdb.closeChangeSet(_mapId, _changeSetId, _env, _numChangeSetChanges);
-    }
+    _sdb.endChangeset();
     _sdb.commit();
     _sdb.close();
     _open = false;
@@ -103,23 +93,28 @@ bool ServicesDbWriter::isSupported(QString urlStr)
 
 void ServicesDbWriter::open(QString urlStr)
 {
+  /*
   QString mapName = _openDb(urlStr, _overwriteMap);
 
   _mapId = _sdb.insertMap(mapName, _userId);
 
   _startNewChangeSet();
+  */
+
+  _openDb(urlStr, _overwriteMap);
+  _startNewChangeSet();
 }
 
 void ServicesDbWriter::deleteMap(QString urlStr)
 {
-  QString mapName = _openDb(urlStr, true); // "True" forces the map delete
+  _openDb(urlStr, true); // "True" forces the map delete
 
   _sdb.commit();
   _sdb.close();
   _open = false;
 }
 
-QString ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
+void ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
 {
   if (!isSupported(urlStr))
   {
@@ -137,41 +132,48 @@ QString ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
   QString mapName = pList[2];
 
   _numChangeSetChanges = 0;
-  _env.init();
   _sdb.open(url);
   _open = true;
 
   // create the user before we have a transaction so we can make sure the user gets added.
   if (_createUserIfNotFound)
   {
-    _userId = _sdb.getOrCreateUser(_userEmail, _userEmail);
+    _sdb.setUserId(_sdb.getOrCreateUser(_userEmail, _userEmail));
+  }
+  else
+  {
+    _sdb.setUserId(_sdb.getUserId(_userEmail, true));
   }
 
   // start the transaction. We'll close it when finalizePartial is called.
   _sdb.transaction();
   _userId = _sdb.getUserId(_userEmail, true);
 
-  set<long> mapIds = _sdb.selectMapIds(mapName, _userId);
-
-  if (mapIds.size() > 0)
+  if ( _sdb.getDatabaseType() == ServicesDb::DBTYPE_SERVICES)
   {
-    if (deleteMapFlag) // deleteMapFlag is either True or _overwriteMap
+    QStringList pList = url.path().split("/");
+    QString mapName = pList[2];
+    set<long> mapIds = _sdb.selectMapIds(mapName);
+
+
+    if (mapIds.size() > 0)
     {
-      for (set<long>::const_iterator it = mapIds.begin(); it != mapIds.end(); ++it)
+      if (deleteMapFlag) // deleteMapFlag is either True or _overwriteMap
       {
-        LOG_INFO("Removing map with ID: " << *it);
-        _sdb.deleteMap(*it);
-        LOG_INFO("Finished removing map with ID: " << *it);
+        for (set<long>::const_iterator it = mapIds.begin(); it != mapIds.end(); ++it)
+        {
+          LOG_INFO("Removing map with ID: " << *it);
+          _sdb.deleteMap(*it);
+          LOG_INFO("Finished removing map with ID: " << *it);
+        }
+      }
+      else
+      {
+        LOG_INFO("There are one or more maps with this name. Consider using "
+                 "'services.db.writer.overwrite.map'. Map IDs: " << mapIds);
       }
     }
-    else
-    {
-      LOG_INFO("There are one or more maps with this name. Consider using "
-               "'services.db.writer.overwrite.map'. Map IDs: " << mapIds);
-    }
   }
-
-  return mapName;
 }
 
 ElementId ServicesDbWriter::_remapOrCreateElementId(ElementId eid, const Tags& tags)
@@ -189,7 +191,8 @@ ElementId ServicesDbWriter::_remapOrCreateElementId(ElementId eid, const Tags& t
       {
         return ElementId::node(_nodeRemap.at(eid.getId()));
       }
-      long newId = _sdb.insertNode(_mapId, eid.getId(), 0, 0, _changeSetId, tags, true);
+      long newId;
+      _sdb.insertNode(0, 0, tags, newId);
       _countChange();
       _nodeRemap[eid.getId()] = newId;
       return ElementId::node(newId);
@@ -200,7 +203,8 @@ ElementId ServicesDbWriter::_remapOrCreateElementId(ElementId eid, const Tags& t
       {
         return ElementId::way(_wayRemap.at(eid.getId()));
       }
-      long newId = _sdb.insertWay(_mapId, eid.getId(), _changeSetId, tags, true);
+      long newId;
+      _sdb.insertWay(tags, newId);
       _countChange();
       _wayRemap[eid.getId()] = newId;
       return ElementId::way(newId);
@@ -211,7 +215,8 @@ ElementId ServicesDbWriter::_remapOrCreateElementId(ElementId eid, const Tags& t
       {
         return ElementId::relation(_relationRemap.at(eid.getId()));
       }
-      long newId = _sdb.insertRelation(_mapId, eid.getId(), _changeSetId, tags, true);
+      long newId;
+      _sdb.insertRelation(tags, newId);
       _countChange();
       _relationRemap[eid.getId()] = newId;
       return ElementId::relation(newId);
@@ -250,16 +255,12 @@ void ServicesDbWriter::setConfiguration(const Settings &conf)
 
 void ServicesDbWriter::_startNewChangeSet()
 {
-  if (_numChangeSetChanges > 0)
-  {
-    _sdb.closeChangeSet(_mapId, _changeSetId, _env, _numChangeSetChanges);
-  }
-  _env.init();
+  _sdb.endChangeset();
   _numChangeSetChanges = 0;
   Tags tags;
   tags["bot"] = "yes";
   tags["created_by"] = "hootenanny";
-  _changeSetId = _sdb.insertChangeSet(_mapId, _userId, tags);
+  _sdb.beginChangeset(tags);
 }
 
 void ServicesDbWriter::writePartial(const shared_ptr<const Node>& n)
@@ -278,20 +279,21 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Node>& n)
   else if (_remapIds && _nodeRemap.count(n->getId()) != 0)
   {
     newId = _nodeRemap.at(n->getId());
-    _sdb.updateNode(_mapId, n->getId(), n->getY(), n->getX(), _changeSetId, t);
+    _sdb.updateNode(n->getId(), n->getY(), n->getX(), t);
     countChange = false;
   }
   else
   {
-    newId = _sdb.insertNode(_mapId, n->getId(), n->getY(), n->getX(), _changeSetId, t,
-                            _remapIds);
-    if (_remapIds)
+    if (_remapIds == true)
     {
+      _sdb.insertNode(n->getY(), n->getX(), t, newId);
       _nodeRemap[n->getId()] = newId;
     }
+    else
+    {
+      _sdb.insertNode(n->getId(), n->getY(), n->getX(), t);
+    }
   }
-
-  _env.expandToInclude(n->getX(), n->getY());
 
   if (countChange)
   {
@@ -312,7 +314,7 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Way>& w)
     wayId = _remapOrCreateElementId(w->getElementId(), tags).getId();
     if (alreadyThere)
     {
-      _sdb.updateWay(_mapId, wayId, _changeSetId, tags);
+      _sdb.updateWay(wayId, tags);
     }
   }
   else if (w->getId() < 1)
@@ -321,10 +323,11 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Way>& w)
   }
   else
   {
-    wayId = _sdb.insertWay(_mapId, w->getId(), _changeSetId, tags, false);
+    wayId = w->getId();
+    _sdb.insertWay(w->getId(), tags);
   }
 
-  _sdb.insertWayNodes(_mapId, wayId, _remapNodes(w->getNodeIds()));
+  _sdb.insertWayNodes(wayId, _remapNodes(w->getNodeIds()));
 
   _countChange();
 }
@@ -342,11 +345,11 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Relation>& r)
 
   if (_remapIds)
   {
-    bool alreadyThere = _wayRemap.count(r->getId()) != 0;
+    bool alreadyThere = _relationRemap.count(r->getId()) != 0;
     relationId = _remapOrCreateElementId(r->getElementId(), tags).getId();
     if (alreadyThere)
     {
-      _sdb.updateRelation(_mapId, relationId, _changeSetId, tags);
+      _sdb.updateRelation(relationId, tags);
     }
   }
   else if (r->getId() < 1)
@@ -355,7 +358,8 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Relation>& r)
   }
   else
   {
-    relationId = _sdb.insertRelation(_mapId, r->getId(), _changeSetId, tags, false);
+    relationId = r->getId();
+    _sdb.insertRelation(r->getId(), tags);
   }
 
   Tags empty;
@@ -363,7 +367,7 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Relation>& r)
   {
     RelationData::Entry e = r->getMembers()[i];
     ElementId eid = _remapOrCreateElementId(e.getElementId(), empty);
-    _sdb.insertRelationMembers(_mapId, relationId, eid.getType(), eid.getId(), e.role, i);
+    _sdb.insertRelationMember(relationId, eid.getType(), eid.getId(), e.role, i);
   }
 
   _countChange();

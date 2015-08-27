@@ -73,6 +73,9 @@ public:
 
   virtual unsigned long size() const;
 
+  virtual unsigned long typeCount(const ElementType::Type typeToCount) const;
+
+
   /**
    * @brief addElement
    * @param newElement
@@ -123,6 +126,12 @@ public:
   virtual bool containsRelation(long id) const;
 
   virtual bool containsWay(long id) const;
+
+  // Cache-specific items
+  virtual void removeElement(const ElementId& eid);
+
+  virtual void removeElements(const ElementType::Type type);
+
 
 protected:
 

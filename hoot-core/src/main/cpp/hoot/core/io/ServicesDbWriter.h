@@ -55,7 +55,7 @@ public:
 
   virtual void finalizePartial();
 
-  long getMapId() const { return _mapId; }
+  long getMapId() const { return _sdb.getMapId(); }
 
   virtual bool isSupported(QString urlStr);
 
@@ -94,15 +94,13 @@ private:
   long _mapId;
   int _numChangeSetChanges;
   long _userId;
-  long _changeSetId;
-  geos::geom::Envelope _env;
   bool _open;
   IdRemap _nodeRemap;
   IdRemap _relationRemap;
   IdRemap _wayRemap;
   bool _remapIds;
 
-  QString _openDb(QString& urlStr, bool deleteMapFlag);
+  void _openDb(QString& urlStr, bool deleteMapFlag);
 
   void _addElementTags(const shared_ptr<const Element>& e, Tags& t);
 
