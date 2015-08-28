@@ -71,12 +71,13 @@ public:
     ServicesDbTestUtils::deleteUser(userEmail());
     ServicesDb database;
     database.open(ServicesDbTestUtils::getDbModifyUrl());
-    database.getOrCreateUser(userEmail(), "ServicesDbReaderTest");
+    database.setUserId(database.getOrCreateUser(userEmail(), "ServicesDbReaderTest"));
     database.close();
 
     //TODO: inserting a map before all of these tests isn't actually necessary (url tests) and
     //is probably slowing the test run down a little more than necessary
     mapId = populateMap();
+    LOG_DEBUG("Done with setup, starting test");
   }
 
   void tearDown()
@@ -152,14 +153,19 @@ public:
 
   void runCalculateBoundsTest()
   {
+    LOG_DEBUG("Inside test");
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     reader.open(ServicesDbTestUtils::getDbReadUrl(mapId).toString());
+    LOG_DEBUG("Test, DB open, about to calc envelope");
     HOOT_STR_EQUALS("Env[0:0.4,0:0]", reader.calculateEnvelope().toString());
   }
 
   void runElementIdTest()
   {
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
+    //reader.setUserEmail(userEmail());
     // make sure all the element ids start with -1
     OsmMap::resetCounters();
     shared_ptr<OsmMap> map(new OsmMap());
@@ -186,6 +192,7 @@ public:
     DisableLog dl;
 
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     QString exceptionMsg("");
     try
     {
@@ -206,6 +213,7 @@ public:
   void runUrlInvalidMapIdTest()
   {
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     QString exceptionMsg("");
     const long invalidMapId = mapId + 1;
     try
@@ -391,6 +399,7 @@ public:
   void runReadTest()
   {
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     shared_ptr<OsmMap> map(new OsmMap());
     reader.open(ServicesDbTestUtils::getDbReadUrl(mapId).toString());
     reader.read(map);
@@ -401,6 +410,7 @@ public:
   void runReadWithElemTest()
   {
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     shared_ptr<OsmMap> map(new OsmMap());
     reader.open(ServicesDbTestUtils::getDbReadUrl(mapId,3,"node").toString());
     reader.read(map);
@@ -418,6 +428,7 @@ public:
   void runPartialReadTest()
   {
     ServicesDbReader reader;
+    reader.setUserEmail(userEmail());
     const int chunkSize = 3;
     reader.setMaxElementsPerMap(chunkSize);
     reader.open(ServicesDbTestUtils::getDbReadUrl(mapId).toString());

@@ -133,7 +133,8 @@ void ServicesDbReader::open(QString urlStr)
   QString mapName;
   _database.open(url);
 
-  _database.setUserId(_database.getUserId(_email));
+  LOG_DEBUG("ServicesDbReader setting user id to " << _email);
+  _database.setUserId(_database.getUserId(_email, false));
 
   if ( _database.getDatabaseType() == ServicesDb::DBTYPE_SERVICES )
   {

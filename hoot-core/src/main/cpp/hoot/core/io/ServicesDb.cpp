@@ -1125,6 +1125,7 @@ void ServicesDb::setMapId(const long sessionMapId)
 
 long ServicesDb::getUserId(QString email, bool throwWhenMissing)
 {
+  LOG_DEBUG("Looking for user with email address " << email);
   if (_selectUserByEmail == 0)
   {
     _selectUserByEmail.reset(new QSqlQuery(_db));
