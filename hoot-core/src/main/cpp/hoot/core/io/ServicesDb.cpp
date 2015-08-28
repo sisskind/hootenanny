@@ -208,7 +208,8 @@ void ServicesDb::commit()
 
   if ( _inTransaction == false )
   {
-    throw HootException("Tried to commit but weren't in a transaction");
+    LOG_DEBUG("Tried to commit closed transaction, no-op");
+    return;
   }
 
   switch ( _connectionType )
@@ -1389,11 +1390,14 @@ void ServicesDb::open(QUrl url)
 
   _resetQueries();
 
-  if ( (_connectionType == DBTYPE_SERVICES) && (isCorrectDbVersion() == false) )
+  if ( _connectionType == DBTYPE_SERVICES)
   {
-    LOG_WARN("Running against an unexpected DB version.");
-    LOG_WARN("Expected: " << expectedDbVersion());
-    LOG_WARN("Actual: " << getDbVersion());
+    if ( isCorrectDbVersion() == false )
+    {
+      LOG_WARN("Running against an unexpected DB version.");
+      LOG_WARN("Expected: " << expectedDbVersion());
+      LOG_WARN("Actual: " << getDbVersion());
+    }
   }
 
   QSqlQuery query("SET client_min_messages TO WARNING", _db);

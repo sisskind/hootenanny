@@ -132,40 +132,47 @@ void ServicesDbReader::open(QString urlStr)
   bool ok2;
   QString mapName;
   _database.open(url);
-  long requestedMapId = pList[pList.size() - 1].toLong(&ok);
-  if(osmElemId.length() > 0 && osmElemType.length() > 0)
-  {
-    _osmElemId = osmElemId.toLong(&ok2);
-    _osmElemType = ElementType::fromString(osmElemType);
 
-  }
+  _database.setUserId(_database.getUserId(_email));
 
-  if (!ok)
+  if ( _database.getDatabaseType() == ServicesDb::DBTYPE_SERVICES )
   {
-    if (_email == "")
+    long requestedMapId = pList[pList.size() - 1].toLong(&ok);
+
+    if(osmElemId.length() > 0 && osmElemType.length() > 0)
     {
-      throw HootException("If a map name is specified then the user email must also be specified "
-                          "via: " + emailKey());
+      _osmElemId = osmElemId.toLong(&ok2);
+      _osmElemType = ElementType::fromString(osmElemType);
     }
-    mapName = pList[pList.size() - 1];
-    _database.setUserId(_database.getUserId(_email));
-    set<long> mapIds = _database.selectMapIds(mapName);
-    if (mapIds.size() != 1)
+
+    if (!ok)
     {
-      QString str = QString("Expected 1 map with the name '%1' but found %2 maps.").arg(mapName)
-          .arg(mapIds.size());
-      throw HootException(str);
+      if (_email == "")
+      {
+        throw HootException("If a map name is specified then the user email must also be specified "
+                            "via: " + emailKey());
+      }
+      mapName = pList[pList.size() - 1];
+      LOG_DEBUG("Trying to open map " << mapName);
+
+      set<long> mapIds = _database.selectMapIds(mapName);
+      if (mapIds.size() != 1)
+      {
+        QString str = QString("Expected 1 map with the name '%1' but found %2 maps.").arg(mapName)
+            .arg(mapIds.size());
+        throw HootException(str);
+      }
+      requestedMapId = *mapIds.begin();
     }
-    requestedMapId = *mapIds.begin();
-  }
 
-  if (!_database.mapExists(requestedMapId))
-  {
-    _database.close();
-    throw HootException("No map exists with ID: " + QString::number(requestedMapId));
-  }
+    if (!_database.mapExists(requestedMapId))
+    {
+      _database.close();
+      throw HootException("No map exists with ID: " + QString::number(requestedMapId));
+    }
 
-  _database.setMapId(requestedMapId);
+    _database.setMapId(requestedMapId);
+  }
 
   //using a transaction seems to make sense here, b/c we don't want to read a map being modified
   //in the middle of its modification caused by a changeset upload, which could cause the map to

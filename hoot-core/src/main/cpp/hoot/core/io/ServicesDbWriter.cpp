@@ -101,7 +101,10 @@ void ServicesDbWriter::open(QString urlStr)
   _startNewChangeSet();
   */
 
+  LOG_DEBUG("Writer opening database");
   _openDb(urlStr, _overwriteMap);
+
+  LOG_DEBUG("Writer has opened DB, Starting new changeset");
   _startNewChangeSet();
 }
 
@@ -116,6 +119,7 @@ void ServicesDbWriter::deleteMap(QString urlStr)
 
 void ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
 {
+  LOG_DEBUG("Inside _openDb");
   if (!isSupported(urlStr))
   {
     throw HootException("An unsupported URL was passed in.");
@@ -145,16 +149,16 @@ void ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
     _sdb.setUserId(_sdb.getUserId(_userEmail, true));
   }
 
-  // start the transaction. We'll close it when finalizePartial is called.
-  _sdb.transaction();
   _userId = _sdb.getUserId(_userEmail, true);
 
   if ( _sdb.getDatabaseType() == ServicesDb::DBTYPE_SERVICES)
   {
+    LOG_DEBUG("Have services DB");
     QStringList pList = url.path().split("/");
     QString mapName = pList[2];
     set<long> mapIds = _sdb.selectMapIds(mapName);
 
+    LOG_DEBUG("Map IDs matching: " << QString::number(mapIds.size()));
 
     if (mapIds.size() > 0)
     {
@@ -173,7 +177,17 @@ void ServicesDbWriter::_openDb(QString& urlStr, bool deleteMapFlag)
                  "'services.db.writer.overwrite.map'. Map IDs: " << mapIds);
       }
     }
+
+    // Either way need to insert the map ID. If it exists, it'll be set as
+    //    active. If it didn't, it'll be inserted then set as active
+    _sdb.insertMap(mapName, true);
   }
+  else
+  {
+    LOG_DEBUG("Not a services DB");
+  }
+
+  LOG_DEBUG("Leaving _openDb");
 }
 
 ElementId ServicesDbWriter::_remapOrCreateElementId(ElementId eid, const Tags& tags)
@@ -260,6 +274,7 @@ void ServicesDbWriter::_startNewChangeSet()
   Tags tags;
   tags["bot"] = "yes";
   tags["created_by"] = "hootenanny";
+  LOG_DEBUG("Starting new changeset");
   _sdb.beginChangeset(tags);
 }
 
