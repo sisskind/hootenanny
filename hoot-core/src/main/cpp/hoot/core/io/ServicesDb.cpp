@@ -757,6 +757,9 @@ long ServicesDb::insertMap(QString displayName, bool publicVisibility)
 
   long mapId = _insertRecord(*_insertMap);
 
+  // Update map ID based on new map we just added
+  setMapId(mapId);
+
   QString mapIdStr = _getMapIdString(mapId);
   _copyTableStructure("changesets", _getChangesetsTableName(mapId));
   _copyTableStructure("current_nodes", "current_nodes" + mapIdStr);
@@ -1694,6 +1697,26 @@ shared_ptr<QSqlQuery> ServicesDb::selectElements_OsmApi(const long elementId,
   return _selectElementsForMap;
 }
 */
+
+shared_ptr<QSqlQuery> ServicesDb::selectElements(const long elementId, const ElementType& elementType,
+  const long limit, const long offset)
+{
+  shared_ptr<QSqlQuery> retVal;
+
+  switch (_connectionType)
+  {
+  case DBTYPE_SERVICES:
+    retVal = _selectElements_Services(elementId, elementType, limit, offset);
+    break;
+  case DBTYPE_OSMAPI:
+  default:
+    throw HootException("SelectElements called for unsupported DB type");
+    break;
+  }
+
+  return retVal;
+}
+
 
 shared_ptr<QSqlQuery> ServicesDb::_selectElements_Services(const long elementId,
   const ElementType& elementType, const long limit, const long offset)
