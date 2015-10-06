@@ -128,7 +128,8 @@ protected:
     rocksdb::DB* nodeIdMap;
 
     ElementIdDatatype nextWayId;
-    boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > wayIdMap;
+    //boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > wayIdMap;
+    rocksdb::DB* wayIdMap;
 
     ElementIdDatatype nextRelationId;
     boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > relationIdMap;
