@@ -69,7 +69,7 @@ RubberSheet::RubberSheet()
 
 void RubberSheet::_addIntersection(long nid, const set<long>& /*wids*/)
 {
-  shared_ptr<Node> from = _map->getNode(nid);
+  boost::shared_ptr<Node> from = _map->getNode(nid);
   // the status type we're searching for.
   Status s;
   if (from->getStatus() == Status::Unknown1)
@@ -85,13 +85,13 @@ void RubberSheet::_addIntersection(long nid, const set<long>& /*wids*/)
     throw HootException("Expected either Unknown1 or Unknown2.");
   }
 
-  shared_ptr<NodeToWayMap> n2w = _map->getIndex().getNodeToWayMap();
+  boost::shared_ptr<NodeToWayMap> n2w = _map->getIndex().getNodeToWayMap();
   double sum = 0.0;
   list<Match>& matches = _matches[nid];
   vector<long> neighbors = _map->getIndex().findNodes(from->toCoordinate(), _searchRadius);
   for (size_t i = 0; i < neighbors.size(); ++i)
   {
-    shared_ptr<Node> aNeighbor = _map->getNode(neighbors[i]);
+    boost::shared_ptr<Node> aNeighbor = _map->getNode(neighbors[i]);
     NodeToWayMap::const_iterator it = n2w->find(neighbors[i]);
     if (aNeighbor->getStatus() == s && it != n2w->end() && it->second.size() >= 2)
     {
@@ -119,16 +119,16 @@ void RubberSheet::_addIntersection(long nid, const set<long>& /*wids*/)
   }
 }
 
-void RubberSheet::apply(shared_ptr<OsmMap>& map)
+void RubberSheet::apply(boost::shared_ptr<OsmMap>& map)
 {
-  shared_ptr<OGRSpatialReference> oldSrs = _projection;
+  boost::shared_ptr<OGRSpatialReference> oldSrs = _projection;
   calculateTransform(map);
   _projection = oldSrs;
 
   applyTransform(map);
 }
 
-void RubberSheet::applyTransform(shared_ptr<OsmMap>& map)
+void RubberSheet::applyTransform(boost::shared_ptr<OsmMap>& map)
 {
   _map = map;
 
@@ -151,7 +151,7 @@ void RubberSheet::applyTransform(shared_ptr<OsmMap>& map)
   const OsmMap::NodeMap& nm = map->getNodeMap();
   for (OsmMap::NodeMap::const_iterator it = nm.constBegin(); it != nm.constEnd(); ++it)
   {
-    const shared_ptr<Node>& n = it.value();
+    const boost::shared_ptr<Node>& n = it.value();
 
     if (_ref == false || n->getStatus() == Status::Unknown2)
     {
@@ -164,9 +164,9 @@ void RubberSheet::applyTransform(shared_ptr<OsmMap>& map)
   }
 }
 
-shared_ptr<DataFrame> RubberSheet::_buildDataFrame(Status s) const
+boost::shared_ptr<DataFrame> RubberSheet::_buildDataFrame(Status s) const
 {
-  shared_ptr<DataFrame> df(new DataFrame());
+  boost::shared_ptr<DataFrame> df(new DataFrame());
   vector<string> labels;
   labels.push_back("x");
   labels.push_back("y");
@@ -211,9 +211,9 @@ shared_ptr<DataFrame> RubberSheet::_buildDataFrame(Status s) const
   return df;
 }
 
-shared_ptr<Interpolator> RubberSheet::_buildInterpolator(Status s) const
+boost::shared_ptr<Interpolator> RubberSheet::_buildInterpolator(Status s) const
 {
-  shared_ptr<DataFrame> df = _buildDataFrame(s);
+  boost::shared_ptr<DataFrame> df = _buildDataFrame(s);
 
   vector<std::string> candidates;
   if (_interpolatorClassName.empty())
@@ -226,10 +226,10 @@ shared_ptr<Interpolator> RubberSheet::_buildInterpolator(Status s) const
   }
 
   double bestError = numeric_limits<double>::max();
-  shared_ptr<Interpolator> bestCandidate;
+  boost::shared_ptr<Interpolator> bestCandidate;
   for (size_t i = 0; i < candidates.size(); i++)
   {
-    shared_ptr<Interpolator> candidate(Factory::getInstance().constructObject<Interpolator>(
+    boost::shared_ptr<Interpolator> candidate(Factory::getInstance().constructObject<Interpolator>(
       candidates[i]));
     vector<string> ind;
     ind.push_back("x");
@@ -260,7 +260,7 @@ shared_ptr<Interpolator> RubberSheet::_buildInterpolator(Status s) const
   return bestCandidate;
 }
 
-void RubberSheet::calculateTransform(shared_ptr<OsmMap>& map)
+void RubberSheet::calculateTransform(boost::shared_ptr<OsmMap>& map)
 {
   _map = map;
 
@@ -278,7 +278,7 @@ void RubberSheet::_findTies()
   // circular error.
   _searchRadius = _map->calculateMaxCircularError() * 2;
 
-  shared_ptr<NodeToWayMap> n2w = _map->getIndex().getNodeToWayMap();
+  boost::shared_ptr<NodeToWayMap> n2w = _map->getIndex().getNodeToWayMap();
   // go through all the intersections w/ 2 or more roads intersecting
   for (NodeToWayMap::const_iterator it = n2w->begin(); it != n2w->end(); ++it)
   {
@@ -295,7 +295,7 @@ void RubberSheet::_findTies()
   // go through all the paired intersections
   for (MatchList::const_iterator it = _matches.begin(); it != _matches.end(); ++it)
   {
-    shared_ptr<Node> n = _map->getNode(it->first);
+    boost::shared_ptr<Node> n = _map->getNode(it->first);
     // only look if this is Unknown1
     if (n->getStatus() == Status::Unknown1)
     {
@@ -326,8 +326,8 @@ void RubberSheet::_findTies()
 
   for (size_t i = 0; i < _finalPairs.size(); ++i)
   {
-    shared_ptr<Node> n1 = _map->getNode(_finalPairs[i].nid1);
-    shared_ptr<Node> n2 = _map->getNode(_finalPairs[i].nid2);
+    boost::shared_ptr<Node> n1 = _map->getNode(_finalPairs[i].nid1);
+    boost::shared_ptr<Node> n2 = _map->getNode(_finalPairs[i].nid2);
     if (touched.find(n1->getId()) == touched.end() &&
         touched.find(n2->getId()) == touched.end())
     {
@@ -399,7 +399,7 @@ const RubberSheet::Match& RubberSheet::_findMatch(long nid1, long nid2)
   return _emptyMatch;
 }
 
-shared_ptr<Interpolator> RubberSheet::_readInterpolator(QIODevice& is)
+boost::shared_ptr<Interpolator> RubberSheet::_readInterpolator(QIODevice& is)
 {
   QDataStream ds(&is);
   QString projStr;
@@ -409,7 +409,7 @@ shared_ptr<Interpolator> RubberSheet::_readInterpolator(QIODevice& is)
 
   QString interpolatorClass;
   ds >> interpolatorClass;
-  shared_ptr<Interpolator> result;
+  boost::shared_ptr<Interpolator> result;
   result.reset(Factory::getInstance().constructObject<Interpolator>(
     interpolatorClass.toStdString()));
   result->readInterpolator(is);
@@ -435,7 +435,7 @@ Coordinate RubberSheet::_translate(const Coordinate& c, Status s)
   return Coordinate(c.x + (*delta)[0], c.y + (*delta)[1]);
 }
 
-void RubberSheet::_writeInterpolator(shared_ptr<const Interpolator> interpolator, QIODevice& os)
+void RubberSheet::_writeInterpolator(boost::shared_ptr<const Interpolator> interpolator, QIODevice& os)
   const
 {
   // this could be modified to write an empty or null interpolator if needed.

@@ -128,7 +128,7 @@ double SampleStats::calculateUnbiasedStandardDeviation()
       _standardDeviation = sqrt(sumSquares / (double)(_samples.size() - 1));
     }
 
-    if (isnan(_standardDeviation))
+    if (std::isnan(_standardDeviation))
     {
       std::cout << "sd: " << _standardDeviation << endl;
       std::cout << "samples: " << _samples.size() << endl;

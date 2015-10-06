@@ -62,7 +62,7 @@ public:
   {
     OsmReader reader;
     OsmMap::resetCounters();
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/conflate/WayCleanerTest/DuplicateNodesTest.osm", map);
 
@@ -99,7 +99,7 @@ public:
   {
     OsmReader reader;
     OsmMap::resetCounters();
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/conflate/WayCleanerTest/DuplicateCoordsTest.osm", map);
 

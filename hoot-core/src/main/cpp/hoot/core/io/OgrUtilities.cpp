@@ -85,7 +85,7 @@ OgrUtilities::OgrUtilities()
   OGRRegisterAll();
 }
 
-shared_ptr<OGRDataSource> OgrUtilities::createDataSource(QString url)
+boost::shared_ptr<OGRDataSource> OgrUtilities::createDataSource(QString url)
 {
   const char* driverName = NULL;
   int i = 0;
@@ -123,7 +123,7 @@ shared_ptr<OGRDataSource> OgrUtilities::createDataSource(QString url)
     url = url.mid(0, url.length() - 4);
   }
 
-  shared_ptr<OGRDataSource> result(driver->CreateDataSource(url.toAscii()));
+  boost::shared_ptr<OGRDataSource> result(driver->CreateDataSource(url.toAscii()));
   if (result == NULL)
   {
     throw HootException("Unable to create data source: " + url +
@@ -172,9 +172,9 @@ bool OgrUtilities::isReasonableUrl(QString url)
   return reasonable;
 }
 
-shared_ptr<OGRDataSource> OgrUtilities::openDataSource(QString url)
+boost::shared_ptr<OGRDataSource> OgrUtilities::openDataSource(QString url)
 {
-  shared_ptr<OGRDataSource> result;
+  boost::shared_ptr<OGRDataSource> result;
 
   result.reset(OGRSFDriverRegistrar::Open(url.toUtf8().data(), false));
 

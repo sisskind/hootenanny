@@ -41,7 +41,7 @@ HOOT_FACTORY_REGISTER(OsmMapOperation, PointsToTracksOp)
 
 struct SortFunctor
 {
-  shared_ptr<OsmMap> map;
+  boost::shared_ptr<OsmMap> map;
 
   bool operator() (long nid1, long nid2)
   {
@@ -56,7 +56,7 @@ PointsToTracksOp::PointsToTracksOp()
 {
 }
 
-void PointsToTracksOp::apply(shared_ptr<OsmMap>& map)
+void PointsToTracksOp::apply(boost::shared_ptr<OsmMap>& map)
 {
   HashMap<QString, deque<long> > trackIdToNid;
 
@@ -76,16 +76,16 @@ void PointsToTracksOp::apply(shared_ptr<OsmMap>& map)
   _createWays(map, trackIdToNid);
 }
 
-void PointsToTracksOp::_createWays(shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks)
+void PointsToTracksOp::_createWays(boost::shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks)
 {
   for (HashMap<QString, deque<long> >::const_iterator it = tracks.begin(); it != tracks.end();
     ++it)
   {
     const deque<long>& d = it->second;
-    shared_ptr<Node> firstNode = map->getNode(d[0]);
+    boost::shared_ptr<Node> firstNode = map->getNode(d[0]);
 
     LOG_INFO("Circular Error: " << firstNode->getCircularError());
-    shared_ptr<Way> w(new Way(firstNode->getStatus(), map->createNextWayId(),
+    boost::shared_ptr<Way> w(new Way(firstNode->getStatus(), map->createNextWayId(),
       firstNode->getCircularError()));
 
     // check to see if all the nodes have the same non-empty highway tag.
@@ -115,7 +115,7 @@ void PointsToTracksOp::_createWays(shared_ptr<OsmMap>& map, HashMap<QString, deq
   }
 }
 
-void PointsToTracksOp::_sortTracks(shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks)
+void PointsToTracksOp::_sortTracks(boost::shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks)
 {
 
   SortFunctor sf;

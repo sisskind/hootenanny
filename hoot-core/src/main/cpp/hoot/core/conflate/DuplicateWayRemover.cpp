@@ -56,13 +56,13 @@ DuplicateWayRemover::DuplicateWayRemover()
 {
 }
 
-void DuplicateWayRemover::apply(shared_ptr<OsmMap>& map)
+void DuplicateWayRemover::apply(boost::shared_ptr<OsmMap>& map)
 {
   LOG_INFO("Removing duplicate ways...");
   _map = map;
 
   // create a map from nodes to ways
-  shared_ptr<NodeToWayMap> n2wp = _map->getIndex().getNodeToWayMap();
+  boost::shared_ptr<NodeToWayMap> n2wp = _map->getIndex().getNodeToWayMap();
   NodeToWayMap& n2w = *n2wp;
 
   WayMap wm = _map->getWays();
@@ -70,7 +70,7 @@ void DuplicateWayRemover::apply(shared_ptr<OsmMap>& map)
   // go through each way and remove duplicate nodes in one way
   for (WayMap::const_iterator it = wm.begin(); it != wm.end(); it++)
   {
-    const shared_ptr<Way>& w = it->second;
+    const boost::shared_ptr<Way>& w = it->second;
     vector<long> newNodes;
     const vector<long>& nodes = w->getNodeIds();
     for (size_t i = 0; i < nodes.size(); i++)
@@ -92,7 +92,7 @@ void DuplicateWayRemover::apply(shared_ptr<OsmMap>& map)
   for (WayMap::const_iterator it = wm.begin(); it != wm.end(); it++)
   {
     long key = it->first;
-    const shared_ptr<Way>& w = it->second;
+    const boost::shared_ptr<Way>& w = it->second;
     // if the way isn't in the map anymore (deleted as part of this process) or the way is an
     // area type (different treatment).
     if (_map->containsWay(key) == false || !schema.isLinear(*w))
@@ -122,7 +122,7 @@ void DuplicateWayRemover::apply(shared_ptr<OsmMap>& map)
       if (wit->second >= 2 && _map->containsWay(wit->first) && _map->containsWay(w->getId()))
       {
         // remove duplicates between the ways
-        shared_ptr<Way> w2 = _map->getWay(wit->first);
+        boost::shared_ptr<Way> w2 = _map->getWay(wit->first);
 
         // if this is a candidate for de-duping
         if (_isCandidateWay(w2))
@@ -159,7 +159,7 @@ bool DuplicateWayRemover::_isCandidateWay(const ConstWayPtr& w) const
   return result;
 }
 
-void DuplicateWayRemover::_removeDuplicateNodes(shared_ptr<Way> w1, shared_ptr<Way> w2)
+void DuplicateWayRemover::_removeDuplicateNodes(boost::shared_ptr<Way> w1, boost::shared_ptr<Way> w2)
 {
   LongestCommonNodeString lcs(w1, w2);
 
@@ -202,13 +202,13 @@ void DuplicateWayRemover::_removeDuplicateNodes(shared_ptr<Way> w1, shared_ptr<W
   }
 }
 
-void DuplicateWayRemover::removeDuplicates(shared_ptr<OsmMap> map)
+void DuplicateWayRemover::removeDuplicates(boost::shared_ptr<OsmMap> map)
 {
   DuplicateWayRemover a;
   a.apply(map);
 }
 
-void DuplicateWayRemover::_removeNodes(shared_ptr<const Way> w, int start, int length)
+void DuplicateWayRemover::_removeNodes(boost::shared_ptr<const Way> w, int start, int length)
 {
   const std::vector<long>& nodes = w->getNodeIds();
 
@@ -219,7 +219,7 @@ void DuplicateWayRemover::_removeNodes(shared_ptr<const Way> w, int start, int l
     if (start == 0)
     {
       vector<long> newNodes(nodes.begin() + length - 1, nodes.end());
-      shared_ptr<Way> newWay(new Way(w->getStatus(), _map->createNextWayId(),
+      boost::shared_ptr<Way> newWay(new Way(w->getStatus(), _map->createNextWayId(),
                                      w->getCircularError()));
       newWay->addNodes(newNodes);
       newWay->setTags(w->getTags());
@@ -229,7 +229,7 @@ void DuplicateWayRemover::_removeNodes(shared_ptr<const Way> w, int start, int l
     else if (start + length == (int)nodes.size())
     {
       vector<long> newNodes(nodes.begin(), nodes.begin() + start + 1);
-      shared_ptr<Way> newWay(new Way(w->getStatus(), _map->createNextWayId(),
+      boost::shared_ptr<Way> newWay(new Way(w->getStatus(), _map->createNextWayId(),
                                     w->getCircularError()));
       newWay->addNodes(newNodes);
       newWay->setTags(w->getTags());
@@ -239,13 +239,13 @@ void DuplicateWayRemover::_removeNodes(shared_ptr<const Way> w, int start, int l
     else
     {
       vector<long> newNodes1(nodes.begin(), nodes.begin() + start + 1);
-      shared_ptr<Way> newWay1(new Way(w->getStatus(), _map->createNextWayId(),
+      boost::shared_ptr<Way> newWay1(new Way(w->getStatus(), _map->createNextWayId(),
                                      w->getCircularError()));
       newWay1->addNodes(newNodes1);
       newWay1->setTags(w->getTags());
 
       vector<long> newNodes2(nodes.begin() + start + length - 1, nodes.end());
-      shared_ptr<Way> newWay2(new Way(w->getStatus(), _map->createNextWayId(),
+      boost::shared_ptr<Way> newWay2(new Way(w->getStatus(), _map->createNextWayId(),
                                      w->getCircularError()));
       newWay2->addNodes(newNodes2);
       newWay2->setTags(w->getTags());
@@ -260,8 +260,8 @@ void DuplicateWayRemover::_removeNodes(shared_ptr<const Way> w, int start, int l
   }
 }
 
-void DuplicateWayRemover::_replaceMultiple(const shared_ptr<const Way>& oldWay,
-  const shared_ptr<Way>& newWay1, const shared_ptr<Way>& newWay2)
+void DuplicateWayRemover::_replaceMultiple(const boost::shared_ptr<const Way>& oldWay,
+  const boost::shared_ptr<Way>& newWay1, const boost::shared_ptr<Way>& newWay2)
 {
   RelationData::Entry newValues[2];
   newValues[0].setElementId(ElementId::way(newWay1->getId()));
@@ -276,7 +276,7 @@ void DuplicateWayRemover::_replaceMultiple(const shared_ptr<const Way>& oldWay,
   set<long> rids = _map->getIndex().getElementToRelationMap()->getRelationByElement(oldWay.get());
   for (set<long>::const_iterator it = rids.begin(); it != rids.end(); it++)
   {
-    const shared_ptr<Relation>& r = _map->getRelation(*it);
+    const boost::shared_ptr<Relation>& r = _map->getRelation(*it);
     if (r)
     {
       r->replaceElements(old, newValues, newValues + 2);

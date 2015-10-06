@@ -86,12 +86,12 @@ public:
 
     for (int i = 0; i < args.size(); i++)
     {
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       loadMap(map, args[i], true, Status::Invalid);
 
       MapReprojector::reprojectToPlanar(map);
 
-      shared_ptr<CalculateStatsOp> cso(new CalculateStatsOp());
+      boost::shared_ptr<CalculateStatsOp> cso(new CalculateStatsOp());
       cso->setQuickSubset(quick);
       cso->apply(map);
       allStats.append(cso->getStats());

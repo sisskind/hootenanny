@@ -65,7 +65,7 @@ private:
   int _bulkSize;
   QSqlDatabase _db;
   int _idsReserved;
-  shared_ptr<QSqlQuery> _query;
+  boost::shared_ptr<QSqlQuery> _query;
   long _nextId;
   QString _sequenceName;
 

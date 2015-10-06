@@ -70,7 +70,7 @@ public:
     QString inputNonRef = args[1];
     QString output = args[2];
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     loadMap(map, inputRef, false, Status::Unknown1);
     loadMap(map, inputNonRef, false, Status::Unknown2);
 
@@ -85,14 +85,14 @@ public:
     Conflator conflator;
     conflator.setSource(map);
     conflator.conflate();
-    shared_ptr<OsmMap> conflated(new OsmMap(conflator.getBestMap()));
+    boost::shared_ptr<OsmMap> conflated(new OsmMap(conflator.getBestMap()));
 
     // remove any ways in Unknown2 that were not matched. We're creating a copy so we can remove
     // and iterate in one loop.
     const WayMap allWays = conflated->getWays();
     for (WayMap::const_iterator it = allWays.begin(); it != allWays.end(); ++it)
     {
-      const shared_ptr<const Way>& way = it->second;
+      const boost::shared_ptr<const Way>& way = it->second;
 
       if (way->getStatus() == Status::Unknown2)
       {

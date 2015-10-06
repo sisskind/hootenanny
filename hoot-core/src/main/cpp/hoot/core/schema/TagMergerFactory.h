@@ -65,7 +65,7 @@ public:
   void reset();
 
 private:
-  QHash<QString, shared_ptr<const TagMerger> > _mergers;
+  QHash<QString, boost::shared_ptr<const TagMerger> > _mergers;
   const TagMerger* _default;
 
   static TagMergerFactory _theInstance;

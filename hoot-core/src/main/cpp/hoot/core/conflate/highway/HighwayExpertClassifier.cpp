@@ -69,7 +69,7 @@ MatchClassification HighwayExpertClassifier::classify(const ConstOsmMapPtr& map,
   vector<long> wids;
   wids.push_back(match.getSubline1().getElementId().getId());
   wids.push_back(match.getSubline2().getElementId().getId());
-  shared_ptr<OsmMap> theMap = map->copyWays(wids);
+  boost::shared_ptr<OsmMap> theMap = map->copyWays(wids);
 
   if (match.isValid() == false)
   {
@@ -111,7 +111,7 @@ MatchClassification HighwayExpertClassifier::classify(const ConstOsmMapPtr& map,
   return result;
 }
 
-map<QString, double> HighwayExpertClassifier::getFeatures(const shared_ptr<const OsmMap>& /*m*/,
+map<QString, double> HighwayExpertClassifier::getFeatures(const boost::shared_ptr<const OsmMap>& /*m*/,
   ElementId /*eid1*/, ElementId /*eid2*/, const WaySublineMatchString& /*match*/) const
 {
   return map<QString, double>();

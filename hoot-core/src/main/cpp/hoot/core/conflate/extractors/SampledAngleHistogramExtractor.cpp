@@ -59,7 +59,7 @@ public:
 
   }
 
-  virtual void visit(const shared_ptr<const Element>& e)
+  virtual void visit(const boost::shared_ptr<const Element>& e)
   {
     if (e->getElementType() == ElementType::Way)
     {
@@ -83,7 +83,7 @@ public:
         const double distance = currentLoc.getCoordinate().distance(lastLoc.getCoordinate());
         //calculate the heading using some distance around the way
         const double theta = WayHeading::calculateHeading(currentLoc, _headingDelta);
-        if (!isnan(theta))  //TODO: is this appropriate?
+        if (!std::isnan(theta))  //TODO: is this appropriate?
         {
           _angleHistogram.addAngle(theta, distance);
         }

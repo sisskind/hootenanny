@@ -47,8 +47,8 @@ namespace hoot
 
 QString HighwayMatch::_noMatchingSubline = "No valid matching subline found.";
 
-HighwayMatch::HighwayMatch(const shared_ptr<HighwayClassifier>& classifier,
-  const shared_ptr<SublineStringMatcher>& sublineMatcher,
+HighwayMatch::HighwayMatch(const boost::shared_ptr<HighwayClassifier>& classifier,
+  const boost::shared_ptr<SublineStringMatcher>& sublineMatcher,
   const ConstOsmMapPtr& map, const ElementId& eid1, const ElementId& eid2,
   ConstMatchThresholdPtr mt) :
   Match(mt),
@@ -100,7 +100,7 @@ QString HighwayMatch::explain() const
   return _explainText;
 }
 
-map<QString, double> HighwayMatch::getFeatures(const shared_ptr<const OsmMap>& m) const
+map<QString, double> HighwayMatch::getFeatures(const boost::shared_ptr<const OsmMap>& m) const
 {
   map<QString, double> result;
   if (_sublineMatch.isValid())

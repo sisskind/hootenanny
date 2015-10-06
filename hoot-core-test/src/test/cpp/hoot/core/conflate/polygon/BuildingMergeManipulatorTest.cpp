@@ -90,7 +90,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/ToyBuildingsTestA.osm", map);
     reader.setDefaultStatus(Status::Unknown2);
@@ -111,15 +111,15 @@ public:
 
     Conflator uut;
 
-    shared_ptr<Manipulator> m(new BuildingMergeManipulator());
-    deque< shared_ptr<Manipulator> > manipulators;
+    boost::shared_ptr<Manipulator> m(new BuildingMergeManipulator());
+    deque< boost::shared_ptr<Manipulator> > manipulators;
     manipulators.push_back(m);
     uut.setManipulators(manipulators);
 
     uut.loadSource(map);
     uut.conflate();
 
-    shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
+    boost::shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
     MapReprojector::reprojectToWgs84(out);
 
     OsmWriter writer;

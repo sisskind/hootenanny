@@ -114,7 +114,7 @@ public:
 
   const ConstOsmMapPtr& getMap() const { return _map; }
 
-  const shared_ptr<const Way>& getWay() const { return _way; }
+  const boost::shared_ptr<const Way>& getWay() const { return _way; }
 
   int getSegmentIndex() const { return _segmentIndex; }
 

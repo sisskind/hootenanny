@@ -32,6 +32,7 @@
 
 // Standard
 #include <string>
+#include <cmath>
 
 // tgs
 #include <tgs/SharedPtr.h>
@@ -56,8 +57,8 @@ public:
    * Extracts a feature from a given pair of elements. The feature may be something like the
    * distance between colors, the overlap of two polygons, etc.
    */
-  virtual double extract(const OsmMap& map, const shared_ptr<const Element>& target,
-    const shared_ptr<const Element>& candidate) const = 0;
+  virtual double extract(const OsmMap& map, const boost::shared_ptr<const Element>& target,
+    const boost::shared_ptr<const Element>& candidate) const = 0;
 
   virtual string getClassName() const = 0;
 
@@ -73,7 +74,7 @@ public:
    */
   virtual DataFrame::NullTreatment getNullTreatment() const = 0;
 
-  static bool isNull(double v) { return v == nullValue() || isnan(v); }
+  static bool isNull(double v) { return v == nullValue() || std::isnan(v); }
 
 };
 

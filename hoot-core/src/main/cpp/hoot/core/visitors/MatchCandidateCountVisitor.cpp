@@ -30,7 +30,7 @@ namespace hoot
 {
 
 MatchCandidateCountVisitor::MatchCandidateCountVisitor(
-  const vector< shared_ptr<MatchCreator> >& matchCreators) :
+  const vector< boost::shared_ptr<MatchCreator> >& matchCreators) :
 _matchCreators(matchCreators),
 _candidateCount(0)
 {
@@ -47,11 +47,11 @@ _candidateCount(0)
 
 }
 
-void MatchCandidateCountVisitor::visit(const shared_ptr<const Element>& e)
+void MatchCandidateCountVisitor::visit(const boost::shared_ptr<const Element>& e)
 {
   for (size_t i = 0; i < _matchCreators.size(); ++i)
   {
-    shared_ptr<MatchCreator> matchCreator = _matchCreators[i];
+    boost::shared_ptr<MatchCreator> matchCreator = _matchCreators[i];
     if (matchCreator->isMatchCandidate(e, _map->shared_from_this()))
     {
      _candidateCount++;

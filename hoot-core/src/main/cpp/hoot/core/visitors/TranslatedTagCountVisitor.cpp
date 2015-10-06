@@ -36,7 +36,7 @@
 namespace hoot
 {
 
-TranslatedTagCountVisitor::TranslatedTagCountVisitor(shared_ptr<ScriptTranslator> t) :
+TranslatedTagCountVisitor::TranslatedTagCountVisitor(boost::shared_ptr<ScriptTranslator> t) :
   _map(),
   _populatedCount(),
   _defaultCount(),
@@ -52,13 +52,13 @@ TranslatedTagCountVisitor::TranslatedTagCountVisitor(shared_ptr<ScriptTranslator
   _schema = _translator->getOgrOutputSchema();
 }
 
-void TranslatedTagCountVisitor::_countTags(shared_ptr<Feature>& f)
+void TranslatedTagCountVisitor::_countTags(boost::shared_ptr<Feature>& f)
 {
-  const shared_ptr<const FeatureDefinition>& defn = f->getFeatureDefinition();
+  const boost::shared_ptr<const FeatureDefinition>& defn = f->getFeatureDefinition();
 
   for (size_t i = 0; i < defn->getFieldCount(); i++)
   {
-    shared_ptr<const FieldDefinition> fd = defn->getFieldDefinition(i);
+    boost::shared_ptr<const FieldDefinition> fd = defn->getFieldDefinition(i);
 
     const QVariantMap& vm = f->getValues();
 
@@ -90,7 +90,7 @@ void TranslatedTagCountVisitor::visit(const ConstElementPtr& e)
 {
   if (e->getTags().getInformationCount() > 0)
   {
-    shared_ptr<Geometry> g = ElementConverter(_map->shared_from_this()).convertToGeometry(e);
+    boost::shared_ptr<Geometry> g = ElementConverter(_map->shared_from_this()).convertToGeometry(e);
 
     Tags t = e->getTags();
     t["error:circular"] = QString::number(e->getCircularError());

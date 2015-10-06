@@ -65,8 +65,8 @@ public:
    * @param matchStatus If the element's status matches this status then it is checked for a match.
    */
   HighwayMatchVisitor(const ConstOsmMapPtr& map,
-    vector<const Match*>& result, shared_ptr<HighwayClassifier> c,
-    shared_ptr<SublineStringMatcher> sublineMatcher, Status matchStatus,
+    vector<const Match*>& result, boost::shared_ptr<HighwayClassifier> c,
+    boost::shared_ptr<SublineStringMatcher> sublineMatcher, Status matchStatus,
     ConstMatchThresholdPtr threshold) :
     _map(map),
     _result(result),
@@ -87,7 +87,7 @@ public:
              (double)_neighborCountSum / (double)_elementsEvaluated);
   }
 
-  void checkForMatch(const shared_ptr<const Element>& e)
+  void checkForMatch(const boost::shared_ptr<const Element>& e)
   {
     auto_ptr<Envelope> env(e->getEnvelope(_map));
     env->expandBy(getSearchRadius(e));
@@ -103,7 +103,7 @@ public:
     {
       if (from != *it)
       {
-        const shared_ptr<const Element>& n = _map->getElement(*it);
+        const boost::shared_ptr<const Element>& n = _map->getElement(*it);
 
         if (n->getStatus() != e->getStatus() && n->isUnknown() &&
             OsmSchema::getInstance().isLinearHighway(n->getTags(), n->getElementType()))
@@ -129,7 +129,7 @@ public:
     _neighborCountMax = std::max(_neighborCountMax, neighborCount);
   }
 
-  Meters getSearchRadius(const shared_ptr<const Element>& e) const
+  Meters getSearchRadius(const boost::shared_ptr<const Element>& e) const
   {
     if (_searchRadius >= 0)
     {
@@ -159,8 +159,8 @@ private:
   const ConstOsmMapPtr& _map;
   vector<const Match*>& _result;
   set<ElementId> _empty;
-  shared_ptr<HighwayClassifier> _c;
-  shared_ptr<SublineStringMatcher> _sublineMatcher;
+  boost::shared_ptr<HighwayClassifier> _c;
+  boost::shared_ptr<SublineStringMatcher> _sublineMatcher;
   Status _matchStatus;
   int _neighborCountMax;
   int _neighborCountSum;
@@ -206,7 +206,7 @@ bool HighwayMatchCreator::isMatchCandidate(ConstElementPtr element, const ConstO
   return HighwayMatchVisitor::isMatchCandidate(element);
 }
 
-shared_ptr<MatchThreshold> HighwayMatchCreator::getMatchThreshold()
+boost::shared_ptr<MatchThreshold> HighwayMatchCreator::getMatchThreshold()
 {
   if (!_matchThreshold.get())
   {

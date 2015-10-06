@@ -49,18 +49,18 @@ public:
   virtual MatchClassification classify(const ConstOsmMapPtr& map,
     ElementId eid1, ElementId eid2, const WaySublineMatchString& match);
 
-  virtual map<QString, double> getFeatures(const shared_ptr<const OsmMap>& m,
+  virtual map<QString, double> getFeatures(const boost::shared_ptr<const OsmMap>& m,
     ElementId eid1, ElementId eid2, const WaySublineMatchString& match) const;
 
 private:
-  shared_ptr<Tgs::RandomForest> _rf;
+  boost::shared_ptr<Tgs::RandomForest> _rf;
   QStringList _rfFactorLabels;
-  vector< shared_ptr<const FeatureExtractor> > _extractors;
+  vector< boost::shared_ptr<const FeatureExtractor> > _extractors;
 
   void _createAllExtractors();
   void _createTestExtractors();
 
-  const vector< shared_ptr<const FeatureExtractor> >& _getExtractors() const;
+  const vector< boost::shared_ptr<const FeatureExtractor> >& _getExtractors() const;
 
 };
 

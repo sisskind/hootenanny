@@ -44,7 +44,7 @@ using namespace geos::geom;
 namespace hoot
 {
 
-void GmlWriter::write(shared_ptr<const OsmMap> map, QString path)
+void GmlWriter::write(boost::shared_ptr<const OsmMap> map, QString path)
 {
   if (path.toLower().endsWith(".gml"))
   {
@@ -53,7 +53,7 @@ void GmlWriter::write(shared_ptr<const OsmMap> map, QString path)
   writePoints(map, path + "Points.shp");
 }
 
-void GmlWriter::writePoints(shared_ptr<const OsmMap> map, const QString& path)
+void GmlWriter::writePoints(boost::shared_ptr<const OsmMap> map, const QString& path)
 {
   OGRRegisterAll();
 
@@ -109,7 +109,7 @@ void GmlWriter::writePoints(shared_ptr<const OsmMap> map, const QString& path)
   const OsmMap::NodeMap& nodes = map->getNodeMap();
   for (OsmMap::NodeMap::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
   {
-    const shared_ptr<Node>& node = it.value();
+    const boost::shared_ptr<Node>& node = it.value();
 
     if (node->getTags().getNonDebugCount() > 0)
     {

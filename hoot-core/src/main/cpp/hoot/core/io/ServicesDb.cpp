@@ -1690,7 +1690,7 @@ long ServicesDb::numElements(const ElementType& elementType)
   return result;
 }
 
-shared_ptr<QSqlQuery> ServicesDb::selectAllElements(const long elementId, const ElementType& elementType)
+boost::shared_ptr<QSqlQuery> ServicesDb::selectAllElements(const long elementId, const ElementType& elementType)
 {
   switch ( _connectionType )
   {
@@ -1708,12 +1708,12 @@ shared_ptr<QSqlQuery> ServicesDb::selectAllElements(const long elementId, const 
   }
 }
 
-shared_ptr<QSqlQuery> ServicesDb::selectAllElements(const ElementType& elementType)
+boost::shared_ptr<QSqlQuery> ServicesDb::selectAllElements(const ElementType& elementType)
 {
   return selectAllElements(-1, elementType);
 }
 
-shared_ptr<QSqlQuery> ServicesDb::selectElements_OsmApi(const long elementId,
+boost::shared_ptr<QSqlQuery> ServicesDb::selectElements_OsmApi(const long elementId,
   const ElementType& elementType, const long limit, const long offset)
 {
   LOG_DEBUG("Inside selectElement_OsmApi");
@@ -1756,7 +1756,7 @@ shared_ptr<QSqlQuery> ServicesDb::selectElements_OsmApi(const long elementId,
   return _selectElementsForMap;
 }
 
-shared_ptr<QSqlQuery> ServicesDb::selectElements(const long elementId,
+boost::shared_ptr<QSqlQuery> ServicesDb::selectElements(const long elementId,
   const ElementType& elementType, const long limit, const long offset)
 {
   const long mapId = _currMapId;
@@ -3543,7 +3543,7 @@ long ServicesDb::reserveElementId(const ElementType::Type type)
  *       returns them for Services DB
  * **********************************************************************
  */
-QString ServicesDb::extractTagFromRow_OsmApi(shared_ptr<QSqlQuery> row, const int pos)
+QString ServicesDb::extractTagFromRow_OsmApi(boost::shared_ptr<QSqlQuery> row, const int pos)
 {
   QString tag = "\""+row->value(pos).toString()+"\"=>\""+
     row->value(pos+1).toString()+"\"";

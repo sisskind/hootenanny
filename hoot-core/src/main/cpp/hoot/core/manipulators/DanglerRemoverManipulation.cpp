@@ -39,7 +39,7 @@
 namespace hoot
 {
 
-DanglerRemoverManipulation::DanglerRemoverManipulation(long wayId, shared_ptr<const OsmMap> map,
+DanglerRemoverManipulation::DanglerRemoverManipulation(long wayId, boost::shared_ptr<const OsmMap> map,
                                                        Meters errorPlus)
 {
   _wayId = wayId;
@@ -47,10 +47,10 @@ DanglerRemoverManipulation::DanglerRemoverManipulation(long wayId, shared_ptr<co
   updateEstimate(map);
 }
 
-void DanglerRemoverManipulation::applyManipulation(shared_ptr<OsmMap> map,
+void DanglerRemoverManipulation::applyManipulation(boost::shared_ptr<OsmMap> map,
   set<ElementId>& impactedElements, set<ElementId>&) const
 {
-  shared_ptr<OsmMap> result = map;
+  boost::shared_ptr<OsmMap> result = map;
 
   // insert the impacted ways
   impactedElements = getImpactedElementIds(map);
@@ -59,11 +59,11 @@ void DanglerRemoverManipulation::applyManipulation(shared_ptr<OsmMap> map,
   result->removeWay(_wayId);
 }
 
-double DanglerRemoverManipulation::calculateProbability(shared_ptr<const OsmMap> map) const
+double DanglerRemoverManipulation::calculateProbability(boost::shared_ptr<const OsmMap> map) const
 {
-  shared_ptr<const Way> baseWay = map->getWay(_wayId);
+  boost::shared_ptr<const Way> baseWay = map->getWay(_wayId);
 
-  shared_ptr<LineString> ls = ElementConverter(map).convertToLineString(baseWay);
+  boost::shared_ptr<LineString> ls = ElementConverter(map).convertToLineString(baseWay);
 
   const OsmMapIndex& index = map->getIndex();
   const NodeToWayMap& n2w = *index.getNodeToWayMap();
@@ -108,7 +108,7 @@ double DanglerRemoverManipulation::calculateProbability(shared_ptr<const OsmMap>
   return score;
 }
 
-double DanglerRemoverManipulation::calculateScore(shared_ptr<const OsmMap> map) const
+double DanglerRemoverManipulation::calculateScore(boost::shared_ptr<const OsmMap> map) const
 {
   assert(isValid(map));
 
@@ -117,7 +117,7 @@ double DanglerRemoverManipulation::calculateScore(shared_ptr<const OsmMap> map) 
   return _p;
 }
 
-bool DanglerRemoverManipulation::isValid(shared_ptr<const OsmMap> map) const
+bool DanglerRemoverManipulation::isValid(boost::shared_ptr<const OsmMap> map) const
 {
   return map->containsWay(_wayId);
 }
@@ -130,7 +130,7 @@ const set<ElementId>& DanglerRemoverManipulation::getImpactedElementIds(const Co
 
   NodeToWayMap& n2w = *map->getIndex().getNodeToWayMap();
 
-  shared_ptr<const Way> way = map->getWay(_wayId);
+  boost::shared_ptr<const Way> way = map->getWay(_wayId);
 
   const set<long>& s1 = n2w.at(way->getNodeId(0));
   for (set<long>::const_iterator it = s1.begin(); it != s1.end(); it++)

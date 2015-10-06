@@ -69,7 +69,7 @@ public:
   {
   }
 
-  void checkForMatch(const shared_ptr<const Element>& e)
+  void checkForMatch(const boost::shared_ptr<const Element>& e)
   {
     auto_ptr<Envelope> env(e->getEnvelope(_map));
     env->expandBy(e->getCircularError() + _worstCircularError);
@@ -88,7 +88,7 @@ public:
 
       if (from.getId() < eid.getId())
       {
-        const shared_ptr<const Element>& n = _map->getElement(eid);
+        const boost::shared_ptr<const Element>& n = _map->getElement(eid);
         if (OsmSchema::getInstance().isPoi(*n))
         {
           // score each candidate and push it on the result vector
@@ -152,7 +152,7 @@ public:
 
   Meters getWorstCircularError() { return _worst; }
 
-  virtual void visit(const shared_ptr<const Element>& e)
+  virtual void visit(const boost::shared_ptr<const Element>& e)
   {
     _worst = max(_worst, e->getCircularError());
   }
@@ -191,7 +191,7 @@ bool CustomPoiMatchCreator::isMatchCandidate(ConstElementPtr element,
   return CustomPoiMatchVisitor::isMatchCandidate(element);
 }
 
-shared_ptr<MatchThreshold> CustomPoiMatchCreator::getMatchThreshold()
+boost::shared_ptr<MatchThreshold> CustomPoiMatchCreator::getMatchThreshold()
 {
   if (!_matchThreshold.get())
   {

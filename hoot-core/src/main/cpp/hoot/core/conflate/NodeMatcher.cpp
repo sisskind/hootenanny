@@ -56,7 +56,7 @@ vector<Radians> NodeMatcher::calculateAngles(const OsmMap* map, long nid, const 
 
   for (set<long>::const_iterator it = wids.begin(); it != wids.end(); ++it)
   {
-    const shared_ptr<const Way>& w = map->getWay(*it);
+    const boost::shared_ptr<const Way>& w = map->getWay(*it);
 
     if (OsmSchema::getInstance().isLinearHighway(w->getTags(), w->getElementType()) == false &&
         OsmSchema::getInstance().isLinearWaterway(*w) == false)
@@ -145,8 +145,8 @@ double NodeMatcher::_calculateAngleScore(const vector<Radians>& theta1,
 
 double NodeMatcher::scorePair(long nid1, long nid2)
 {
-  shared_ptr<const Node> n1 = _map->getNode(nid1);
-  shared_ptr<const Node> n2 = _map->getNode(nid2);
+  boost::shared_ptr<const Node> n1 = _map->getNode(nid1);
+  boost::shared_ptr<const Node> n2 = _map->getNode(nid2);
 
   const set<long>& wids1 = _map->getIndex().getNodeToWayMap()->at(nid1);
   const set<long>& wids2 = _map->getIndex().getNodeToWayMap()->at(nid2);

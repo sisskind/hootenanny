@@ -143,12 +143,12 @@ public:
 
     // Match b/c at least one name pair is a match
     matchCount++;
-    shared_ptr<Node> n1 = createNode(map, 5000.0, 0.0, 50.0, "Deli", "Schlotzsky's");
+    boost::shared_ptr<Node> n1 = createNode(map, 5000.0, 0.0, 50.0, "Deli", "Schlotzsky's");
     n1->getTags()["alt_name"] = "Schlotzsky's";
-    shared_ptr<Node> n2 = createNode(map, 5000.0, 1.0, 50.0, "Schlotzsky", "Schlotzsky's");
+    boost::shared_ptr<Node> n2 = createNode(map, 5000.0, 1.0, 50.0, "Schlotzsky", "Schlotzsky's");
     n2->getTags()["alt_name"] = "Sandwiches";
 
-    shared_ptr<const MatchThreshold> threshold(new MatchThreshold(0.6, 0.6));
+    boost::shared_ptr<const MatchThreshold> threshold(new MatchThreshold(0.6, 0.6));
     PlacesPoiMatchCreator creator;
     vector<const Match*> matches;
     creator.createMatches(map, matches, threshold);
@@ -159,8 +159,8 @@ public:
       set< pair<ElementId, ElementId> > pairs = matches[i]->getMatchPairs();
       for (set< pair<ElementId, ElementId> >::iterator it = pairs.begin(); it != pairs.end(); ++it)
       {
-        shared_ptr<const Element> e1 = map->getElement(it->first);
-        shared_ptr<const Element> e2 = map->getElement(it->second);
+        boost::shared_ptr<const Element> e1 = map->getElement(it->first);
+        boost::shared_ptr<const Element> e2 = map->getElement(it->second);
         //LOG_INFO(e1->getTags()["note"] << " <=> " << e2->getTags()["note"]);
         CPPUNIT_ASSERT_EQUAL(e1->getTags()["note"], e2->getTags()["note"]);
       }

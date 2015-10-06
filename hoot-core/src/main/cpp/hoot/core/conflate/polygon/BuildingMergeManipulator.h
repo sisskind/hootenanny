@@ -49,14 +49,14 @@ public:
 
   static std::string className() { return "hoot::BuildingMergeManipulator"; }
 
-  virtual const vector< shared_ptr<Manipulation> >& findAllManipulations(
-          shared_ptr<const OsmMap> map);
+  virtual const vector< boost::shared_ptr<Manipulation> >& findAllManipulations(
+          boost::shared_ptr<const OsmMap> map);
 
-  virtual const vector< shared_ptr<Manipulation> >& findManipulations(
-      shared_ptr<const OsmMap> map, const vector<ElementId>& ids);
+  virtual const vector< boost::shared_ptr<Manipulation> >& findManipulations(
+      boost::shared_ptr<const OsmMap> map, const vector<ElementId>& ids);
 
 private:
-  vector< shared_ptr<Manipulation> > _result;
+  vector< boost::shared_ptr<Manipulation> > _result;
   auto_ptr<RandomForest> _rf;
 };
 

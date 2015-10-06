@@ -47,7 +47,7 @@ AddRef1Visitor::AddRef1Visitor()
 
 void AddRef1Visitor::visit(const ConstElementPtr& e)
 {
-  shared_ptr<Element> ee = _map->getElement(e->getElementId());
+  boost::shared_ptr<Element> ee = _map->getElement(e->getElementId());
 
   if (ee->getTags().getNonDebugCount() > 0)
   {

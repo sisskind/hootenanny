@@ -44,7 +44,7 @@ class OgrUtilities
 public:
   OgrUtilities();
 
-  shared_ptr<OGRDataSource> createDataSource(QString url);
+  boost::shared_ptr<OGRDataSource> createDataSource(QString url);
 
   static OgrUtilities& getInstance() { return _theInstance; }
 
@@ -54,7 +54,7 @@ public:
    */
   bool isReasonableUrl(QString url);
 
-  shared_ptr<OGRDataSource> openDataSource(QString url);
+  boost::shared_ptr<OGRDataSource> openDataSource(QString url);
 
 private:
   static OgrUtilities _theInstance;

@@ -91,7 +91,7 @@ public:
 
     ArffReader ar(input);
 
-    shared_ptr<DataFrame> df = ar.read()->toDataFrame(-1);
+    boost::shared_ptr<DataFrame> df = ar.read()->toDataFrame(-1);
 
     srand(0);
     LOG_DEBUG("Building Random Forest");

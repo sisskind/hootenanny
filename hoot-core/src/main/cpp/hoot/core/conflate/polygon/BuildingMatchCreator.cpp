@@ -64,7 +64,7 @@ public:
    * @param matchStatus If the element's status matches this status then it is checked for a match.
    */
   BuildingMatchVisitor(const ConstOsmMapPtr& map,
-    vector<const Match*>& result, shared_ptr<BuildingRfClassifier> rf,
+    vector<const Match*>& result, boost::shared_ptr<BuildingRfClassifier> rf,
     ConstMatchThresholdPtr threshold, Status matchStatus = Status::Invalid) :
     _map(map),
     _result(result),
@@ -84,7 +84,7 @@ public:
              (double)_neighborCountSum / (double)_elementsEvaluated);
   }
 
-  void checkForMatch(const shared_ptr<const Element>& e)
+  void checkForMatch(const boost::shared_ptr<const Element>& e)
   {
     auto_ptr<Envelope> env(e->getEnvelope(_map));
     env->expandBy(e->getCircularError());
@@ -100,7 +100,7 @@ public:
     {
       if (from != *it)
       {
-        const shared_ptr<const Element>& n = _map->getElement(*it);
+        const boost::shared_ptr<const Element>& n = _map->getElement(*it);
         if (isRelated(n, e))
         {
           // score each candidate and push it on the result vector
@@ -160,7 +160,7 @@ private:
   const ConstOsmMapPtr& _map;
   vector<const Match*>& _result;
   set<ElementId> _empty;
-  shared_ptr<BuildingRfClassifier> _rf;
+  boost::shared_ptr<BuildingRfClassifier> _rf;
   ConstMatchThresholdPtr _mt;
   Status _matchStatus;
   int _neighborCountMax;
@@ -227,7 +227,7 @@ bool BuildingMatchCreator::isMatchCandidate(ConstElementPtr element, const Const
   return BuildingMatchVisitor::isMatchCandidate(element);
 }
 
-shared_ptr<MatchThreshold> BuildingMatchCreator::getMatchThreshold()
+boost::shared_ptr<MatchThreshold> BuildingMatchCreator::getMatchThreshold()
 {
   if (!_matchThreshold.get())
   {

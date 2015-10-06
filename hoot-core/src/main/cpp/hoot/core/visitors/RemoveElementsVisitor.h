@@ -55,7 +55,7 @@ public:
    */
   RemoveElementsVisitor();
 
-  RemoveElementsVisitor(const shared_ptr<ElementCriterion>& filter);
+  RemoveElementsVisitor(const boost::shared_ptr<ElementCriterion>& filter);
 
   virtual void addCriterion(const ElementCriterionPtr& e)
   {
@@ -76,7 +76,7 @@ public:
 private:
 
   OsmMap* _map;
-  shared_ptr<ElementCriterion> _filter;
+  boost::shared_ptr<ElementCriterion> _filter;
   bool _recursive;
 };
 

@@ -60,7 +60,7 @@ public:
     map->addNode(n1);
 
     {
-      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 1 miss: 0 review: 0", uut.getClassification());
     }
 
@@ -68,7 +68,7 @@ public:
     n1->getTags().set("name", "foo");
 
     {
-      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 1 miss: 0 review: 0", uut.getClassification());
     }
   }
@@ -90,14 +90,14 @@ public:
     n1->getTags().set("poi", true);
 
     {
-      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 0 miss: 1 review: 0", uut.getClassification());
     }
 
     n1->getTags().set("name", "foo");
     n1->setX(-8);
     {
-      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 0 miss: 1 review: 0", uut.getClassification());
     }
   }
@@ -119,21 +119,21 @@ public:
     n1->getTags().set("poi", true);
 
     {
-      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, w1->getElementId(), n1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 0 miss: 0 review: 1", uut.getClassification());
     }
 
     n1->getTags().set("name", "foo");
     n1->setX(-5);
     {
-      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 0 miss: 0 review: 1", uut.getClassification());
     }
 
     n1->getTags().set("name", "foo");
     n1->setX(-7);
     {
-      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), shared_ptr<MatchThreshold>());
+      PoiPolygonMatch uut(map, n1->getElementId(), w1->getElementId(), boost::shared_ptr<MatchThreshold>());
       HOOT_STR_EQUALS("match: 0 miss: 0 review: 1", uut.getClassification());
     }
   }

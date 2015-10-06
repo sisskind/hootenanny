@@ -60,7 +60,7 @@ ServicesDbWriter::~ServicesDbWriter()
   close();
 }
 
-void ServicesDbWriter::_addElementTags(const shared_ptr<const Element> &e, Tags& t)
+void ServicesDbWriter::_addElementTags(const boost::shared_ptr<const Element> &e, Tags& t)
 {
   if (e->getCircularError() >= 0.0)
   {
@@ -327,7 +327,7 @@ void ServicesDbWriter::_startNewChangeSet()
   _sdb.beginChangeset(tags);
 }
 
-void ServicesDbWriter::writePartial(const shared_ptr<const Node>& n)
+void ServicesDbWriter::writePartial(const boost::shared_ptr<const Node>& n)
 {
   bool countChange = true;
 
@@ -375,7 +375,7 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Node>& n)
   }
 }
 
-void ServicesDbWriter::writePartial(const shared_ptr<const Way>& w)
+void ServicesDbWriter::writePartial(const boost::shared_ptr<const Way>& w)
 {
   long wayId;
 
@@ -425,7 +425,7 @@ void ServicesDbWriter::writePartial(const shared_ptr<const Way>& w)
   _waysWritten++;
 }
 
-void ServicesDbWriter::writePartial(const shared_ptr<const Relation>& r)
+void ServicesDbWriter::writePartial(const boost::shared_ptr<const Relation>& r)
 {
   long relationId;
 

@@ -98,7 +98,7 @@ public:
     OsmReader reader;
 
     OsmMap::resetCounters();
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/ToyBuildingsTestA.osm", map);
     reader.setDefaultStatus(Status::Unknown2);
@@ -119,7 +119,7 @@ public:
     BuildingMatchCreator uut;
     vector<const Match*> matches;
 
-    shared_ptr<const MatchThreshold> threshold(new MatchThreshold(0.6, 0.6));
+    boost::shared_ptr<const MatchThreshold> threshold(new MatchThreshold(0.6, 0.6));
     uut.createMatches(map, matches, threshold);
 
     CPPUNIT_ASSERT_EQUAL(3, int(matches.size()));
@@ -133,7 +133,7 @@ public:
     BuildingMatchCreator uut;
 
     OsmReader reader;
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);

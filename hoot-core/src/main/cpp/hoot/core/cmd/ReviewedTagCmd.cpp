@@ -69,7 +69,7 @@ public:
 
     // open up both OSM files.
     OsmReader reader;
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read(args[0], map);
 
@@ -77,7 +77,7 @@ public:
 
     for (WayMap::const_iterator it = ways.begin(); it != ways.end(); it++)
     {
-      const shared_ptr<Way>& w = it->second;
+      const boost::shared_ptr<Way>& w = it->second;
       w->setTag("tiger:reviewed", "no");
       w->removeTag("reviewed");
       w->removeTag("raw:GFID");

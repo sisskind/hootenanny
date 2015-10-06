@@ -72,7 +72,7 @@ public:
   {
   }
 
-  void checkForMatch(const shared_ptr<const Element>& e)
+  void checkForMatch(const boost::shared_ptr<const Element>& e)
   {
     auto_ptr<Envelope> env(e->getEnvelope(_map));
     env->expandBy(e->getCircularError() + ConfigOptions().getPoiPolygonMatchReviewDistance());
@@ -88,7 +88,7 @@ public:
     {
       if (from != *it)
       {
-        const shared_ptr<const Element>& n = _map->getElement(*it);
+        const boost::shared_ptr<const Element>& n = _map->getElement(*it);
 
         if (n->isUnknown() &&
             PoiPolygonMatch::isBuildingIsh(n))
@@ -186,7 +186,7 @@ bool PoiPolygonMatchCreator::isMatchCandidate(ConstElementPtr element, const Con
   return PoiPolygonMatchVisitor::isMatchCandidate(element);
 }
 
-shared_ptr<MatchThreshold> PoiPolygonMatchCreator::getMatchThreshold()
+boost::shared_ptr<MatchThreshold> PoiPolygonMatchCreator::getMatchThreshold()
 {
   if (!_matchThreshold.get())
   {

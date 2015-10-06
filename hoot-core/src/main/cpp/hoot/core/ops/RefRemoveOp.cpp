@@ -46,7 +46,7 @@ public:
 
   const set<QString>& getRefs() const { return _refs; }
 
-  virtual void visit(const shared_ptr<const Element>& e)
+  virtual void visit(const boost::shared_ptr<const Element>& e)
   {
     if (e->getTags().contains("REF1") && _criterion->isSatisfied(e))
     {
@@ -65,7 +65,7 @@ public:
 
   RefRemoveVisitor(ElementCriterionPtr c) : _criterion(c) {}
 
-  virtual void visit(const shared_ptr<Element>& e)
+  virtual void visit(const boost::shared_ptr<Element>& e)
   {
     if (_criterion->isSatisfied(e))
     {
@@ -98,7 +98,7 @@ public:
     return result;
   }
 
-  virtual void visit(const shared_ptr<Element>& e)
+  virtual void visit(const boost::shared_ptr<Element>& e)
   {
     if (e->getTags().contains("REF2"))
     {
@@ -126,7 +126,7 @@ RefRemoveOp::RefRemoveOp()
 {
 }
 
-void RefRemoveOp::apply(shared_ptr<OsmMap>& map)
+void RefRemoveOp::apply(boost::shared_ptr<OsmMap>& map)
 {
   // get all the REF1 IDs that will be removed
   GetRefVisitor grv(_criterion);

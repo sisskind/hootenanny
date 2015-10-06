@@ -71,8 +71,8 @@ Match(threshold)
                                    eid2.toString());
   }
 
-  shared_ptr<Geometry> gpoly = ElementConverter(map).convertToGeometry(poly);
-  shared_ptr<Geometry> gpoi = ElementConverter(map).convertToGeometry(poi);
+  boost::shared_ptr<Geometry> gpoly = ElementConverter(map).convertToGeometry(poly);
+  boost::shared_ptr<Geometry> gpoi = ElementConverter(map).convertToGeometry(poi);
 
   bool typeMatch = _calculateTypeMatch(poi, poly);
   double nameScore = _calculateNameScore(poi, poly);

@@ -46,14 +46,14 @@ public:
   ChainCriterion() {}
   ChainCriterion(ElementCriterion* child1, ElementCriterion* child2)
   {
-    _filters.push_back(shared_ptr<ElementCriterion>(child1));
-    _filters.push_back(shared_ptr<ElementCriterion>(child2));
+    _filters.push_back(boost::shared_ptr<ElementCriterion>(child1));
+    _filters.push_back(boost::shared_ptr<ElementCriterion>(child2));
   }
   ChainCriterion(ElementCriterion* child1, ElementCriterion* child2, ElementCriterion* child3)
   {
-    _filters.push_back(shared_ptr<ElementCriterion>(child1));
-    _filters.push_back(shared_ptr<ElementCriterion>(child2));
-    _filters.push_back(shared_ptr<ElementCriterion>(child3));
+    _filters.push_back(boost::shared_ptr<ElementCriterion>(child1));
+    _filters.push_back(boost::shared_ptr<ElementCriterion>(child2));
+    _filters.push_back(boost::shared_ptr<ElementCriterion>(child3));
   }
 
   virtual void addCriterion(const ElementCriterionPtr& e)
@@ -61,7 +61,7 @@ public:
     _filters.push_back(e);
   }
 
-  virtual bool isSatisfied(const shared_ptr<const Element>& e) const
+  virtual bool isSatisfied(const boost::shared_ptr<const Element>& e) const
   {
     for (size_t i = 0; i < _filters.size(); i++)
     {
@@ -75,7 +75,7 @@ public:
   }
 
 protected:
-  vector< shared_ptr<ElementCriterion> > _filters;
+  vector< boost::shared_ptr<ElementCriterion> > _filters;
 };
 
 }

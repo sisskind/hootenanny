@@ -43,7 +43,7 @@ WaySplitterOp::WaySplitterOp()
   setConfiguration(conf());
 }
 
-void WaySplitterOp::apply(shared_ptr<OsmMap>& map)
+void WaySplitterOp::apply(boost::shared_ptr<OsmMap>& map)
 {
   MapReprojector::reprojectToPlanar(map);
 

@@ -50,42 +50,42 @@ public:
 
   static ProbabilityOfMatch& getInstance() { return _default; }
 
-  double attributeScore(const ConstOsmMapPtr &map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way> &w2);
+  double attributeScore(const ConstOsmMapPtr &map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way> &w2);
 
   map<QString, double> calculateStats(const ConstOsmMapPtr &map,
-    const shared_ptr<const Way>& w1, const shared_ptr<const Way> &w2, double portionScore);
+    const boost::shared_ptr<const Way>& w1, const boost::shared_ptr<const Way> &w2, double portionScore);
 
-  double distanceScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2);
+  double distanceScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2);
 
-  double distanceScore(const hoot::ConstOsmMapPtr &map, const shared_ptr<const Way> &w1,
-    const shared_ptr<const LineString> &ls2, Meters circularError);
+  double distanceScore(const hoot::ConstOsmMapPtr &map, const boost::shared_ptr<const Way> &w1,
+    const boost::shared_ptr<const LineString> &ls2, Meters circularError);
 
   double evaluateSample(const map<QString, double>& sample) { return _model.evaluate(sample); }
 
-  double lengthScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2);
+  double lengthScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2);
 
-  double modelProbability(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2, double portionScore);
+  double modelProbability(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2, double portionScore);
 
-  double parallelScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2);
+  double parallelScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2);
 
-  double portionScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2);
+  double portionScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2);
 
-  double probability(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2, double portionScore);
+  double probability(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2, double portionScore);
 
-  double expertProbability(const ConstOsmMapPtr &map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way> &w2);
+  double expertProbability(const ConstOsmMapPtr &map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way> &w2);
 
   bool useModel() const { return _useModel; }
 
-  double zipperScore(const ConstOsmMapPtr &map, const shared_ptr<const Way>& w1,
-    const shared_ptr<const Way>& w2);
+  double zipperScore(const ConstOsmMapPtr &map, const boost::shared_ptr<const Way>& w1,
+    const boost::shared_ptr<const Way>& w2);
 
   static bool debug;
 

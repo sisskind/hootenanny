@@ -41,7 +41,7 @@ using namespace std;
 using namespace Tgs;
 
 
-HilbertRTree::HilbertRTree(shared_ptr<PageStore> ps, int dimensions) :
+HilbertRTree::HilbertRTree(boost::shared_ptr<PageStore> ps, int dimensions) :
   RStarTree(ps, dimensions)
 {
   _hilbertCurve = new HilbertCurve(dimensions, 8);

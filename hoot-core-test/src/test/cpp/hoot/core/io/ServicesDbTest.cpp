@@ -163,7 +163,7 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
 
     return;
 
@@ -194,7 +194,7 @@ public:
     HOOT_STR_EQUALS(false, database._hasTable("current_ways" + database._getMapIdString(mapId)));
   }
 
-  const shared_ptr<QList<long> > insertTestMap1(ServicesDb& database)
+  const boost::shared_ptr<QList<long> > insertTestMap1(ServicesDb& database)
   {
     database.transaction();
 
@@ -234,10 +234,10 @@ public:
 
     database.commit();
 
-    return shared_ptr<QList<long> >(new QList<long>(ids));
+    return boost::shared_ptr<QList<long> >(new QList<long>(ids));
   }
 
-  const shared_ptr<QList<long> > insertTestMap2(ServicesDb& database)
+  const boost::shared_ptr<QList<long> > insertTestMap2(ServicesDb& database)
   {
     database.transaction();
 
@@ -290,10 +290,10 @@ public:
 
     database.commit();
 
-    return shared_ptr<QList<long> >(new QList<long>(ids));
+    return boost::shared_ptr<QList<long> >(new QList<long>(ids));
   }
 
-  const shared_ptr<QList<long> > insertTestMapWithCustomTags(ServicesDb& database)
+  const boost::shared_ptr<QList<long> > insertTestMapWithCustomTags(ServicesDb& database)
   {
     QList<long> ids;
     database.transaction();
@@ -321,7 +321,7 @@ public:
 
     database.commit();
 
-    return shared_ptr<QList<long> >(new QList<long>(ids));
+    return boost::shared_ptr<QList<long> >(new QList<long>(ids));
   }
 
   void runInsertTest()
@@ -336,7 +336,7 @@ public:
   {
     ServicesDb database;
     database.open(getDbUrl());
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
 
     mapId = ids->at(0);
     CPPUNIT_ASSERT(database.mapExists(mapId));
@@ -346,7 +346,7 @@ public:
   {
     ServicesDb database;
     database.open(getDbUrl());
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
 
     const long changesetId = ids->at(1);
     CPPUNIT_ASSERT(database.changesetExists(changesetId));
@@ -357,7 +357,7 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
 
     mapId = ids->at(0);
     CPPUNIT_ASSERT_EQUAL((long)1, database.numElements(ElementType::Node));
@@ -368,7 +368,7 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
     CPPUNIT_ASSERT_EQUAL(5, ids->size());
     mapId = ids->at(0);
     const long wayId = ids->at(3);
@@ -381,7 +381,7 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
     CPPUNIT_ASSERT_EQUAL(5, ids->size());
     mapId = ids->at(0);
     const long relationId = ids->at(4);
@@ -396,16 +396,16 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
     CPPUNIT_ASSERT_EQUAL(5, ids->size());
     mapId = ids->at(0);
     const long nodeId = ids->at(2);
     const long wayId = ids->at(3);
     const long relationId = ids->at(4);
 
-    shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
+    boost::shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
     int ctr = 0;
     while (nodeResultIterator->next())
     {
@@ -423,7 +423,7 @@ public:
     }
     CPPUNIT_ASSERT_EQUAL(1, ctr);
 
-    shared_ptr<QSqlQuery> wayResultIterator = database.selectAllElements(ElementType::Way);
+    boost::shared_ptr<QSqlQuery> wayResultIterator = database.selectAllElements(ElementType::Way);
     ctr = 0;
     while (wayResultIterator->next())
     {
@@ -437,7 +437,7 @@ public:
     }
     CPPUNIT_ASSERT_EQUAL(1, ctr);
 
-    shared_ptr<QSqlQuery> relationResultIterator =
+    boost::shared_ptr<QSqlQuery> relationResultIterator =
       database.selectAllElements(ElementType::Relation);
     ctr = 0;
     while (relationResultIterator->next())
@@ -519,7 +519,7 @@ public:
     //   doesn't have to change, so it works for both ServicesDb and ApiDb without change.
     /////////////////////////////////////
 
-    shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
+    boost::shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
 
     // check if db active or not
     assert(nodeResultIterator.isActive());
@@ -591,7 +591,7 @@ public:
     /// Reads the ways from the Osm Api DB
     ///////////////////////////////////////////////
 
-    shared_ptr<QSqlQuery> wayResultIterator = database.selectAllElements(ElementType::Way);
+    boost::shared_ptr<QSqlQuery> wayResultIterator = database.selectAllElements(ElementType::Way);
 
     // check again if db active or not
     assert(wayResultIterator.isActive());
@@ -667,7 +667,7 @@ public:
     /// Reads the relations from the Osm Api DB
     ///////////////////////////////////////////////
 
-    shared_ptr<QSqlQuery> relationResultIterator =
+    boost::shared_ptr<QSqlQuery> relationResultIterator =
       database.selectAllElements(ElementType::Relation);
 
     // check again if db active or not
@@ -724,15 +724,15 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
-    const shared_ptr<QList<long> > ids = insertTestMap2(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap2(database);
     CPPUNIT_ASSERT_EQUAL(8, ids->size());
     mapId = ids->at(0);
     const long nodeId1 = ids->at(2);
     const long nodeId2 = ids->at(3);
 
-    shared_ptr<QSqlQuery> nodeResultIterator =
+    boost::shared_ptr<QSqlQuery> nodeResultIterator =
       database.selectElements(-1, ElementType::Node, 2, 1);
     int ctr = 0;
     while (nodeResultIterator->next())
@@ -772,16 +772,16 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
-    const shared_ptr<QList<long> > ids = insertTestMapWithCustomTags(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMapWithCustomTags(database);
     CPPUNIT_ASSERT_EQUAL(4, ids->size());
     mapId = ids->at(0);
     const long nodeId1 = ids->at(1);
     const long nodeId2 = ids->at(2);
     const long nodeId3 = ids->at(3);
 
-    shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
+    boost::shared_ptr<QSqlQuery> nodeResultIterator = database.selectAllElements(ElementType::Node);
     int ctr = 0;
     while (nodeResultIterator->next())
     {
@@ -834,7 +834,7 @@ public:
     ServicesDb database;
     database.open(getDbUrl());
 
-    const shared_ptr<QList<long> > ids = insertTestMap1(database);
+    const boost::shared_ptr<QList<long> > ids = insertTestMap1(database);
     CPPUNIT_ASSERT_EQUAL(5, ids->size());
     mapId = ids->at(0);
     const long nodeId = ids->at(2);

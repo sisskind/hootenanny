@@ -87,7 +87,7 @@ public:
     OsmMap::resetCounters();
     PbfReader uut(false);
     fstream input("test-files/io/SmallSplits.pbf", ios::in | ios::binary);
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     vector<PbfReader::BlobLocation> v = uut.loadOsmDataBlobOffsets(input);
 
@@ -163,7 +163,7 @@ public:
     memcpy((char*)s.data(), data, dataSize);
     stringstream ss(s, stringstream::in);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     PbfReader reader(true);
     reader.setUseFileStatus(true);
@@ -197,7 +197,7 @@ public:
     memcpy((char*)s.data(), data, dataSize);
     stringstream ss(s, stringstream::in);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     PbfReader reader(true);
     reader.setPermissive(true);
@@ -230,7 +230,7 @@ public:
     memcpy((char*)s.data(), data, dataSize);
     stringstream ss(s, stringstream::in);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     PbfReader reader(true);
     reader.setPermissive(true);
@@ -264,7 +264,7 @@ public:
     memcpy((char*)s.data(), data, dataSize);
     stringstream ss(s, stringstream::in);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     PbfReader reader(true);
     reader.setPermissive(true);
@@ -288,7 +288,7 @@ public:
 
     PbfReader uut(false);
     fstream input("test-files/ToyTestA.osm.pbf", ios::in | ios::binary);
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     uut.parse(&input, map);
 
     QDir().mkpath("test-output/io/");
@@ -307,7 +307,7 @@ public:
 
     PbfReader uut(false);
     fstream input("test-files/io/PbfRelationTest.osm.pbf", ios::in | ios::binary);
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     uut.parse(&input, map);
 
     HOOT_STR_EQUALS("{\"version\": 0.6,\"generator\": \"Hootenanny\",\"elements\": [\n"
@@ -396,7 +396,7 @@ public:
     OsmMap::resetCounters();
 
     PbfReader reader(false);
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.open("test-files/ToyTestA.osm.pbf");
     reader.read(map);
     reader.close();
@@ -414,7 +414,7 @@ public:
   {
     OsmMap::resetCounters();
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMapReaderFactory::read(map, "test-files/ToyTestA.osm.pbf", false, Status::Unknown1);
 
     QDir().mkpath("test-output/io/");
@@ -449,7 +449,7 @@ public:
     int ctr = 0;
     while (reader.hasMoreElements())
     {
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       reader.readPartial(map);
       CPPUNIT_ASSERT_EQUAL(
         chunkSize,
@@ -493,7 +493,7 @@ public:
     int ctr = 0;
     while (reader.hasMoreElements())
     {
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       reader.readPartial(map);
 
       //some of these before the last one don't read out the full buffer size..not sure why

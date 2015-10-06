@@ -46,7 +46,7 @@ void KeepBuildingsVisitor::visit(const ConstElementPtr& e)
 
   if (type != ElementType::Node)
   {
-    shared_ptr<Element> ee = _map->getElement(type, id);
+    boost::shared_ptr<Element> ee = _map->getElement(type, id);
 
     if (OsmSchema::getInstance().isBuilding(ee->getTags(), type) == false)
     {

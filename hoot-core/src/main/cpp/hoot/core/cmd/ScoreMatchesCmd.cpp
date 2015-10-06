@@ -56,7 +56,7 @@ public:
 
   ScoreMatchesCmd() { }
 
-  QString evaluateThreshold(vector<OsmMapPtr> maps, QString output, shared_ptr<MatchThreshold> mt,
+  QString evaluateThreshold(vector<OsmMapPtr> maps, QString output, boost::shared_ptr<MatchThreshold> mt,
     bool showConfusion, double& score)
   {
     MatchComparator comparator;
@@ -127,7 +127,7 @@ public:
     virtual double f(Tgs::Vector v)
     {
       double score;
-      shared_ptr<MatchThreshold> mt(new MatchThreshold(v[0], v[1], v[2]));
+      boost::shared_ptr<MatchThreshold> mt(new MatchThreshold(v[0], v[1], v[2]));
       _cmd->evaluateThreshold(_maps, "", mt, _showConfusion, score);
       return score;
     }
@@ -196,7 +196,7 @@ public:
 
     for (int i = 0; i < args.size() - 1; i+=2)
     {
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       loadMap(map, args[i], false, Status::Unknown1);
       loadMap(map, args[i + 1], false, Status::Unknown2);
 
@@ -207,7 +207,7 @@ public:
           "and the second input file contains REF2 tags (no REF1 tags).");
       }
 
-      shared_ptr<OsmMap> mapCopy(map);
+      boost::shared_ptr<OsmMap> mapCopy(map);
       MapReprojector::reprojectToWgs84(mapCopy);
       OsmUtils::saveMap(mapCopy, "/tmp/score-matches-before-prep.osm");
 
@@ -216,7 +216,7 @@ public:
     }
 
     LOG_VARD(maps.size());
-    shared_ptr<OsmMap> mapCopy(maps[0]);
+    boost::shared_ptr<OsmMap> mapCopy(maps[0]);
     MapReprojector::reprojectToWgs84(mapCopy);
     OsmUtils::saveMap(mapCopy, "/tmp/score-matches-after-prep.osm");
 
@@ -227,7 +227,7 @@ public:
     else
     {
       double score;
-      shared_ptr<MatchThreshold> mt;
+      boost::shared_ptr<MatchThreshold> mt;
       QString result = evaluateThreshold(maps, output, mt, showConfusion, score);
 
       cout << result;

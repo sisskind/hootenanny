@@ -54,18 +54,18 @@ class ParentFirstVisitorOp : public OsmMapOperation
 public:
   static string className() { return "hoot::ParentFirstVisitorOp"; }
 
-  ParentFirstVisitorOp(shared_ptr<ElementVisitor> v);
+  ParentFirstVisitorOp(boost::shared_ptr<ElementVisitor> v);
 
-  virtual void apply(shared_ptr<OsmMap> &map);
+  virtual void apply(boost::shared_ptr<OsmMap> &map);
 
 private:
-  shared_ptr<OsmMap> _map;
-  shared_ptr<ElementVisitor> _visitor;
+  boost::shared_ptr<OsmMap> _map;
+  boost::shared_ptr<ElementVisitor> _visitor;
   set<ElementId> _visited;
 
   void _clearCache();
 
-  void _visit(shared_ptr<Element> e);
+  void _visit(boost::shared_ptr<Element> e);
 };
 
 }

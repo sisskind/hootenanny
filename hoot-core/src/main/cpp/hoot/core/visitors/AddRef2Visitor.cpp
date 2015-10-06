@@ -40,7 +40,7 @@ HOOT_FACTORY_REGISTER(ElementVisitor, AddRef2Visitor)
 
 void AddRef2Visitor::visit(const ConstElementPtr& e)
 {
-  shared_ptr<Element> ee = _map->getElement(e->getElementId());
+  boost::shared_ptr<Element> ee = _map->getElement(e->getElementId());
 
   if (ee->getTags().getNonDebugCount() > 0)
   {

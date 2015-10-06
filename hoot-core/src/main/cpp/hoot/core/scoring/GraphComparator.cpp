@@ -64,30 +64,30 @@ using namespace Tgs;
 namespace hoot
 {
 
-GraphComparator::GraphComparator(shared_ptr<OsmMap> map1, shared_ptr<OsmMap> map2) :
+GraphComparator::GraphComparator(boost::shared_ptr<OsmMap> map1, boost::shared_ptr<OsmMap> map2) :
       BaseComparator(map1, map2)
 {
   _iterations = 100;
   _init();
 }
 
-cv::Mat GraphComparator::_calculateCostDistance(shared_ptr<OsmMap> map, Coordinate c)
+cv::Mat GraphComparator::_calculateCostDistance(boost::shared_ptr<OsmMap> map, Coordinate c)
 {
   // make a copy of the map so we can manipulate it.
   map.reset(new OsmMap(map));
 
   // find the nearest feature
   long wId = map->getIndex().findNearestWay(c);
-  shared_ptr<Way> w = map->getWay(wId);
+  boost::shared_ptr<Way> w = map->getWay(wId);
 
   // split way at c
   WayLocation wl = LocationOfPoint::locate(map, w, c);
-  vector< shared_ptr<Way> > v = WaySplitter::split(map, w, wl);
+  vector< boost::shared_ptr<Way> > v = WaySplitter::split(map, w, wl);
   wl = LocationOfPoint::locate(map, v[0], c);
   assert(wl.isNode() == true);
 
   // populate graph
-  shared_ptr<DirectedGraph> graph(new DirectedGraph());
+  boost::shared_ptr<DirectedGraph> graph(new DirectedGraph());
   graph->deriveEdges(map);
 
   ShortestPath sp(graph);
@@ -161,7 +161,7 @@ double GraphComparator::compareMaps()
     _r.y = Random::generateUniform() * (_projectedBounds.MaxY - _projectedBounds.MinY) +
           _projectedBounds.MinY;
 
-    shared_ptr<OsmMap> referenceMap;
+    boost::shared_ptr<OsmMap> referenceMap;
     // pick one map as the reference map
     if (Random::coinToss())
     {
@@ -246,7 +246,7 @@ double GraphComparator::compareMaps()
   return _mean;
 }
 
-void GraphComparator::drawCostDistance(shared_ptr<OsmMap> map, vector<Coordinate>& c,
+void GraphComparator::drawCostDistance(boost::shared_ptr<OsmMap> map, vector<Coordinate>& c,
                                        QString output)
 {
   _updateBounds();
@@ -260,17 +260,17 @@ void GraphComparator::drawCostDistance(shared_ptr<OsmMap> map, vector<Coordinate
     cout << c[i].x << " " << c[i].y << endl;
     // find the nearest feature
     long wId = map->getIndex().findNearestWay(c[i]);
-    shared_ptr<Way> w = map->getWay(wId);
+    boost::shared_ptr<Way> w = map->getWay(wId);
 
     // split way at c
     WayLocation wl = LocationOfPoint::locate(map, w, c[i]);
-    vector< shared_ptr<Way> > v = WaySplitter::split(map, w, wl);
+    vector< boost::shared_ptr<Way> > v = WaySplitter::split(map, w, wl);
     wl = LocationOfPoint::locate(map, v[0], c[i]);
     assert(wl.isNode() == true);
   }
 
   // populate graph
-  shared_ptr<DirectedGraph> graph(new DirectedGraph());
+  boost::shared_ptr<DirectedGraph> graph(new DirectedGraph());
   graph->deriveEdges(map);
 
   LOG_WARN("Running cost");
@@ -279,7 +279,7 @@ void GraphComparator::drawCostDistance(shared_ptr<OsmMap> map, vector<Coordinate
   for (size_t i = 0; i < c.size(); i++)
   {
     long wId = map->getIndex().findNearestWay(c[i]);
-    shared_ptr<Way> w = map->getWay(wId);
+    boost::shared_ptr<Way> w = map->getWay(wId);
 
     WayLocation wl = LocationOfPoint::locate(map, w, c[i]);
 
@@ -297,7 +297,7 @@ void GraphComparator::drawCostDistance(shared_ptr<OsmMap> map, vector<Coordinate
   _saveImage(mat, output, -1.0, false);
   _saveImage(mat, output.replace(".png", "2.png"), -1.0, true);
 
-  shared_ptr<OGRSpatialReference> srs(new OGRSpatialReference());
+  boost::shared_ptr<OGRSpatialReference> srs(new OGRSpatialReference());
   srs->importFromEPSG(900913);
 
   Coordinate c1 = MapReprojector::reproject(Coordinate(_projectedBounds.MinX, _projectedBounds.MinY), map->getProjection(), srs);
@@ -322,7 +322,7 @@ void GraphComparator::drawCostDistance(shared_ptr<OsmMap> map, vector<Coordinate
   //_exportGraphImage(map, *graph, sp, output);
 }
 
-void GraphComparator::_exportGraphImage(shared_ptr<OsmMap> map, DirectedGraph& /*graph*/,
+void GraphComparator::_exportGraphImage(boost::shared_ptr<OsmMap> map, DirectedGraph& /*graph*/,
                                         ShortestPath& sp, QString path)
 {
   const OsmMap::NodeMap& nodes = map->getNodeMap();
@@ -390,7 +390,7 @@ void GraphComparator::_init()
   _debugImages = false;
 }
 
-cv::Mat GraphComparator::_paintGraph(shared_ptr<OsmMap> map, DirectedGraph& graph, ShortestPath& sp)
+cv::Mat GraphComparator::_paintGraph(boost::shared_ptr<OsmMap> map, DirectedGraph& graph, ShortestPath& sp)
 {
   const WayMap& ways = map->getWays();
 
@@ -407,7 +407,7 @@ cv::Mat GraphComparator::_paintGraph(shared_ptr<OsmMap> map, DirectedGraph& grap
 
   for (WayMap::const_iterator it = ways.begin(); it != ways.end(); ++it)
   {
-    shared_ptr<Way> w = it->second;
+    boost::shared_ptr<Way> w = it->second;
     double cost = sp.getNodeCost(w->getNodeIds()[0]);
     if (cost >= 0)
     {
@@ -425,7 +425,7 @@ cv::Mat GraphComparator::_paintGraph(shared_ptr<OsmMap> map, DirectedGraph& grap
   return mat;
 }
 
-void GraphComparator::_paintWay(cv::Mat& mat, ConstOsmMapPtr map, shared_ptr<Way> way, double friction,
+void GraphComparator::_paintWay(cv::Mat& mat, ConstOsmMapPtr map, boost::shared_ptr<Way> way, double friction,
                                 double startCost, double endCost)
 {
   LocationOfPoint lop(map, way);

@@ -63,24 +63,24 @@ public:
    * Given a bounding box in WGS84, create a reasonable planar projection for that region. The
    * units are in meters.
    */
-  static shared_ptr<OGRSpatialReference> createAeacProjection(const OGREnvelope& env);
+  static boost::shared_ptr<OGRSpatialReference> createAeacProjection(const OGREnvelope& env);
 
-  static shared_ptr<OGRSpatialReference> createOrthographic(const OGREnvelope& env);
+  static boost::shared_ptr<OGRSpatialReference> createOrthographic(const OGREnvelope& env);
 
   /**
    * Given a bounding box in WGS84, create a reasonable planar projection for that region. The
    * units are in meters.
    */
-  static shared_ptr<OGRSpatialReference> createSinusoidalProjection(const OGREnvelope& env);
+  static boost::shared_ptr<OGRSpatialReference> createSinusoidalProjection(const OGREnvelope& env);
 
-  static shared_ptr<OGRSpatialReference> createWgs84Projection();
+  static boost::shared_ptr<OGRSpatialReference> createWgs84Projection();
 
-  static void reproject(shared_ptr<OsmMap> map, shared_ptr<OGRSpatialReference> ref);
+  static void reproject(boost::shared_ptr<OsmMap> map, boost::shared_ptr<OGRSpatialReference> ref);
 
   /**
    * Returns a vector of all candidate planar projections for a given envelope.
    */
-  vector< shared_ptr<OGRSpatialReference> > createAllPlanarProjections(const OGREnvelope& env);
+  vector< boost::shared_ptr<OGRSpatialReference> > createAllPlanarProjections(const OGREnvelope& env);
 
   /**
    * Using a predefined set of projections this method evaluates each one of them for both distance
@@ -91,66 +91,66 @@ public:
    *
    * Best is an internal heuristic that is subject to change.
    */
-  shared_ptr<OGRSpatialReference> createPlanarProjection(const OGREnvelope& env,
+  boost::shared_ptr<OGRSpatialReference> createPlanarProjection(const OGREnvelope& env,
     Radians maxAngleError = toRadians(2.0), Meters maxDistanceError = 10.0,
     Meters testDistance = 1000.0, bool warnOnFail = true);
 
   static MapReprojector& getInstance() { return _theInstance; }
 
-  //static bool isGeographic(const shared_ptr<const OsmMap>& map);
+  //static bool isGeographic(const boost::shared_ptr<const OsmMap>& map);
   static bool isGeographic(const ConstElementProviderPtr& provider );
 
   /**
    * Returns true if the projection is planar. This method simply assumes that if the projection
    * is not geographic it is planar.
    */
-  //static bool isPlanar(const shared_ptr<const OsmMap>& map) { return !isGeographic(map); }
+  //static bool isPlanar(const boost::shared_ptr<const OsmMap>& map) { return !isGeographic(map); }
   static bool isPlanar(const ConstElementProviderPtr& provider ) { return !isGeographic(provider); }
 
   /**
    * Reprojects the specified geometry from srs1 to srs2. The coordinates of g will change, but
    * nothing else will be modified.
    */
-  static void reproject(const shared_ptr<Geometry>& g, const shared_ptr<OGRSpatialReference>& srs1,
-    const shared_ptr<OGRSpatialReference>& srs2);
+  static void reproject(const boost::shared_ptr<Geometry>& g, const boost::shared_ptr<OGRSpatialReference>& srs1,
+    const boost::shared_ptr<OGRSpatialReference>& srs2);
 
-  static void reprojectToAeac(shared_ptr<OsmMap> map);
+  static void reprojectToAeac(boost::shared_ptr<OsmMap> map);
 
   /**
    * Picks the center of the orthographic projection as the center of the map bounds. Should be
    * a reasonable projection for small areas. Units are in meters.
    */
-  static void reprojectToOrthographic(shared_ptr<OsmMap> map);
+  static void reprojectToOrthographic(boost::shared_ptr<OsmMap> map);
 
-  static void reprojectToOrthographic(shared_ptr<OsmMap> map, const OGREnvelope& env);
+  static void reprojectToOrthographic(boost::shared_ptr<OsmMap> map, const OGREnvelope& env);
 
   /**
    * Uses createPlanarProjection to create a planar projection and then reprojects the given map.
    * Uses the envelope of the map to determine the projection.
    */
-  static void reprojectToPlanar(shared_ptr<OsmMap> map);
+  static void reprojectToPlanar(boost::shared_ptr<OsmMap> map);
 
   /**
    * Uses createPlanarProjection to create a planar projection and then reprojects the given map.
    * Uses the provided envelope to determine the projection.
    */
-  static void reprojectToPlanar(shared_ptr<OsmMap> map, const OGREnvelope& env);
+  static void reprojectToPlanar(boost::shared_ptr<OsmMap> map, const OGREnvelope& env);
 
-  static void reprojectToWgs84(shared_ptr<OsmMap> map);
+  static void reprojectToWgs84(boost::shared_ptr<OsmMap> map);
 
   /**
    * Very slow convenience function.
    */
   static Coordinate reprojectFromWgs84(const Coordinate& c,
-                                       shared_ptr<OGRSpatialReference> srs);
+                                       boost::shared_ptr<OGRSpatialReference> srs);
 
   /**
    * Very slow convenience function.
    */
-  static Coordinate reproject(const Coordinate& c, shared_ptr<OGRSpatialReference> srs1,
-                              shared_ptr<OGRSpatialReference> srs2);
+  static Coordinate reproject(const Coordinate& c, boost::shared_ptr<OGRSpatialReference> srs1,
+                              boost::shared_ptr<OGRSpatialReference> srs2);
 
-  static QString toWkt(shared_ptr<OGRSpatialReference> srs) { return toWkt(srs.get()); }
+  static QString toWkt(boost::shared_ptr<OGRSpatialReference> srs) { return toWkt(srs.get()); }
   static QString toWkt(OGRSpatialReference* srs);
 private:
   struct PlanarTestResult {
@@ -170,7 +170,7 @@ private:
 
   static bool _distanceLessThan(const PlanarTestResult& p1, const PlanarTestResult& p2);
 
-  bool _evaluateProjection(const OGREnvelope& env, shared_ptr<OGRSpatialReference> srs,
+  bool _evaluateProjection(const OGREnvelope& env, boost::shared_ptr<OGRSpatialReference> srs,
     Meters testDistance, Meters& maxDistanceError, Radians& maxAngleError);
 
   size_t _findBestResult(vector<PlanarTestResult>& results);

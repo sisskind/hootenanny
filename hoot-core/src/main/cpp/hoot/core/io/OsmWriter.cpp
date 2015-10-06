@@ -180,7 +180,7 @@ void OsmWriter::write(boost::shared_ptr<const OsmMap> map)
   _fp->close();
 }
 
-void OsmWriter::_writeNodes(shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
+void OsmWriter::_writeNodes(boost::shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
 {
   const OsmMap::NodeMap& nodes = map->getNodeMap();
   QList<long> nids = nodes.keys();
@@ -241,7 +241,7 @@ void OsmWriter::_writeNodes(shared_ptr<const OsmMap> map, QXmlStreamWriter& writ
   }
 }
 
-void OsmWriter::_writeWays(shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
+void OsmWriter::_writeWays(boost::shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
 {
   WayMap::const_iterator it = map->getWays().begin();
   while (it != map->getWays().end())
@@ -263,7 +263,7 @@ void OsmWriter::_writeWays(shared_ptr<const OsmMap> map, QXmlStreamWriter& write
       writer.writeAttribute("ref", QString::number(w->getNodeId(j)));
       if (_includePointInWays)
       {
-        shared_ptr<const Node> n = map->getNode(nid);
+        boost::shared_ptr<const Node> n = map->getNode(nid);
         writer.writeAttribute("x", QString::number(n->getX(), 'g', _precision));
         writer.writeAttribute("y", QString::number(n->getY(), 'g', _precision));
       }
@@ -312,12 +312,12 @@ void OsmWriter::_writeWays(shared_ptr<const OsmMap> map, QXmlStreamWriter& write
   }
 }
 
-void OsmWriter::_writeRelations(shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
+void OsmWriter::_writeRelations(boost::shared_ptr<const OsmMap> map, QXmlStreamWriter& writer)
 {
   RelationMap::const_iterator it = map->getRelationMap().begin();
   while (it != map->getRelationMap().end())
   {
-    const shared_ptr<Relation>& r = it->second;
+    const boost::shared_ptr<Relation>& r = it->second;
     writer.writeStartElement("relation");
     writer.writeAttribute("visible", "true");
     writer.writeAttribute("id", QString::number(r->getId()));

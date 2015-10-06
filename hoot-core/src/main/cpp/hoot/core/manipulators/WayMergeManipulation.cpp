@@ -56,7 +56,7 @@ namespace hoot
 
 double epsilon = 1;
 
-WayMergeManipulation::WayMergeManipulation(long leftId, long rightId, shared_ptr<const OsmMap> map,
+WayMergeManipulation::WayMergeManipulation(long leftId, long rightId, boost::shared_ptr<const OsmMap> map,
   Meters minSplitSize)
 {
   _left = leftId;
@@ -77,10 +77,10 @@ void WayMergeManipulation::addBogusReviewTags(const OsmMapPtr& map) const
   ReviewMarker().mark(left, right, note, getBogusReviewScore());
 }
 
-void WayMergeManipulation::applyManipulation(shared_ptr<OsmMap> map,
+void WayMergeManipulation::applyManipulation(boost::shared_ptr<OsmMap> map,
   set<ElementId> &impactedElements, set<ElementId> &newElements) const
 {
-  shared_ptr<OsmMap> result = map;
+  boost::shared_ptr<OsmMap> result = map;
 
   // insert the impacted ways
   impactedElements = getImpactedElementIds(map);
@@ -90,8 +90,8 @@ void WayMergeManipulation::applyManipulation(shared_ptr<OsmMap> map,
   // remove any ways that spanned the left & right
   _removeSpans(result, impactedElements);
 
-  shared_ptr<Way> left = result->getWay(_left);
-  shared_ptr<Way> right = result->getWay(_right);
+  boost::shared_ptr<Way> left = result->getWay(_left);
+  boost::shared_ptr<Way> right = result->getWay(_right);
 
   Meters minSplitSize = _minSplitSize;
   minSplitSize = min(minSplitSize, ElementConverter(map).convertToLineString(left)->getLength() * .7);
@@ -101,17 +101,17 @@ void WayMergeManipulation::applyManipulation(shared_ptr<OsmMap> map,
   MaximalNearestSubline mns1(map, left, right, minSplitSize,
     left->getCircularError() + right->getCircularError());
   int mnsLeftIndex;
-  vector< shared_ptr<Way> > splitsLeft = mns1.splitWay(result, mnsLeftIndex);
+  vector< boost::shared_ptr<Way> > splitsLeft = mns1.splitWay(result, mnsLeftIndex);
   assert(splitsLeft.size() != 0);
-  shared_ptr<Way> mnsLeft = splitsLeft[mnsLeftIndex];
+  boost::shared_ptr<Way> mnsLeft = splitsLeft[mnsLeftIndex];
 
   // split right into its maximal nearest sublines
   MaximalNearestSubline mns2(map, right, mnsLeft, minSplitSize,
     left->getCircularError() + right->getCircularError());
   int mnsRightIndex;
-  vector< shared_ptr<Way> > splitsRight = mns2.splitWay(result, mnsRightIndex);
+  vector< boost::shared_ptr<Way> > splitsRight = mns2.splitWay(result, mnsRightIndex);
   assert(splitsRight.size() != 0);
-  shared_ptr<Way> mnsRight = splitsRight[mnsRightIndex];
+  boost::shared_ptr<Way> mnsRight = splitsRight[mnsRightIndex];
 
   for (size_t i = 0; i < splitsLeft.size(); i++)
   {
@@ -132,7 +132,7 @@ void WayMergeManipulation::applyManipulation(shared_ptr<OsmMap> map,
   }
 
   // average the two MNSs
-  shared_ptr<Way> w = WayAverager::average(map, mnsRight, mnsLeft);
+  boost::shared_ptr<Way> w = WayAverager::average(map, mnsRight, mnsLeft);
   w->setStatus(Status::Conflated);
   result->addWay(w);
 
@@ -151,7 +151,7 @@ void WayMergeManipulation::applyManipulation(shared_ptr<OsmMap> map,
   }
 }
 
-double WayMergeManipulation::calculateProbability(shared_ptr<const OsmMap> map) const
+double WayMergeManipulation::calculateProbability(boost::shared_ptr<const OsmMap> map) const
 {
   if (ProbabilityOfMatch::getInstance().useModel())
   {
@@ -168,7 +168,7 @@ double WayMergeManipulation::calculateProbability(shared_ptr<const OsmMap> map) 
   }
 }
 
-double WayMergeManipulation::calculateScore(shared_ptr<const OsmMap> map) const
+double WayMergeManipulation::calculateScore(boost::shared_ptr<const OsmMap> map) const
 {
   assert(isValid(map));
 
@@ -177,24 +177,24 @@ double WayMergeManipulation::calculateScore(shared_ptr<const OsmMap> map) const
   return _p;
 }
 
-double WayMergeManipulation::_calculateExpertProbability(shared_ptr<const OsmMap> map) const
+double WayMergeManipulation::_calculateExpertProbability(boost::shared_ptr<const OsmMap> map) const
 {
   vector<long> wids;
   wids.push_back(_left);
   wids.push_back(_right);
-  shared_ptr<OsmMap> theMap = map->copyWays(wids);
+  boost::shared_ptr<OsmMap> theMap = map->copyWays(wids);
 
-  shared_ptr<Way> left = theMap->getWay(_left);
-  shared_ptr<Way> right = theMap->getWay(_right);
+  boost::shared_ptr<Way> left = theMap->getWay(_left);
+  boost::shared_ptr<Way> right = theMap->getWay(_right);
 
   // use the maximal nearest subline code to find the best subline
-  shared_ptr<Way> mnsLeft = MaximalNearestSubline::getMaximalNearestSubline(theMap, left, right,
+  boost::shared_ptr<Way> mnsLeft = MaximalNearestSubline::getMaximalNearestSubline(theMap, left, right,
     _minSplitSize, left->getCircularError() + right->getCircularError());
   if (mnsLeft == 0)
   {
     return 0.0;
   }
-  shared_ptr<Way> mnsRight = MaximalNearestSubline::getMaximalNearestSubline(theMap, right, mnsLeft,
+  boost::shared_ptr<Way> mnsRight = MaximalNearestSubline::getMaximalNearestSubline(theMap, right, mnsLeft,
     _minSplitSize, left->getCircularError() + right->getCircularError());
   if (mnsRight == 0)
   {
@@ -225,9 +225,9 @@ double WayMergeManipulation::_calculateExpertProbability(shared_ptr<const OsmMap
   return p;
 }
 
-bool WayMergeManipulation::_directConnect(const OsmMapPtr& map, shared_ptr<Way> w) const
+bool WayMergeManipulation::_directConnect(const OsmMapPtr& map, boost::shared_ptr<Way> w) const
 {
-  shared_ptr<LineString> ls = ElementConverter(map).convertToLineString(w);
+  boost::shared_ptr<LineString> ls = ElementConverter(map).convertToLineString(w);
 
   CoordinateSequence* cs = GeometryFactory::getDefaultInstance()->getCoordinateSequenceFactory()->
     create(2, 2);
@@ -236,14 +236,14 @@ bool WayMergeManipulation::_directConnect(const OsmMapPtr& map, shared_ptr<Way> 
   cs->setAt(map->getNode(w->getLastNodeId())->toCoordinate(), 1);
 
   // create a straight line and buffer it
-  shared_ptr<LineString> straight(GeometryFactory::getDefaultInstance()->createLineString(cs));
-  shared_ptr<Geometry> g(straight->buffer(w->getCircularError()));
+  boost::shared_ptr<LineString> straight(GeometryFactory::getDefaultInstance()->createLineString(cs));
+  boost::shared_ptr<Geometry> g(straight->buffer(w->getCircularError()));
 
   // is the way in question completely contained in the buffer?
   return g->contains(ls.get());
 }
 
-bool WayMergeManipulation::isValid(shared_ptr<const OsmMap> map) const
+bool WayMergeManipulation::isValid(boost::shared_ptr<const OsmMap> map) const
 {
   bool result = false;
 
@@ -256,7 +256,7 @@ bool WayMergeManipulation::isValid(shared_ptr<const OsmMap> map) const
   return result;
 }
 
-std::map<QString, double> WayMergeManipulation::getFeatures(const shared_ptr<const OsmMap>& m) const
+std::map<QString, double> WayMergeManipulation::getFeatures(const boost::shared_ptr<const OsmMap>& m) const
 {
   std::map<QString, double> result;
 
@@ -268,10 +268,10 @@ std::map<QString, double> WayMergeManipulation::getFeatures(const shared_ptr<con
   {
     wids.push_back(*it);
   }
-  shared_ptr<OsmMap> theMap = m->copyWays(wids);
+  boost::shared_ptr<OsmMap> theMap = m->copyWays(wids);
 
-  shared_ptr<Way> left = theMap->getWay(_left);
-  shared_ptr<Way> right = theMap->getWay(_right);
+  boost::shared_ptr<Way> left = theMap->getWay(_left);
+  boost::shared_ptr<Way> right = theMap->getWay(_right);
 
   // adding epsilon to avoid divide by zero.
   double epsilon = 0.001;
@@ -332,8 +332,8 @@ const set<long>& WayMergeManipulation::getImpactedWayIds(const ConstOsmMapPtr& m
 
   NodeToWayMap& n2w = *map->getIndex().getNodeToWayMap();
 
-  shared_ptr<const Way> left = map->getWay(_left);
-  shared_ptr<const Way> right = map->getWay(_right);
+  boost::shared_ptr<const Way> left = map->getWay(_left);
+  boost::shared_ptr<const Way> right = map->getWay(_right);
 
   const set<long>& s1 = n2w.at(left->getNodeId(0));
   _impactedWays.insert(s1.begin(), s1.end());
@@ -356,17 +356,17 @@ set<ElementId> WayMergeManipulation::getMatchedElements() const
   return result;
 }
 
-void WayMergeManipulation::_removeSpans(shared_ptr<OsmMap> map,
+void WayMergeManipulation::_removeSpans(boost::shared_ptr<OsmMap> map,
   set<ElementId>& impactedElements) const
 {
-  shared_ptr<Way> left = map->getWay(_left);
-  shared_ptr<Way> right = map->getWay(_right);
+  boost::shared_ptr<Way> left = map->getWay(_left);
+  boost::shared_ptr<Way> right = map->getWay(_right);
 
   set<ElementId> impactedWaysTmp = impactedElements;
   for (set<ElementId>::iterator it = impactedWaysTmp.begin(); it != impactedWaysTmp.end(); it++)
   {
     ElementId eid = *it;
-    shared_ptr<Way> w = map->getWay(eid.getId());
+    boost::shared_ptr<Way> w = map->getWay(eid.getId());
     long first = w->getNodeId(0);
     long last = w->getLastNodeId();
     if ((left->hasNode(first) && right->hasNode(last)) ||
@@ -381,10 +381,10 @@ void WayMergeManipulation::_removeSpans(shared_ptr<OsmMap> map,
   }
 }
 
-void WayMergeManipulation::_splitWays(shared_ptr<OsmMap> map, shared_ptr<Way>& left,
-  shared_ptr<Way>& right) const
+void WayMergeManipulation::_splitWays(boost::shared_ptr<OsmMap> map, boost::shared_ptr<Way>& left,
+  boost::shared_ptr<Way>& right) const
 {
-  shared_ptr<OsmMap> result = map;
+  boost::shared_ptr<OsmMap> result = map;
 
   // insert the impacted ways
   set<ElementId> impactedElements = getImpactedElementIds(map);
@@ -405,17 +405,17 @@ void WayMergeManipulation::_splitWays(shared_ptr<OsmMap> map, shared_ptr<Way>& l
   MaximalNearestSubline mns1(result, left, right, minSplitSize,
     left->getCircularError() + right->getCircularError());
   int mnsLeftIndex;
-  vector< shared_ptr<Way> > splitsLeft = mns1.splitWay(result, mnsLeftIndex);
+  vector< boost::shared_ptr<Way> > splitsLeft = mns1.splitWay(result, mnsLeftIndex);
   assert(splitsLeft.size() != 0);
-  shared_ptr<Way> mnsLeft = splitsLeft[mnsLeftIndex];
+  boost::shared_ptr<Way> mnsLeft = splitsLeft[mnsLeftIndex];
 
   // split right into its maximal nearest sublines
   MaximalNearestSubline mns2(result, right, mnsLeft, minSplitSize,
     left->getCircularError() + right->getCircularError());
   int mnsRightIndex;
-  vector< shared_ptr<Way> > splitsRight = mns2.splitWay(result, mnsRightIndex);
+  vector< boost::shared_ptr<Way> > splitsRight = mns2.splitWay(result, mnsRightIndex);
   assert(splitsRight.size() != 0);
-  shared_ptr<Way> mnsRight = splitsRight[mnsRightIndex];
+  boost::shared_ptr<Way> mnsRight = splitsRight[mnsRightIndex];
 
   for (size_t i = 0; i < splitsLeft.size(); i++)
   {

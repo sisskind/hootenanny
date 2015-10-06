@@ -72,7 +72,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/DividedHighway.osm", map);
@@ -83,7 +83,7 @@ public:
     conflator.loadSource(map);
     conflator.conflate();
 
-    shared_ptr<OsmMap> after(new OsmMap(conflator.getBestMap()));
+    boost::shared_ptr<OsmMap> after(new OsmMap(conflator.getBestMap()));
     MapReprojector::reprojectToWgs84(after);
 
     OsmWriter writer;
@@ -97,7 +97,7 @@ public:
 
     OsmMap::resetCounters();
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/DividedHighwayPreSplit.osm", map);
@@ -108,7 +108,7 @@ public:
     conflator.loadSource(map);
     conflator.conflate();
 
-    shared_ptr<OsmMap> after(new OsmMap(conflator.getBestMap()));
+    boost::shared_ptr<OsmMap> after(new OsmMap(conflator.getBestMap()));
     MapReprojector::reprojectToWgs84(after);
 
     OsmWriter writer;
@@ -120,7 +120,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/DividedHighway.osm", map);

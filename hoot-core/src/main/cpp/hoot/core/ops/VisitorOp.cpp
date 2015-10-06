@@ -33,7 +33,7 @@
 namespace hoot
 {
 
-void VisitorOp::apply(shared_ptr<OsmMap>& map)
+void VisitorOp::apply(boost::shared_ptr<OsmMap>& map)
 {
   map->visitRw(*_visitor);
 }

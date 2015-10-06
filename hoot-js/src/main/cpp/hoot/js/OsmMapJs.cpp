@@ -49,7 +49,7 @@ Persistent<Function> OsmMapJs::_constructor;
 
 OsmMapJs::OsmMapJs()
 {
-  _setMap(shared_ptr<OsmMap>(new OsmMap()));
+  _setMap(boost::shared_ptr<OsmMap>(new OsmMap()));
 }
 
 OsmMapJs::OsmMapJs(OsmMapPtr map)
@@ -188,7 +188,7 @@ Handle<Value> OsmMapJs::visit(const Arguments& args)
   }
   else
   {
-    shared_ptr<ElementVisitor> v =
+    boost::shared_ptr<ElementVisitor> v =
         ObjectWrap::Unwrap<ElementVisitorJs>(args[0]->ToObject())->getVisitor();
 
     map->getMap()->visitRw(*v);

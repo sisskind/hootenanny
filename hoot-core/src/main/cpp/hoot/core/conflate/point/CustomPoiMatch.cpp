@@ -56,7 +56,7 @@ void CustomPoiMatch::_calculateClassification(const ConstOsmMapPtr& map)
   _p = _rf->classify(map, _eid1, _eid2);
 }
 
-map<QString, double> CustomPoiMatch::getFeatures(const shared_ptr<const OsmMap>& m) const
+map<QString, double> CustomPoiMatch::getFeatures(const boost::shared_ptr<const OsmMap>& m) const
 {
   return _rf->getFeatures(m, _eid1, _eid2);
 }
@@ -82,7 +82,7 @@ bool CustomPoiMatch::isConflicting(const Match& other, const ConstOsmMapPtr& map
   }
   else
   {
-    shared_ptr<const MatchThreshold> mt(new MatchThreshold());
+    boost::shared_ptr<const MatchThreshold> mt(new MatchThreshold());
 
     // if they don't have any EIDs in common then it isn't a conflict.
     if (_eid1 != cpm->_eid1 && _eid2 != cpm->_eid2 &&

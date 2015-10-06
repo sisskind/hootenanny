@@ -81,7 +81,7 @@ CalculateStatsOp::CalculateStatsOp(ElementCriterionPtr criterion, QString mapNam
 {
 }
 
-void CalculateStatsOp::apply(const shared_ptr<OsmMap>& map)
+void CalculateStatsOp::apply(const boost::shared_ptr<OsmMap>& map)
 {
   QString logMsg = "Calculating map statistics";
   if (!_mapName.isEmpty())
@@ -94,7 +94,7 @@ void CalculateStatsOp::apply(const shared_ptr<OsmMap>& map)
 
   MapReprojector::reprojectToPlanar(map);
 
-  shared_ptr<const OsmMap> constMap = map;
+  boost::shared_ptr<const OsmMap> constMap = map;
 
   _stats.append(SingleStat("Node Count",
     _applyVisitor(constMap, FilteredVisitor(ElementTypeCriterion(ElementType::Node),
@@ -154,7 +154,7 @@ void CalculateStatsOp::apply(const shared_ptr<OsmMap>& map)
     _applyVisitor(constMap, &featureCountVisitor);
     const long featureCount = featureCountVisitor.getCount();
     _stats.append(SingleStat("Total Feature Count", featureCount));
-    vector< shared_ptr<MatchCreator> > matchCreators = MatchFactory::getInstance().getCreators();
+    vector< boost::shared_ptr<MatchCreator> > matchCreators = MatchFactory::getInstance().getCreators();
     const double featuresProcessedDuringConflationCount =
       _applyVisitor(
         constMap,
@@ -240,10 +240,10 @@ void CalculateStatsOp::apply(const shared_ptr<OsmMap>& map)
     //TODO: This isn't very extensible to hardcode the matchup between each match creator and each
     //feature type (e.g. hoot::PlacesPoiMatchCreator matches up with POI type).  Need a more
     //maintainable way to do this if many more feature types get added.
-    for (vector< shared_ptr<MatchCreator> >::const_iterator matchCreatorItr = matchCreators.begin();
+    for (vector< boost::shared_ptr<MatchCreator> >::const_iterator matchCreatorItr = matchCreators.begin();
          matchCreatorItr != matchCreators.end(); ++matchCreatorItr)
     {
-      shared_ptr<MatchCreator> matchCreator = *matchCreatorItr;
+      boost::shared_ptr<MatchCreator> matchCreator = *matchCreatorItr;
       vector<MatchCreator::Description> matchCreatorDescriptions = matchCreator->getAllCreators();
       sort(matchCreatorDescriptions.begin(), matchCreatorDescriptions.end(), _matchDescriptorCompare);
       for (size_t i = 0; i < matchCreatorDescriptions.size(); i++)
@@ -488,7 +488,7 @@ void CalculateStatsOp::apply(const shared_ptr<OsmMap>& map)
     LOG_DEBUG("config script: " + ConfigOptions().getStatsTranslateScript());
     if (ConfigOptions().getStatsTranslateScript() != "")
     {
-      shared_ptr<ScriptTranslator> st(ScriptTranslatorFactory::getInstance().createTranslator(
+      boost::shared_ptr<ScriptTranslator> st(ScriptTranslatorFactory::getInstance().createTranslator(
         ConfigOptions().getStatsTranslateScript()));
       st->setErrorTreatment(StrictOff);
       TranslatedTagCountVisitor tcv(st);
@@ -531,7 +531,7 @@ bool CalculateStatsOp::_matchDescriptorCompare(const MatchCreator::Description& 
 
 //TODO: a little too much duplicated code in these two _applyVisitor's
 
-double CalculateStatsOp::_applyVisitor(shared_ptr<const OsmMap> &map, const FilteredVisitor& v)
+double CalculateStatsOp::_applyVisitor(boost::shared_ptr<const OsmMap> &map, const FilteredVisitor& v)
 {
   // this is a hack to let C++ pass v as a temporary. Bad Jason.
   FilteredVisitor* fv = const_cast<FilteredVisitor*>(&v);
@@ -548,7 +548,7 @@ double CalculateStatsOp::_applyVisitor(shared_ptr<const OsmMap> &map, const Filt
   return ss->getStat();
 }
 
-double CalculateStatsOp::_applyVisitor(shared_ptr<const OsmMap> &map, const FilteredVisitor& v,
+double CalculateStatsOp::_applyVisitor(boost::shared_ptr<const OsmMap> &map, const FilteredVisitor& v,
                                        any& visitorData)
 {
   // this is a hack to let C++ pass v as a temporary. Bad Jason.
@@ -573,7 +573,7 @@ double CalculateStatsOp::_applyVisitor(shared_ptr<const OsmMap> &map, const Filt
   return ss->getStat();
 }
 
-void CalculateStatsOp::_applyVisitor(shared_ptr<const OsmMap>& map, ElementVisitor *v)
+void CalculateStatsOp::_applyVisitor(boost::shared_ptr<const OsmMap>& map, ElementVisitor *v)
 {
   auto_ptr<FilteredVisitor> critFv;
   if (_criterion)

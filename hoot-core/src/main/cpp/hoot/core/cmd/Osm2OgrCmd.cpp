@@ -77,7 +77,7 @@ public:
     writer.setScriptPath(translation);
     writer.open(output);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     loadMap(map, input, true);
 

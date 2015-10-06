@@ -65,7 +65,7 @@ public:
 
   virtual QString getName() const { return "score"; }
 
-  void attributeCompare(shared_ptr<OsmMap> map1, shared_ptr<OsmMap> map2, shared_ptr<OsmMap> outMap,
+  void attributeCompare(boost::shared_ptr<OsmMap> map1, boost::shared_ptr<OsmMap> map2, boost::shared_ptr<OsmMap> outMap,
                         int& mean, int& confidence)
   {
     int iterations = 300;
@@ -102,7 +102,7 @@ public:
     }
   }
 
-  void graphCompare(shared_ptr<OsmMap> map1, shared_ptr<OsmMap> map2, double& mean,
+  void graphCompare(boost::shared_ptr<OsmMap> map1, boost::shared_ptr<OsmMap> map2, double& mean,
                     double& confidence)
   {
     srand(0);
@@ -118,7 +118,7 @@ public:
     mean += thisMean;
   }
 
-  void rasterCompare(shared_ptr<OsmMap> map1, shared_ptr<OsmMap> map2, double& mean)
+  void rasterCompare(boost::shared_ptr<OsmMap> map1, boost::shared_ptr<OsmMap> map2, double& mean)
   {
     RasterComparator raster(map1, map2);
     raster.setPixelSize(5);
@@ -127,13 +127,13 @@ public:
 
   int compareMaps(QString in1, QString in2, QString out)
   {
-    shared_ptr<OsmMap> map1 = loadMap(in1);
-    shared_ptr<OsmMap> map2;
+    boost::shared_ptr<OsmMap> map1 = loadMap(in1);
+    boost::shared_ptr<OsmMap> map2;
     if (in2 != "")
     {
       map2 = loadMap(in2);
     }
-    shared_ptr<OsmMap> outMap = loadMap(out);
+    boost::shared_ptr<OsmMap> outMap = loadMap(out);
 
     int aic, aim;
     attributeCompare(map1, map2, outMap, aim, aic);
@@ -187,9 +187,9 @@ public:
     return 0;
   }
 
-  shared_ptr<OsmMap> loadMap(QString p)
+  boost::shared_ptr<OsmMap> loadMap(QString p)
   {
-    shared_ptr<OsmMap> result(new OsmMap());
+    boost::shared_ptr<OsmMap> result(new OsmMap());
     BaseCommand::loadMap(result, p, false);
 
     SuperfluousWayRemover(result).removeWays();

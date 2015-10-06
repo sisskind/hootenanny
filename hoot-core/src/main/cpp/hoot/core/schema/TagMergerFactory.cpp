@@ -59,8 +59,8 @@ const TagMerger& TagMergerFactory::getDefault()
 
 const TagMerger& TagMergerFactory::getMerger(const QString& name)
 {
-  shared_ptr<const TagMerger> result;
-  QHash<QString, shared_ptr<const TagMerger> >::const_iterator it = _mergers.find(name);
+  boost::shared_ptr<const TagMerger> result;
+  QHash<QString, boost::shared_ptr<const TagMerger> >::const_iterator it = _mergers.find(name);
   if (it == _mergers.end())
   {
     result.reset(Factory::getInstance().constructObject<TagMerger>(name.toStdString()));

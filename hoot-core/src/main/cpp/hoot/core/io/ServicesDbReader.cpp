@@ -54,7 +54,7 @@ ServicesDbReader::~ServicesDbReader()
   close();
 }
 
-void ServicesDbReader::_addTagsToElement(shared_ptr<Element> element)
+void ServicesDbReader::_addTagsToElement(boost::shared_ptr<Element> element)
 {
   bool ok;
   Tags& tags = element->getTags();
@@ -215,7 +215,7 @@ void  ServicesDbReader::initializePartial()
   _totalNumMapRelations = 0;
 }
 
-void ServicesDbReader::read(shared_ptr<OsmMap> map)
+void ServicesDbReader::read(boost::shared_ptr<OsmMap> map)
 {
   if(_osmElemId > -1 && _osmElemType != ElementType::Unknown)
   {
@@ -231,10 +231,10 @@ void ServicesDbReader::read(shared_ptr<OsmMap> map)
   }
 }
 
-void ServicesDbReader::_read(shared_ptr<OsmMap> map, const ElementType& elementType)
+void ServicesDbReader::_read(boost::shared_ptr<OsmMap> map, const ElementType& elementType)
 {
   long long lastId = LLONG_MIN;
-  shared_ptr<Element> element;
+  boost::shared_ptr<Element> element;
   QStringList tags;
   bool firstElement = true;
 
@@ -242,7 +242,7 @@ void ServicesDbReader::_read(shared_ptr<OsmMap> map, const ElementType& elementT
   ServicesDb::DbType connectionType = _database.getDatabaseType();
 
   // contact the DB and select all
-  shared_ptr<QSqlQuery> elementResultsIterator = _database.selectAllElements(_osmElemId, elementType);
+  boost::shared_ptr<QSqlQuery> elementResultsIterator = _database.selectAllElements(_osmElemId, elementType);
 
   // split the reading of Services and Osm Api DB upfront to avoid extra inefficiency of if-else calls
   //   inside the isActive loop
@@ -254,7 +254,7 @@ void ServicesDbReader::_read(shared_ptr<OsmMap> map, const ElementType& elementT
       //ServicesDb::resultToElement)
       while (elementResultsIterator->isActive())
       {
-        shared_ptr<Element> element =
+        boost::shared_ptr<Element> element =
           _resultToElement(*elementResultsIterator, elementType, *map );
         //this check is necessary due to an inefficiency in ServicesDb::resultToElement
         if (element.get())
@@ -322,7 +322,7 @@ void ServicesDbReader::_read(shared_ptr<OsmMap> map, const ElementType& elementT
   }
 }
 
-shared_ptr<Element> ServicesDbReader::readNextElement()
+boost::shared_ptr<Element> ServicesDbReader::readNextElement()
 {
   if (!hasMoreElements())
   {
@@ -341,14 +341,14 @@ shared_ptr<Element> ServicesDbReader::readNextElement()
   }
 
   //results still available, so keep parsing through them
-  shared_ptr<Element> element = _resultToElement(*_elementResultIterator, selectElementType,
+  boost::shared_ptr<Element> element = _resultToElement(*_elementResultIterator, selectElementType,
     *_partialMap);
   if (!element.get())
   {
     //exceptional case to deal with having to call QSqlQuery::next() inside of
     //ServicesDb::resultToElement rather than from inside this method
     _elementResultIterator.reset();
-    return shared_ptr<Element>();
+    return boost::shared_ptr<Element>();
   }
 
   _incrementElementIndex(selectElementType);
@@ -499,7 +499,7 @@ ElementId ServicesDbReader::_mapElementId(const OsmMap& map, ElementId oldId)
   return result;
 }
 
-shared_ptr<Element> ServicesDbReader::_resultToElement(QSqlQuery& resultIterator,
+boost::shared_ptr<Element> ServicesDbReader::_resultToElement(QSqlQuery& resultIterator,
   const ElementType& elementType, OsmMap& map)
 {
   assert(resultIterator.isActive());
@@ -511,7 +511,7 @@ shared_ptr<Element> ServicesDbReader::_resultToElement(QSqlQuery& resultIterator
   //calling resultIterator->next() and also should check for the null element.
   if (resultIterator.next())
   {
-    shared_ptr<Element> element;
+    boost::shared_ptr<Element> element;
     //TODO: this section could be simplified
     switch (elementType.getEnum())
     {
@@ -544,15 +544,15 @@ shared_ptr<Element> ServicesDbReader::_resultToElement(QSqlQuery& resultIterator
   else
   {
     resultIterator.finish();
-    return shared_ptr<Element>();
+    return boost::shared_ptr<Element>();
   }
 }
 
-shared_ptr<Node> ServicesDbReader::_resultToNode(const QSqlQuery& resultIterator, OsmMap& map)
+boost::shared_ptr<Node> ServicesDbReader::_resultToNode(const QSqlQuery& resultIterator, OsmMap& map)
 {
   long nodeId = _mapElementId(map, ElementId::node(resultIterator.value(0).toLongLong())).getId();
 
-  shared_ptr<Node> result(
+  boost::shared_ptr<Node> result(
     new Node(
       _status,
       nodeId,
@@ -566,10 +566,10 @@ shared_ptr<Node> ServicesDbReader::_resultToNode(const QSqlQuery& resultIterator
   return result;
 }
 
-shared_ptr<Node> ServicesDbReader::_resultToNode_OsmApi(const QSqlQuery& resultIterator, OsmMap& map)
+boost::shared_ptr<Node> ServicesDbReader::_resultToNode_OsmApi(const QSqlQuery& resultIterator, OsmMap& map)
 {
   long nodeId = _mapElementId(map, ElementId::node(resultIterator.value(0).toLongLong())).getId();
-  shared_ptr<Node> result(
+  boost::shared_ptr<Node> result(
     new Node(
       _status,
       nodeId,
@@ -581,11 +581,11 @@ shared_ptr<Node> ServicesDbReader::_resultToNode_OsmApi(const QSqlQuery& resultI
 }
 
 
-shared_ptr<Way> ServicesDbReader::_resultToWay(const QSqlQuery& resultIterator, OsmMap& map)
+boost::shared_ptr<Way> ServicesDbReader::_resultToWay(const QSqlQuery& resultIterator, OsmMap& map)
 {
   const long wayId = resultIterator.value(0).toLongLong();
   const long newWayId = _mapElementId(map, ElementId::way(wayId)).getId();
-  shared_ptr<Way> way(
+  boost::shared_ptr<Way> way(
     new Way(
       _status,
       newWayId,
@@ -605,13 +605,13 @@ shared_ptr<Way> ServicesDbReader::_resultToWay(const QSqlQuery& resultIterator, 
   return way;
 }
 
-shared_ptr<Relation> ServicesDbReader::_resultToRelation(const QSqlQuery& resultIterator,
+boost::shared_ptr<Relation> ServicesDbReader::_resultToRelation(const QSqlQuery& resultIterator,
   const OsmMap& map)
 {
   const long relationId = resultIterator.value(0).toLongLong();
   const long newRelationId = _mapElementId(map, ElementId::relation(relationId)).getId();
 
-  shared_ptr<Relation> relation(
+  boost::shared_ptr<Relation> relation(
     new Relation(
       _status,
       newRelationId,

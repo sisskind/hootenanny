@@ -80,7 +80,7 @@ CopySubsetOp::CopySubsetOp(const ConstOsmMapPtr& from, const set<ElementId>& eid
 {
 }
 
-void CopySubsetOp::apply(shared_ptr<OsmMap> &map)
+void CopySubsetOp::apply(boost::shared_ptr<OsmMap> &map)
 {
   AddAllVisitor v(_from, map);
 

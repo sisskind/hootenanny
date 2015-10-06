@@ -77,7 +77,7 @@ public:
    */
   void runStatsTest()
   {
-    shared_ptr<CalculateStatsOp> calcStatsOp =
+    boost::shared_ptr<CalculateStatsOp> calcStatsOp =
       _calcStats("test-files/ops/CalculateStatsOp/all-data-types.osm");
 
     CPPUNIT_ASSERT_EQUAL(73, calcStatsOp->getStats().size());
@@ -192,7 +192,7 @@ public:
    */
   void runStatsTestWithReviews()
   {
-    shared_ptr<CalculateStatsOp> calcStatsOp =
+    boost::shared_ptr<CalculateStatsOp> calcStatsOp =
       _calcStats("test-files/ops/CalculateStatsOp/all-data-types-with-reviews.osm");
 
     CPPUNIT_ASSERT_EQUAL(73, calcStatsOp->getStats().size());
@@ -301,17 +301,17 @@ public:
 
 private:
 
-  shared_ptr<CalculateStatsOp> _calcStats(const QString& inputFile)
+  boost::shared_ptr<CalculateStatsOp> _calcStats(const QString& inputFile)
   {
     OsmReader reader;
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);
     reader.setUseStatusFromFile(true);
     reader.setUseDataSourceIds(true);
     reader.read(inputFile, map);
 
-    shared_ptr<CalculateStatsOp> calcStatsOp(new CalculateStatsOp());
+    boost::shared_ptr<CalculateStatsOp> calcStatsOp(new CalculateStatsOp());
     //TODO: If we figure out the error messages logged by the script translator related stats are
     //invalid and fix them, then this log disablement can be removed.
     {

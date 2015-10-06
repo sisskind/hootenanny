@@ -100,7 +100,7 @@ public:
 
   static std::string readFile(QString f1);
 
-  static bool compareMaps(shared_ptr<OsmMap> map1, shared_ptr<OsmMap> map2);
+  static bool compareMaps(boost::shared_ptr<OsmMap> map1, boost::shared_ptr<OsmMap> map2);
 
   static bool compareMaps(const QString& map1, const QString map2);
 

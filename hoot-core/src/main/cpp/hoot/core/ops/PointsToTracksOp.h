@@ -66,19 +66,19 @@ public:
    * Adds ways to all tracks as defined in the description above. No check is performed to make
    * sure the tracks are not duplicates.
    */
-  virtual void apply(shared_ptr<OsmMap>& map);
+  virtual void apply(boost::shared_ptr<OsmMap>& map);
 
 private:
 
   /**
    * Sorts each of the tracks by "hoot:track:seq".
    */
-  void _sortTracks(shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks);
+  void _sortTracks(boost::shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks);
 
   /**
    * Creates one way for each "hoot:track:id".
    */
-  void _createWays(shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks);
+  void _createWays(boost::shared_ptr<OsmMap>& map, HashMap<QString, deque<long> >& tracks);
 };
 
 }

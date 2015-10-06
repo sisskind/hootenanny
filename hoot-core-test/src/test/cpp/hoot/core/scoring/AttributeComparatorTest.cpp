@@ -64,10 +64,10 @@ public:
 
     srand(0);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.read("test-files/DcGisRoads.osm", map);
 
-    shared_ptr<OsmMap> map2(new OsmMap());
+    boost::shared_ptr<OsmMap> map2(new OsmMap());
     reader.read("test-files/DcTigerRoads.osm", map2);
 
     AttributeComparator uut(map, map2);

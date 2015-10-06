@@ -217,7 +217,7 @@ void OsmReader::open(QString url)
   _path = url;
 }
 
-void OsmReader::read(shared_ptr<OsmMap> map)
+void OsmReader::read(boost::shared_ptr<OsmMap> map)
 {
   _osmFound = false;
 
@@ -303,7 +303,7 @@ void OsmReader::read(shared_ptr<OsmMap> map)
   _map.reset();
 }
 
-void OsmReader::readFromString(QString xml, shared_ptr<OsmMap> map)
+void OsmReader::readFromString(QString xml, boost::shared_ptr<OsmMap> map)
 {
   _osmFound = false;
 
@@ -332,7 +332,7 @@ void OsmReader::readFromString(QString xml, shared_ptr<OsmMap> map)
   _map.reset();
 }
 
-void OsmReader::read(const QString& path, shared_ptr<OsmMap> map)
+void OsmReader::read(const QString& path, boost::shared_ptr<OsmMap> map)
 {
   open(path);
   read(map);
@@ -424,7 +424,7 @@ bool OsmReader::startElement(const QString & /* namespaceURI */,
         {
           long newRef = _nodeIdMap.value(ref);
 
-          shared_ptr<Way> w = dynamic_pointer_cast<Way, Element>(_element);
+          boost::shared_ptr<Way> w = dynamic_pointer_cast<Way, Element>(_element);
 
           w->addNode(newRef);
         }
@@ -435,7 +435,7 @@ bool OsmReader::startElement(const QString & /* namespaceURI */,
         QString type = attributes.value("type");
         QString role = attributes.value("role");
 
-        shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
+        boost::shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
 
         if (type == "node")
         {
@@ -499,7 +499,7 @@ bool OsmReader::startElement(const QString & /* namespaceURI */,
         }
         else if (key == "type" && _element->getElementType() == ElementType::Relation)
         {
-          shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
+          boost::shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
           r->setType(value);
         }
         else if (key == "accuracy" || key == "error:circular")
@@ -552,17 +552,17 @@ bool OsmReader::endElement(const QString & /* namespaceURI */,
   {
     if (qName == "node")
     {
-        shared_ptr<Node> n = dynamic_pointer_cast<Node, Element>(_element);
+        boost::shared_ptr<Node> n = dynamic_pointer_cast<Node, Element>(_element);
         _map->addNode(n);
     }
     else if (qName == "way")
     {
-        shared_ptr<Way> w = dynamic_pointer_cast<Way, Element>(_element);
+        boost::shared_ptr<Way> w = dynamic_pointer_cast<Way, Element>(_element);
         _map->addWay(w);
     }
     else if (qName == "relation")
     {
-        shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
+        boost::shared_ptr<Relation> r = dynamic_pointer_cast<Relation, Element>(_element);
         _map->addRelation(r);
     }
   }

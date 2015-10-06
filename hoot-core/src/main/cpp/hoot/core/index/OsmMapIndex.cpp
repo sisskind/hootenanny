@@ -61,7 +61,7 @@ OsmMapIndex::OsmMapIndex(const OsmMap& map) : _map(map)
   _indexSlush = 0.0;
 }
 
-void OsmMapIndex::addNode(shared_ptr<const Node> n)
+void OsmMapIndex::addNode(boost::shared_ptr<const Node> n)
 {
   if (_nodeTree)
   {
@@ -71,7 +71,7 @@ void OsmMapIndex::addNode(shared_ptr<const Node> n)
   }
 }
 
-void OsmMapIndex::addWay(shared_ptr<const Way> w)
+void OsmMapIndex::addWay(boost::shared_ptr<const Way> w)
 {
   if (_nodeToWayMap != 0)
   {
@@ -84,7 +84,7 @@ void OsmMapIndex::addWay(shared_ptr<const Way> w)
   _pendingWayRemoval.erase(w->getId());
 }
 
-void OsmMapIndex::addRelation(const shared_ptr<const Relation>& r)
+void OsmMapIndex::addRelation(const boost::shared_ptr<const Relation>& r)
 {
   if (_elementToRelationMap != 0)
   {
@@ -98,7 +98,7 @@ void OsmMapIndex::_buildNodeTree() const
   t.start();
   LOG_DEBUG("Building node R-Tree index");
   // 10 children - 368
-  shared_ptr<MemoryPageStore> mps(new MemoryPageStore(728));
+  boost::shared_ptr<MemoryPageStore> mps(new MemoryPageStore(728));
   _nodeTree.reset(new HilbertRTree(mps, 2));
 
   vector<Box> boxes;
@@ -116,7 +116,7 @@ void OsmMapIndex::_buildNodeTree() const
   for (QHash<long, boost::shared_ptr<Node> >::const_iterator it = nodes.constBegin();
     it != nodes.constEnd(); ++it)
   {
-    shared_ptr<const Node> n = it.value();
+    boost::shared_ptr<const Node> n = it.value();
 
     b.setBounds(0, n->getX(), n->getX());
     b.setBounds(1, n->getY(), n->getY());
@@ -153,7 +153,7 @@ void OsmMapIndex::_buildWayTree() const
   t.start();
   LOG_DEBUG("Building way R-Tree index");
   // 10 children - 368
-  shared_ptr<MemoryPageStore> mps(new MemoryPageStore(728));
+  boost::shared_ptr<MemoryPageStore> mps(new MemoryPageStore(728));
   _wayTree.reset(new HilbertRTree(mps, 2));
 
   vector<Box> boxes;
@@ -171,9 +171,9 @@ void OsmMapIndex::_buildWayTree() const
   for (WayMap::const_iterator it = ways.begin();
     it != ways.end(); ++it)
   {
-    shared_ptr<const Way> w = it->second;
+    boost::shared_ptr<const Way> w = it->second;
 
-    shared_ptr<LineString> ls = ElementConverter(_map.shared_from_this()).convertToLineString(w);
+    boost::shared_ptr<LineString> ls = ElementConverter(_map.shared_from_this()).convertToLineString(w);
     const Envelope* e = ls->getEnvelopeInternal();
 
     Meters a = w->getCircularError();
@@ -285,7 +285,7 @@ vector<long> OsmMapIndex::findNodes(const Envelope& e) const
   return result;
 }
 
-vector<long> OsmMapIndex::findWayNeighbors(const shared_ptr<const Way> &way, Meters buffer,
+vector<long> OsmMapIndex::findWayNeighbors(const boost::shared_ptr<const Way> &way, Meters buffer,
                                            bool addError) const
 {
   vector<long> result;
@@ -308,22 +308,22 @@ vector<long> OsmMapIndex::findWayNeighbors(const shared_ptr<const Way> &way, Met
   return result;
 }
 
-vector<long> OsmMapIndex::findWayNeighborsBruteForce(shared_ptr<const Way> way, Meters buffer) const
+vector<long> OsmMapIndex::findWayNeighborsBruteForce(boost::shared_ptr<const Way> way, Meters buffer) const
 {
   vector<long> result;
 
   // grab the geometry for the way that we're comparing all others against.
-  shared_ptr<LineString> ls1 = ElementConverter(_map.shared_from_this()).convertToLineString(way);
+  boost::shared_ptr<LineString> ls1 = ElementConverter(_map.shared_from_this()).convertToLineString(way);
 
   // go through all other ways
   for (WayMap::const_iterator it = _map.getWays().begin();
     it != _map.getWays().end(); ++it)
   {
     long nId = it->first;
-    shared_ptr<const Way> n = it->second;
+    boost::shared_ptr<const Way> n = it->second;
     if (n != 0 && nId != way->getId())
     {
-      shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
+      boost::shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
       Meters d = ls1->distance(ls2.get());
 
       if (d < buffer)
@@ -349,10 +349,10 @@ long OsmMapIndex::findNearestWay(Coordinate c) const
     it != _map.getWays().end(); ++it)
   {
     long nId = it->first;
-    shared_ptr<const Way> n = it->second;
+    boost::shared_ptr<const Way> n = it->second;
     if (n != 0 && n->getNodeCount() > 1)
     {
-      shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
+      boost::shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
       Meters d = p->distance(ls2.get());
 
       if (d < bestDistance)
@@ -380,10 +380,10 @@ std::vector<long> OsmMapIndex::findWayNeighbors(Coordinate& from, Meters buffer)
     it != _map.getWays().end(); ++it)
   {
     long nId = it->first;
-    shared_ptr<const Way> n = it->second;
+    boost::shared_ptr<const Way> n = it->second;
     if (n != 0 && n->getNodeCount() > 1)
     {
-      shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
+      boost::shared_ptr<LineString> ls2 = ElementConverter(_map.shared_from_this()).convertToLineString(n);
       Meters d = p->distance(ls2.get());
 
       if (d < buffer)
@@ -422,7 +422,7 @@ vector<long> OsmMapIndex::findWays(const Envelope& e) const
   return result;
 }
 
-const shared_ptr<ElementToRelationMap> &OsmMapIndex::getElementToRelationMap() const
+const boost::shared_ptr<ElementToRelationMap> &OsmMapIndex::getElementToRelationMap() const
 {
   if (_elementToRelationMap == 0)
   {
@@ -437,7 +437,7 @@ const shared_ptr<ElementToRelationMap> &OsmMapIndex::getElementToRelationMap() c
   return _elementToRelationMap;
 }
 
-shared_ptr<NodeToWayMap> OsmMapIndex::getNodeToWayMap() const
+boost::shared_ptr<NodeToWayMap> OsmMapIndex::getNodeToWayMap() const
 {
   if (_nodeToWayMap == 0)
   {
@@ -447,7 +447,7 @@ shared_ptr<NodeToWayMap> OsmMapIndex::getNodeToWayMap() const
   return _nodeToWayMap;
 }
 
-shared_ptr<const HilbertRTree> OsmMapIndex::getNodeTree() const
+boost::shared_ptr<const HilbertRTree> OsmMapIndex::getNodeTree() const
 {
   if (_nodeTree == 0)
   {
@@ -494,7 +494,7 @@ set<ElementId> OsmMapIndex::getParents(ElementId eid) const
     }
     // the map should contain all the relations returned by the index.
     assert(_map.containsRelation(*it));
-    const shared_ptr<const Relation>& r = _map.getRelation(*it);
+    const boost::shared_ptr<const Relation>& r = _map.getRelation(*it);
 
     if (r->contains(eid))
     {
@@ -505,7 +505,7 @@ set<ElementId> OsmMapIndex::getParents(ElementId eid) const
   return result;
 }
 
-shared_ptr<const HilbertRTree> OsmMapIndex::getWayTree() const
+boost::shared_ptr<const HilbertRTree> OsmMapIndex::getWayTree() const
 {
   if (_wayTree == 0)
   {
@@ -527,7 +527,7 @@ shared_ptr<const HilbertRTree> OsmMapIndex::getWayTree() const
 
 void OsmMapIndex::_insertNode(long nid)
 {
-  shared_ptr<const Node> n = _map.getNode(nid);
+  boost::shared_ptr<const Node> n = _map.getNode(nid);
 
   Box b(2);
 
@@ -539,11 +539,11 @@ void OsmMapIndex::_insertNode(long nid)
 
 void OsmMapIndex::_insertWay(long wid)
 {
-  shared_ptr<const Way> w = _map.getWay(wid);
+  boost::shared_ptr<const Way> w = _map.getWay(wid);
 
   Box b(2);
 
-  shared_ptr<LineString> ls = ElementConverter(_map.shared_from_this()).convertToLineString(w);
+  boost::shared_ptr<LineString> ls = ElementConverter(_map.shared_from_this()).convertToLineString(w);
   const Envelope* e = ls->getEnvelopeInternal();
 
   b.setBounds(0, e->getMinX() - _indexSlush, e->getMaxX() + _indexSlush);
@@ -609,7 +609,7 @@ void OsmMapIndex::postGeometryChange(Element* e)
   }
 }
 
-void OsmMapIndex::removeNode(shared_ptr<const Node> n)
+void OsmMapIndex::removeNode(boost::shared_ptr<const Node> n)
 {
   if (_nodeTree)
   {
@@ -625,7 +625,7 @@ void OsmMapIndex::removeNode(shared_ptr<const Node> n)
   }
 }
 
-void OsmMapIndex::removeRelation(const shared_ptr<const Relation>& r)
+void OsmMapIndex::removeRelation(const boost::shared_ptr<const Relation>& r)
 {
   if (_elementToRelationMap != 0)
   {
@@ -633,7 +633,7 @@ void OsmMapIndex::removeRelation(const shared_ptr<const Relation>& r)
   }
 }
 
-void OsmMapIndex::removeWay(shared_ptr<const Way> w)
+void OsmMapIndex::removeWay(boost::shared_ptr<const Way> w)
 {
   _pendingWayRemoval.insert(w->getId());
   _pendingWayInsert.erase(w->getId());

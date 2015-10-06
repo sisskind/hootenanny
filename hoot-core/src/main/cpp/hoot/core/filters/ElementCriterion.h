@@ -62,15 +62,15 @@ public:
   /**
    * Provided for backwards compatibility with the old filter. This method should be avoided.
    */
-  virtual bool isNotSatisfied(const shared_ptr<const Element>& e) const { return !isSatisfied(e); }
+  virtual bool isNotSatisfied(const boost::shared_ptr<const Element>& e) const { return !isSatisfied(e); }
 
   /**
    * Returns true if the element satisfies the criterion.
    */
-  virtual bool isSatisfied(const shared_ptr<const Element>& e) const = 0;
+  virtual bool isSatisfied(const boost::shared_ptr<const Element>& e) const = 0;
 };
 
-typedef shared_ptr<ElementCriterion> ElementCriterionPtr;
+typedef boost::shared_ptr<ElementCriterion> ElementCriterionPtr;
 
 /**
  * Much of the old (pre 6/24/2014) code is based around the concept of a filter as opposed to a
@@ -90,9 +90,9 @@ public:
    * Returns true if the element should be filtered (removed). Removed depends on the context. E.g.
    * It may just remove the element from a list of returned elements.
    */
-  virtual bool isFiltered(const shared_ptr<const Element>& e) const { return isFiltered(*e); }
+  virtual bool isFiltered(const boost::shared_ptr<const Element>& e) const { return isFiltered(*e); }
 
-  virtual bool isSatisfied(const shared_ptr<const Element>& e) const { return !isFiltered(e); }
+  virtual bool isSatisfied(const boost::shared_ptr<const Element>& e) const { return !isFiltered(e); }
 
 protected:
   virtual bool isFiltered(const Element& /*e*/) const { throw NotImplementedException(); }

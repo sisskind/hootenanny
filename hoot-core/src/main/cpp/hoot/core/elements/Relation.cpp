@@ -65,7 +65,7 @@ Relation::Relation(Status s, long id, Meters circularError, QString type) :
   _relationData->setType(type);
 }
 
-void Relation::addElement(const QString& role, const shared_ptr<const Element>& e)
+void Relation::addElement(const QString& role, const boost::shared_ptr<const Element>& e)
 {
   addElement(role, e->getElementType(), e->getId());
 }
@@ -105,7 +105,7 @@ bool Relation::contains(ElementId eid) const
   return false;
 }
 
-Envelope* Relation::getEnvelope(const shared_ptr<const ElementProvider> &ep) const
+Envelope* Relation::getEnvelope(const boost::shared_ptr<const ElementProvider> &ep) const
 {
   Envelope* result = new Envelope();
   const vector<RelationData::Entry>& members = getMembers();
@@ -119,7 +119,7 @@ Envelope* Relation::getEnvelope(const shared_ptr<const ElementProvider> &ep) con
       result->setToNull();
       return result;
     }
-    const shared_ptr<const Element> e = ep->getElement(m.getElementId());
+    const boost::shared_ptr<const Element> e = ep->getElement(m.getElementId());
     auto_ptr<Envelope> childEnvelope(e->getEnvelope(ep));
 
     if (childEnvelope->isNull())
@@ -143,7 +143,7 @@ void Relation::_makeWritable()
   }
 }
 
-void Relation::removeElement(const QString& role, const shared_ptr<const Element>& e)
+void Relation::removeElement(const QString& role, const boost::shared_ptr<const Element>& e)
 {
   removeElement(role, e->getElementId());
 }
@@ -164,8 +164,8 @@ void Relation::removeElement(ElementId eid)
   _postGeometryChange();
 }
 
-void Relation::replaceElement(const shared_ptr<const Element>& from,
-  const shared_ptr<const Element>& to)
+void Relation::replaceElement(const boost::shared_ptr<const Element>& from,
+  const boost::shared_ptr<const Element>& to)
 {
   _preGeometryChange();
   _makeWritable();

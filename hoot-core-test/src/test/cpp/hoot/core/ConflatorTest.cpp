@@ -61,7 +61,7 @@ public:
   {
     PbfReader reader(true);
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setUseFileStatus(true);
     reader.read("test-files/ToyTestCombined.pbf", map);
 
@@ -69,7 +69,7 @@ public:
     uut.loadSource(map);
     uut.conflate();
 
-    shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
+    boost::shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
     MapReprojector::reprojectToWgs84(out);
 
     CPPUNIT_ASSERT_EQUAL((size_t)15, out->getWays().size());
@@ -83,7 +83,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/ToyTestA.osm", map);
     reader.setDefaultStatus(Status::Unknown2);
@@ -93,7 +93,7 @@ public:
     uut.loadSource(map);
     uut.conflate();
 
-    shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
+    boost::shared_ptr<OsmMap> out(new OsmMap(uut.getBestMap()));
     MapReprojector::reprojectToWgs84(out);
 
     CPPUNIT_ASSERT_EQUAL((size_t)9, out->getWays().size());

@@ -215,7 +215,7 @@ int TileBoundsCalculator::_calculateSplitY(const PixelBox& b)
   return best;
 }
 
-void TileBoundsCalculator::_countNode(const shared_ptr<Node>& n)
+void TileBoundsCalculator::_countNode(const boost::shared_ptr<Node>& n)
 {
   double x = n->getX();
   double y = n->getY();
@@ -398,7 +398,7 @@ bool TileBoundsCalculator::_isDone(vector<PixelBox> &boxes)
   }
 }
 
-void TileBoundsCalculator::renderImage(shared_ptr<OsmMap> map)
+void TileBoundsCalculator::renderImage(boost::shared_ptr<OsmMap> map)
 {
   _envelope = map->calculateBounds();
 
@@ -411,7 +411,7 @@ void TileBoundsCalculator::renderImage(shared_ptr<OsmMap> map)
   _exportImage(_min, "tmp/min.png");
 }
 
-void TileBoundsCalculator::renderImage(shared_ptr<OsmMap> map, cv::Mat& r1, cv::Mat& r2)
+void TileBoundsCalculator::renderImage(boost::shared_ptr<OsmMap> map, cv::Mat& r1, cv::Mat& r2)
 {
   _envelope = map->calculateBounds();
 
@@ -436,7 +436,7 @@ void TileBoundsCalculator::renderImage(shared_ptr<OsmMap> map, cv::Mat& r1, cv::
   const OsmMap::NodeMap& nm = map->getNodeMap();
   for (OsmMap::NodeMap::const_iterator it = nm.begin(); it != nm.end(); it++)
   {
-    const shared_ptr<Node>& n = *it;
+    const boost::shared_ptr<Node>& n = *it;
     _countNode(n);
   }
 

@@ -107,36 +107,36 @@ public:
 
     // Match
     matchCount++;
-    shared_ptr<Node> n1 = createNode(map, 0.0, 0.0, 250.0, "McDonalds", "McDonalds");
-    shared_ptr<Node> n2 = createNode(map, 200.0, 0.0, 220.0, "Mc Donalds", "McDonalds");
+    boost::shared_ptr<Node> n1 = createNode(map, 0.0, 0.0, 250.0, "McDonalds", "McDonalds");
+    boost::shared_ptr<Node> n2 = createNode(map, 200.0, 0.0, 220.0, "Mc Donalds", "McDonalds");
     matches.insert(
-      new PlacesPoiMatch(map, n1->getElementId(), n2->getElementId(), shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatch(map, n1->getElementId(), n2->getElementId(), boost::shared_ptr<MatchThreshold>()));
     creator.createMergers(matches, mergers);
     CPPUNIT_ASSERT_EQUAL(2, (int)mergers.back()->getImpactedElementIds().size());
 
     // Match b/c only one letter difference & < 5 characters in name
     matchCount++;
-    shared_ptr<Node> n3 = createNode(map, 1000.0, 0.0, 10.0, "a", "a");
-    shared_ptr<Node> n4 = createNode(map, 1000.0, 1.0, 20.0, "b", "a");
+    boost::shared_ptr<Node> n3 = createNode(map, 1000.0, 0.0, 10.0, "a", "a");
+    boost::shared_ptr<Node> n4 = createNode(map, 1000.0, 1.0, 20.0, "b", "a");
     matches.clear();
     matches.insert(
-      new PlacesPoiMatch(map, n3->getElementId(), n4->getElementId(), shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatch(map, n3->getElementId(), n4->getElementId(), boost::shared_ptr<MatchThreshold>()));
     creator.createMergers(matches, mergers);
     CPPUNIT_ASSERT_EQUAL(2, (int)mergers.back()->getImpactedElementIds().size());
 
     // All these get matched together into a chain.
     matchCount += 3;
-    shared_ptr<Node> n5 = createNode(map, -1000.0, 0.0, 19.0, "Chain", "Chain");
-    shared_ptr<Node> n6 = createNode(map, -1000.0, 20.0, 20.0, "Chain", "Chain");
-    shared_ptr<Node> n7 = createNode(map, -1000.0, 40.0, 20.0, "Chain", "Chain");
-    shared_ptr<Node> n8 = createNode(map, -1000.0, 60.0, 20.0, "Chain", "Chain");
+    boost::shared_ptr<Node> n5 = createNode(map, -1000.0, 0.0, 19.0, "Chain", "Chain");
+    boost::shared_ptr<Node> n6 = createNode(map, -1000.0, 20.0, 20.0, "Chain", "Chain");
+    boost::shared_ptr<Node> n7 = createNode(map, -1000.0, 40.0, 20.0, "Chain", "Chain");
+    boost::shared_ptr<Node> n8 = createNode(map, -1000.0, 60.0, 20.0, "Chain", "Chain");
     matches.clear();
     matches.insert(
-      new PlacesPoiMatch(map, n5->getElementId(), n6->getElementId(), shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatch(map, n5->getElementId(), n6->getElementId(), boost::shared_ptr<MatchThreshold>()));
     matches.insert(
-      new PlacesPoiMatch(map, n6->getElementId(), n7->getElementId(), shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatch(map, n6->getElementId(), n7->getElementId(), boost::shared_ptr<MatchThreshold>()));
     matches.insert(
-      new PlacesPoiMatch(map, n7->getElementId(), n8->getElementId(), shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatch(map, n7->getElementId(), n8->getElementId(), boost::shared_ptr<MatchThreshold>()));
     creator.createMergers(matches, mergers);
     CPPUNIT_ASSERT_EQUAL(4, (int)mergers.back()->getImpactedElementIds().size());
 

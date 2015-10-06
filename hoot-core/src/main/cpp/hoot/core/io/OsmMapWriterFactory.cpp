@@ -42,12 +42,12 @@ OsmMapWriterFactory::OsmMapWriterFactory()
 {
 }
 
-shared_ptr<OsmMapWriter> OsmMapWriterFactory::createWriter(QString url)
+boost::shared_ptr<OsmMapWriter> OsmMapWriterFactory::createWriter(QString url)
 {
   LOG_DEBUG("Creating OsmMapWriter for " << url);
   QString writerOverride = ConfigOptions().getOsmMapWriterFactoryWriter();
 
-  shared_ptr<OsmMapWriter> writer;
+  boost::shared_ptr<OsmMapWriter> writer;
   if (writerOverride != "")
   {
     writer.reset(Factory::getInstance().constructObject<OsmMapWriter>(writerOverride));
@@ -79,8 +79,8 @@ shared_ptr<OsmMapWriter> OsmMapWriterFactory::createWriter(QString url)
 bool OsmMapWriterFactory::hasElementOutputStream(QString url)
 {
   bool result = false;
-  shared_ptr<OsmMapWriter> writer = createWriter(url);
-  shared_ptr<ElementOutputStream> streamWriter = dynamic_pointer_cast<ElementOutputStream>(writer);
+  boost::shared_ptr<OsmMapWriter> writer = createWriter(url);
+  boost::shared_ptr<ElementOutputStream> streamWriter = dynamic_pointer_cast<ElementOutputStream>(writer);
   if (streamWriter)
   {
     LOG_DEBUG("Streaming: writer support!");
@@ -94,8 +94,8 @@ bool OsmMapWriterFactory::hasElementOutputStream(QString url)
 bool OsmMapWriterFactory::hasPartialWriter(QString url)
 {
   bool result = false;
-  shared_ptr<OsmMapWriter> writer = createWriter(url);
-  shared_ptr<PartialOsmMapWriter> streamWriter = dynamic_pointer_cast<PartialOsmMapWriter>(writer);
+  boost::shared_ptr<OsmMapWriter> writer = createWriter(url);
+  boost::shared_ptr<PartialOsmMapWriter> streamWriter = dynamic_pointer_cast<PartialOsmMapWriter>(writer);
   if (streamWriter)
   {
     result = true;
@@ -112,7 +112,7 @@ bool OsmMapWriterFactory::hasWriter(QString url)
   bool result = false;
   for (size_t i = 0; i < names.size() && !result; ++i)
   {
-    shared_ptr<OsmMapWriter> writer(Factory::getInstance().constructObject<OsmMapWriter>(names[i]));
+    boost::shared_ptr<OsmMapWriter> writer(Factory::getInstance().constructObject<OsmMapWriter>(names[i]));
     if (writer->isSupported(url))
     {
       result = true;
@@ -122,9 +122,9 @@ bool OsmMapWriterFactory::hasWriter(QString url)
   return result;
 }
 
-void OsmMapWriterFactory::write(const shared_ptr<const OsmMap>& map, QString url)
+void OsmMapWriterFactory::write(const boost::shared_ptr<const OsmMap>& map, QString url)
 {
-  shared_ptr<OsmMapWriter> writer = getInstance().createWriter(url);
+  boost::shared_ptr<OsmMapWriter> writer = getInstance().createWriter(url);
   writer->open(url);
   writer->write(map);
 }

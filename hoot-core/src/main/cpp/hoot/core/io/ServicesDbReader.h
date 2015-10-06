@@ -80,7 +80,7 @@ public:
   /**
    * The read command called after open.
    */
-  virtual void read(shared_ptr<OsmMap> map);
+  virtual void read(boost::shared_ptr<OsmMap> map);
 
   virtual void finalizePartial();
 
@@ -98,7 +98,7 @@ public:
 
   virtual bool hasMoreElements();
 
-  virtual shared_ptr<Element> readNextElement();
+  virtual boost::shared_ptr<Element> readNextElement();
 
   virtual boost::shared_ptr<OGRSpatialReference> getProjection() const;
 
@@ -110,11 +110,11 @@ private:
   const ElementType _getCurrentSelectElementType() const;
   long _getCurrentElementOffset(const ElementType& selectElementType) const;
   void _incrementElementIndex(const ElementType& selectElementType);
-  void _read(shared_ptr<OsmMap> map, const ElementType& elementType);
+  void _read(boost::shared_ptr<OsmMap> map, const ElementType& elementType);
 
   ServicesDb _database;
   bool _open;
-  shared_ptr<QSqlQuery> _elementResultIterator;
+  boost::shared_ptr<QSqlQuery> _elementResultIterator;
   QString _email;
 
   long _osmElemId;
@@ -139,23 +139,23 @@ private:
   long _totalNumMapRelations;
 
 
-  void _addTagsToElement(shared_ptr<Element> element);
+  void _addTagsToElement(boost::shared_ptr<Element> element);
 
   ElementId _mapElementId(const OsmMap& map, ElementId oldId);
 
   /**
    * Converts a query result to an OSM element
    */
-  shared_ptr<Element> _resultToElement(QSqlQuery& resultIterator,
+  boost::shared_ptr<Element> _resultToElement(QSqlQuery& resultIterator,
     const ElementType& elementType, OsmMap& map);
 
   // Services data assignment methods
-  shared_ptr<Node> _resultToNode(const QSqlQuery& resultIterator, OsmMap& map);
-  shared_ptr<Way> _resultToWay(const QSqlQuery& resultIterator, OsmMap& map);
-  shared_ptr<Relation> _resultToRelation(const QSqlQuery& resultIterator, const OsmMap& map);
+  boost::shared_ptr<Node> _resultToNode(const QSqlQuery& resultIterator, OsmMap& map);
+  boost::shared_ptr<Way> _resultToWay(const QSqlQuery& resultIterator, OsmMap& map);
+  boost::shared_ptr<Relation> _resultToRelation(const QSqlQuery& resultIterator, const OsmMap& map);
 
   // Osm Api data assignment methods
-  shared_ptr<Node> _resultToNode_OsmApi(const QSqlQuery& resultIterator, OsmMap& map);
+  boost::shared_ptr<Node> _resultToNode_OsmApi(const QSqlQuery& resultIterator, OsmMap& map);
 
 };
 

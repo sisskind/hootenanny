@@ -51,12 +51,12 @@ class BuildingMergeManipulation : public Manipulation, public ManipulationDetail
 public:
   BuildingMergeManipulation(const RandomForest* rf, const ElementId& eid1, const ElementId& eid2);
 
-  virtual void applyManipulation(shared_ptr<OsmMap> wm,
+  virtual void applyManipulation(boost::shared_ptr<OsmMap> wm,
                                  set<ElementId>& impactedWays, set<ElementId>& newWays) const;
 
-  virtual double calculateProbability(shared_ptr<const OsmMap> map) const;
+  virtual double calculateProbability(boost::shared_ptr<const OsmMap> map) const;
 
-  virtual double calculateScore(shared_ptr<const OsmMap> map) const;
+  virtual double calculateScore(boost::shared_ptr<const OsmMap> map) const;
 
   /**
    * See Method::getClassification for a description.
@@ -66,7 +66,7 @@ public:
   ElementId getEid1() const { return _eid1; }
   ElementId getEid2() const { return _eid1; }
 
-  virtual map<QString, double> getFeatures(const shared_ptr<const OsmMap>& m) const;
+  virtual map<QString, double> getFeatures(const boost::shared_ptr<const OsmMap>& m) const;
 
   virtual const set<ElementId>& getImpactedElementIds(const ConstOsmMapPtr &map) const;
 
@@ -76,7 +76,7 @@ public:
 
   virtual double getScoreEstimate() const { return getProbabilityEstimate(); }
 
-  virtual bool isValid(shared_ptr<const OsmMap> map) const;
+  virtual bool isValid(boost::shared_ptr<const OsmMap> map) const;
 
   virtual QString toString() const;
 
@@ -86,7 +86,7 @@ private:
   mutable double _p;
   const RandomForest* _rf;
   mutable set<ElementId> _impactedElements;
-  static vector< shared_ptr<const FeatureExtractor> > _extractors;
+  static vector< boost::shared_ptr<const FeatureExtractor> > _extractors;
 
   /**
    * Creates all the reasonable extractors for a data set. This can be quite large and is good
@@ -99,9 +99,9 @@ private:
    */
   static void _createBestExtractors();
 
-  shared_ptr<Relation> _createEid2Relation(const ConstOsmMapPtr& map) const;
+  boost::shared_ptr<Relation> _createEid2Relation(const ConstOsmMapPtr& map) const;
 
-  const vector< shared_ptr<const FeatureExtractor> >& _getExtractors() const;
+  const vector< boost::shared_ptr<const FeatureExtractor> >& _getExtractors() const;
 
 };
 

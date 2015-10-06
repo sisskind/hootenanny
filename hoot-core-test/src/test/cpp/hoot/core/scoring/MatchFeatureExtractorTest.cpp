@@ -63,14 +63,14 @@ public:
     TestUtils::resetEnvironment();
   }
 
-  shared_ptr<OsmMap> load(QString s1, QString s2)
+  boost::shared_ptr<OsmMap> load(QString s1, QString s2)
   {
     OsmReader reader;
 
     srand(0);
     OsmMap::resetCounters();
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.read(s1, map);
     reader.setDefaultStatus(Status::Unknown2);
@@ -87,7 +87,7 @@ public:
   {
     // This test is primarily useful as an input to Weka for training models.
     MatchFeatureExtractor uut;
-    uut.addMatchCreator(shared_ptr<MatchCreator>(new BuildingMatchCreator()));
+    uut.addMatchCreator(boost::shared_ptr<MatchCreator>(new BuildingMatchCreator()));
     uut.processMap(load("test-files/conflate/extractor/BuildingsA.osm",
       "test-files/conflate/extractor/BuildingsB.osm"));
 

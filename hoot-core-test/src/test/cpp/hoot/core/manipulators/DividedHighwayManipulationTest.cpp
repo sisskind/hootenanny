@@ -62,7 +62,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.setDefaultStatus(Status::Unknown1);
     reader.read("test-files/DividedHighway.osm", map);
@@ -79,7 +79,7 @@ public:
     qDebug() << uut.getScoreEstimate();
     qDebug() << uut.calculateScore(map);
     set<ElementId> ignored1, ignored2;
-    shared_ptr<OsmMap> after(new OsmMap(map));
+    boost::shared_ptr<OsmMap> after(new OsmMap(map));
     uut.applyManipulation(after, ignored1, ignored2);
 
     left = map->findWays("note", "3")[0];

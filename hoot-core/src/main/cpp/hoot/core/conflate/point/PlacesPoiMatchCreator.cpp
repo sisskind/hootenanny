@@ -120,7 +120,7 @@ public:
     LOG_DEBUG(SystemInfo::getMemoryUsageString());
   }
 
-  void checkForMatch(const shared_ptr<const Node>& n)
+  void checkForMatch(const boost::shared_ptr<const Node>& n)
   {
     // find other nearby candidates
     set<long> neighbors = _findNeighbors(n);
@@ -134,7 +134,7 @@ public:
     for (set<long>::const_iterator it = neighbors.begin(); it != neighbors.end(); ++it)
     {
       ElementId eid(ElementType::Node, *it);
-      const shared_ptr<const Node>& neighbor = _map->getNode(*it);
+      const boost::shared_ptr<const Node>& neighbor = _map->getNode(*it);
 
       // make sure we only create one match per pair. Use the node with the larger circular error
       // to make sure we do the larger of the two queries. If the CE is equal then use the eid
@@ -176,7 +176,7 @@ public:
   {
     if (element->getElementType() == ElementType::Node)
     {
-      const shared_ptr<const Node>& n(dynamic_pointer_cast<const Node>(element));
+      const boost::shared_ptr<const Node>& n(dynamic_pointer_cast<const Node>(element));
 
       bool inBounds = true;
       // if the bounds is specified, make sure this node is inside the bounds.
@@ -225,7 +225,7 @@ private:
     for (OsmMap::NodeMap::const_iterator it = _map->getNodeMap().begin();
          it != _map->getNodeMap().end(); ++it)
     {
-      const shared_ptr<const Node>& n = it.value();
+      const boost::shared_ptr<const Node>& n = it.value();
       set<QString> allNames = _getNamePermutations(n->getTags().getNames());
       for (set<QString>::iterator it = allNames.begin(); it != allNames.end(); ++it)
       {
@@ -303,7 +303,7 @@ public:
 
   Meters getWorstCircularError() { return _worst; }
 
-  virtual void visit(const shared_ptr<const Element>& e)
+  virtual void visit(const boost::shared_ptr<const Element>& e)
   {
     _worst = max(_worst, e->getCircularError());
   }
@@ -366,12 +366,12 @@ bool PlacesPoiMatchCreator::isMatchCandidate(ConstElementPtr element, const Cons
   {
     vector<const Match*> emptyVec;
     _matchCandidateChecker.reset(
-      new PlacesPoiMatchVisitor(map, emptyVec, -1.0, _bounds, shared_ptr<MatchThreshold>()));
+      new PlacesPoiMatchVisitor(map, emptyVec, -1.0, _bounds, boost::shared_ptr<MatchThreshold>()));
   }
   return _matchCandidateChecker->isMatchCandidate(element);
 }
 
-shared_ptr<MatchThreshold> PlacesPoiMatchCreator::getMatchThreshold()
+boost::shared_ptr<MatchThreshold> PlacesPoiMatchCreator::getMatchThreshold()
 {
   if (!_matchThreshold.get())
   {

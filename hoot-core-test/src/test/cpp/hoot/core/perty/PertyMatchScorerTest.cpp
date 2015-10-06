@@ -96,7 +96,7 @@ public:
   {
     OsmMap::resetCounters();
     OsmReader reader;
-    shared_ptr<OsmMap> referenceMap(new OsmMap());
+    boost::shared_ptr<OsmMap> referenceMap(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.setUseDataSourceIds(true);
     reader.read(
@@ -106,7 +106,7 @@ public:
     PertyMatchScorer matchScorer;
     matchScorer.setSearchDistance(15.0);
     matchScorer.setApplyRubberSheet(false);
-    shared_ptr<OsmMap> combinedMap =
+    boost::shared_ptr<OsmMap> combinedMap =
       matchScorer._combineMapsAndPrepareForConflation(
         referenceMap,
         "test-files/perty/PertyMatchScorerTest/PertyMatchScorerTest-perturbed-out-1.osm");
@@ -114,10 +114,10 @@ public:
     //can't do a file comparison on the output here since the UUID's added to the file will be
     //different with each run
     CPPUNIT_ASSERT_EQUAL(100, (int)combinedMap->getElementCount());
-    shared_ptr<TagKeyCountVisitor> tagKeyCountVisitorRef1(new TagKeyCountVisitor("REF1"));
+    boost::shared_ptr<TagKeyCountVisitor> tagKeyCountVisitorRef1(new TagKeyCountVisitor("REF1"));
     combinedMap->visitRw(*tagKeyCountVisitorRef1);
     CPPUNIT_ASSERT_EQUAL(8, (int)tagKeyCountVisitorRef1->getStat());
-    shared_ptr<TagKeyCountVisitor> tagKeyCountVisitorRef2(new TagKeyCountVisitor("REF2"));
+    boost::shared_ptr<TagKeyCountVisitor> tagKeyCountVisitorRef2(new TagKeyCountVisitor("REF2"));
     combinedMap->visitRw(*tagKeyCountVisitorRef2);
     CPPUNIT_ASSERT_EQUAL(10, (int)tagKeyCountVisitorRef2->getStat());
   }
@@ -129,7 +129,7 @@ public:
 
     OsmMap::resetCounters();
     OsmReader reader;
-    shared_ptr<OsmMap> combinedMap(new OsmMap());
+    boost::shared_ptr<OsmMap> combinedMap(new OsmMap());
     reader.setDefaultStatus(Status::Unknown1);
     reader.setUseDataSourceIds(true);
     reader.read(

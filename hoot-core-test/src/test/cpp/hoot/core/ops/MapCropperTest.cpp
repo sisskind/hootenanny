@@ -69,17 +69,17 @@ class MapCropperTest : public CppUnit::TestFixture
 
 public:
 
-  shared_ptr<OsmMap> genPoints(int seed)
+  boost::shared_ptr<OsmMap> genPoints(int seed)
   {
     srand(seed);
-    shared_ptr<OsmMap> result(new OsmMap());
+    boost::shared_ptr<OsmMap> result(new OsmMap());
 
     for (int i = 0; i < 1000; i++)
     {
       double x = Random::generateUniform() * 360 - 180;
       double y = Random::generateUniform() * 180 - 90;
 
-      shared_ptr<Node> n(new Node(Status::Invalid, result->createNextNodeId(), x, y, 10));
+      boost::shared_ptr<Node> n(new Node(Status::Invalid, result->createNextNodeId(), x, y, 10));
       result->addNode(n);
     }
 
@@ -88,9 +88,9 @@ public:
 
   void runGeometryTest()
   {
-    shared_ptr<OsmMap> map = genPoints(0);
+    boost::shared_ptr<OsmMap> map = genPoints(0);
 
-    shared_ptr<Geometry> g(geos::io::WKTReader().read(
+    boost::shared_ptr<Geometry> g(geos::io::WKTReader().read(
       "POLYGON ((-50 0, 0 50, 50 0, 0 -50, 0 0, -50 0))"));
 
     int insideCount = 0;
@@ -113,7 +113,7 @@ public:
     }
 
     {
-      shared_ptr<OsmMap> map = genPoints(0);
+      boost::shared_ptr<OsmMap> map = genPoints(0);
 
       MapCropper uut(g, true);
       uut.apply(map);
@@ -123,11 +123,11 @@ public:
 
   void runSerializationTest()
   {
-    shared_ptr<Geometry> g(geos::io::WKTReader().read(
+    boost::shared_ptr<Geometry> g(geos::io::WKTReader().read(
       "POLYGON ((-50 0, 0 50, 50 0, 0 -50, 0 0, -50 0))"));
 
     MapCropper pre(g, false);
-    shared_ptr<OsmMap> mapPre = genPoints(0);
+    boost::shared_ptr<OsmMap> mapPre = genPoints(0);
     pre.apply(mapPre);
 
     stringstream ss;
@@ -139,7 +139,7 @@ public:
     stringstream ss2(ss.str());
     ObjectInputStream ois(ss2);
     auto_ptr<OsmMapOperation> post(ois.readObject<OsmMapOperation>());
-    shared_ptr<OsmMap> mapPost = genPoints(0);
+    boost::shared_ptr<OsmMap> mapPost = genPoints(0);
     post->apply(mapPost);
 
     // do we get the same result before/after serialization.

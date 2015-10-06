@@ -123,24 +123,24 @@ public:
    * If the input is a directory then the underlying files are read in turn, otherwise readFile
    * is called directly on the file.
    */
-  void read(QString path, shared_ptr<OsmMap> map);
+  void read(QString path, boost::shared_ptr<OsmMap> map);
 
   /**
    * Reads the specified file into the specified map.
    */
-  void readFile(QString path, shared_ptr<OsmMap> map);
+  void readFile(QString path, boost::shared_ptr<OsmMap> map);
 
-  void parse(istream* strm, shared_ptr<OsmMap> map);
+  void parse(istream* strm, boost::shared_ptr<OsmMap> map);
 
-  void parseBlob(BlobLocation& bl, istream* strm, shared_ptr<OsmMap> map);
+  void parseBlob(BlobLocation& bl, istream* strm, boost::shared_ptr<OsmMap> map);
 
-  void parseBlob(long headerOffset, istream* strm, shared_ptr<OsmMap> map);
+  void parseBlob(long headerOffset, istream* strm, boost::shared_ptr<OsmMap> map);
 
   /**
    * Reads a uint32 in network order from the stream to determine the PBF size, then reads the
    * PrimitiveBlock from the stream specified into the provided map.
    */
-  void parseElements(istream* strm, const shared_ptr<OsmMap>& map);
+  void parseElements(istream* strm, const boost::shared_ptr<OsmMap>& map);
 
   /**
    * Allows loading of data that isn't complete such as unknown node IDs in a way.
@@ -157,11 +157,11 @@ public:
 
      TODO: this can probably replace read::(QString, map) and readFile can be made private
    */
-  virtual void read(shared_ptr<OsmMap> map);
+  virtual void read(boost::shared_ptr<OsmMap> map);
 
   virtual bool hasMoreElements();
 
-  virtual shared_ptr<Element> readNextElement();
+  virtual boost::shared_ptr<Element> readNextElement();
 
   virtual void finalizePartial();
 
@@ -200,7 +200,7 @@ private:
   //class), which was added to PartialOsmMapReader after it was implemented on this class.  So far
   //I've had difficulty making the substitution work with non-partial reading code, so leaving it
   //as is for now.
-  shared_ptr<OsmMap> _map;
+  boost::shared_ptr<OsmMap> _map;
   int _missingElementCount;
   Tgs::BigMap<long, long> _nodeIdMap;
   Tgs::BigMap<long, long> _relationIdMap;
@@ -247,7 +247,7 @@ private:
 
   void _init(bool useFileId);
 
-  void _addTag(shared_ptr<Element> n, QString k, QString v);
+  void _addTag(boost::shared_ptr<Element> n, QString k, QString v);
 
   double _convertLon(long lon);
 

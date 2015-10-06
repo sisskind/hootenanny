@@ -66,7 +66,7 @@ public:
   {
     OsmReader reader;
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     OsmMap::resetCounters();
     reader.read("test-files/manipulators/WayMergeManipulation.osm", map);
 
@@ -80,7 +80,7 @@ public:
 
     WayMergeManipulation uut(left, right, map, 10.0);
     set<ElementId> ignored1, ignored2;
-    shared_ptr<OsmMap> after(new OsmMap(map));
+    boost::shared_ptr<OsmMap> after(new OsmMap(map));
     uut.applyManipulation(after, ignored1, ignored2);
 
     MapReprojector::reprojectToWgs84(after);

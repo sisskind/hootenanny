@@ -67,7 +67,7 @@ public:
     QTime time;
     time.start();
 
-    shared_ptr<TileWorker> worker(new LocalTileWorker());
+    boost::shared_ptr<TileWorker> worker(new LocalTileWorker());
     TileConflator tc(worker);
     tc.setSources(args[0], args[1]);
     tc.conflate(args[2]);

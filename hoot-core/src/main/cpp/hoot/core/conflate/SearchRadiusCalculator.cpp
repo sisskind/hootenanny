@@ -71,7 +71,7 @@ void SearchRadiusCalculator::setUnifyPreOps(QStringList ops)
   }
 }
 
-void SearchRadiusCalculator::apply(shared_ptr<OsmMap>& map)
+void SearchRadiusCalculator::apply(boost::shared_ptr<OsmMap>& map)
 {
   //make a copy of the map with previously conflated data removed, as the rubber sheeting can't
   //use it

@@ -34,11 +34,11 @@
 namespace hoot
 {
 
-ParentFirstVisitorOp::ParentFirstVisitorOp(shared_ptr<ElementVisitor> v) : _visitor(v)
+ParentFirstVisitorOp::ParentFirstVisitorOp(boost::shared_ptr<ElementVisitor> v) : _visitor(v)
 {
 }
 
-void ParentFirstVisitorOp::apply(shared_ptr<OsmMap> &map)
+void ParentFirstVisitorOp::apply(boost::shared_ptr<OsmMap> &map)
 {
   _clearCache();
 
@@ -85,7 +85,7 @@ void ParentFirstVisitorOp::_clearCache()
   _visited.clear();
 }
 
-void ParentFirstVisitorOp::_visit(shared_ptr<Element> e)
+void ParentFirstVisitorOp::_visit(boost::shared_ptr<Element> e)
 {
   _visited.insert(e->getElementId());
   set<ElementId> parents = _map->getIndex().getParents(e->getElementId());

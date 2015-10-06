@@ -73,7 +73,7 @@ public:
 
     QString output = args[0];
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
 
     for (int i = 1; i < args.size(); i++)
     {
@@ -81,7 +81,7 @@ public:
       loadMap(map, input, false);
     }
 
-    shared_ptr<Geometry> g(GeometryFactory::getDefaultInstance()->createEmptyGeometry());
+    boost::shared_ptr<Geometry> g(GeometryFactory::getDefaultInstance()->createEmptyGeometry());
     int count = 0;
     const RelationMap& rm = map->getRelationMap();
     for (RelationMap::const_iterator it = rm.begin(); it != rm.end(); ++it)
@@ -96,7 +96,7 @@ public:
       LOG_INFO("No polygons were found in the input.");
     }
 
-    shared_ptr<OsmMap> result(new OsmMap());
+    boost::shared_ptr<OsmMap> result(new OsmMap());
     GeometryConverter(result).convertGeometryToElement(g.get(), Status::Unknown1, -1);
 
     saveMap(result, output);

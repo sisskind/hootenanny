@@ -111,7 +111,7 @@ public:
   static QString expectedDbVersion() { return "14:brandon.witham"; }
 
   static const Status DEFAULT_ELEMENT_STATUS;
-  static const Meters DEFAULT_ELEMENT_CIRCULAR_ERROR = 0.0;
+  static constexpr Meters DEFAULT_ELEMENT_CIRCULAR_ERROR = 0.0;
 
   ServicesDb();
 
@@ -169,17 +169,17 @@ public:
    * Returns a results iterator to all OSM elements for a given map and element type in the services
    * database
    */
-  shared_ptr<QSqlQuery> selectAllElements(const ElementType& elementType);
+  boost::shared_ptr<QSqlQuery> selectAllElements(const ElementType& elementType);
 
 
-  shared_ptr<QSqlQuery> selectAllElements(const long elementId, const ElementType& elementType);
+  boost::shared_ptr<QSqlQuery> selectAllElements(const long elementId, const ElementType& elementType);
 
   /**
    * Returns a results iterator to all OSM elements for a given map and element type in the services
    * database.  If limit = 0, no limit will be placed on the number of elements returned.  If offset
    * = 0, no records will be skipped in the returned result set.
    */
-  shared_ptr<QSqlQuery> selectElements(const long elementId, const ElementType& elementType,
+  boost::shared_ptr<QSqlQuery> selectElements(const long elementId, const ElementType& elementType,
                                        const long limit, const long offset);
 
   /**
@@ -187,7 +187,7 @@ public:
    * database.  If limit = 0, no limit will be placed on the number of elements returned.  If offset
    * = 0, no records will be skipped in the returned result set.
    */
-  shared_ptr<QSqlQuery> selectElements_OsmApi(const long elementId,
+  boost::shared_ptr<QSqlQuery> selectElements_OsmApi(const long elementId,
     const ElementType& elementType, const long limit, const long offset);
 
   /**
@@ -325,7 +325,7 @@ public:
 
   void incrementChangesetChangeCount();
 
-  QString extractTagFromRow_OsmApi(shared_ptr<QSqlQuery> row, const int pos);
+  QString extractTagFromRow_OsmApi(boost::shared_ptr<QSqlQuery> row, const int pos);
 
   /**
    * Reserve a unique indentifier for an element of the specified type
@@ -343,46 +343,46 @@ private:
 
   QSqlDatabase _db;
   bool _inTransaction;
-  shared_ptr<QSqlQuery> _closeChangeSet;
-  shared_ptr<QSqlQuery> _insertChangeSet;
-  shared_ptr<QSqlQuery> _insertChangeSetTag;
-  shared_ptr<QSqlQuery> _insertMap;
-  shared_ptr<QSqlQuery> _insertRelationMembers;
-  shared_ptr<QSqlQuery> _insertUser;
-  shared_ptr<QSqlQuery> _insertWayNodes;
-  shared_ptr<QSqlQuery> _selectDbVersion;
-  shared_ptr<QSqlQuery> _selectUserByEmail;
-  shared_ptr<QSqlQuery> _mapExists;
-  shared_ptr<QSqlQuery> _changesetExists;
-  shared_ptr<QSqlQuery> _numTypeElementsForMap;
-  shared_ptr<QSqlQuery> _selectReserveNodeIds;
-  shared_ptr<QSqlQuery> _selectElementsForMap;
-  shared_ptr<QSqlQuery> _selectNodeIdsForWay;
-  shared_ptr<QSqlQuery> _selectMapIds;
-  shared_ptr<QSqlQuery> _selectMembersForRelation;
-  shared_ptr<QSqlQuery> _updateNode;
-  shared_ptr<QSqlQuery> _updateRelation;
-  shared_ptr<QSqlQuery> _updateWay;
+  boost::shared_ptr<QSqlQuery> _closeChangeSet;
+  boost::shared_ptr<QSqlQuery> _insertChangeSet;
+  boost::shared_ptr<QSqlQuery> _insertChangeSetTag;
+  boost::shared_ptr<QSqlQuery> _insertMap;
+  boost::shared_ptr<QSqlQuery> _insertRelationMembers;
+  boost::shared_ptr<QSqlQuery> _insertUser;
+  boost::shared_ptr<QSqlQuery> _insertWayNodes;
+  boost::shared_ptr<QSqlQuery> _selectDbVersion;
+  boost::shared_ptr<QSqlQuery> _selectUserByEmail;
+  boost::shared_ptr<QSqlQuery> _mapExists;
+  boost::shared_ptr<QSqlQuery> _changesetExists;
+  boost::shared_ptr<QSqlQuery> _numTypeElementsForMap;
+  boost::shared_ptr<QSqlQuery> _selectReserveNodeIds;
+  boost::shared_ptr<QSqlQuery> _selectElementsForMap;
+  boost::shared_ptr<QSqlQuery> _selectNodeIdsForWay;
+  boost::shared_ptr<QSqlQuery> _selectMapIds;
+  boost::shared_ptr<QSqlQuery> _selectMembersForRelation;
+  boost::shared_ptr<QSqlQuery> _updateNode;
+  boost::shared_ptr<QSqlQuery> _updateRelation;
+  boost::shared_ptr<QSqlQuery> _updateWay;
 
-  shared_ptr<BulkInsert> _nodeBulkInsert;
+  boost::shared_ptr<BulkInsert> _nodeBulkInsert;
   long _nodesPerBulkInsert;
   double _nodesInsertElapsed;
-  shared_ptr<InternalIdReserver> _nodeIdReserver;
+  boost::shared_ptr<InternalIdReserver> _nodeIdReserver;
 
-  shared_ptr<BulkInsert> _wayBulkInsert;
+  boost::shared_ptr<BulkInsert> _wayBulkInsert;
   long _waysPerBulkInsert;
   double _wayInsertElapsed;
-  shared_ptr<InternalIdReserver> _wayIdReserver;
-  shared_ptr<SequenceIdReserver> _osmApiWayIdReserver;
+  boost::shared_ptr<InternalIdReserver> _wayIdReserver;
+  boost::shared_ptr<SequenceIdReserver> _osmApiWayIdReserver;
 
-  shared_ptr<BulkInsert> _wayNodeBulkInsert;
+  boost::shared_ptr<BulkInsert> _wayNodeBulkInsert;
   long _wayNodesPerBulkInsert;
   double _wayNodesInsertElapsed;
 
-  shared_ptr<BulkInsert> _relationBulkInsert;
+  boost::shared_ptr<BulkInsert> _relationBulkInsert;
   long _relationsPerBulkInsert;
-  shared_ptr<InternalIdReserver> _relationIdReserver;
-  shared_ptr<SequenceIdReserver> _osmApiRelationIdReserver;
+  boost::shared_ptr<InternalIdReserver> _relationIdReserver;
+  boost::shared_ptr<SequenceIdReserver> _osmApiRelationIdReserver;
 
   /// A vector of map ids that are pending index creation
   QVector<long> _pendingMapIndexes;

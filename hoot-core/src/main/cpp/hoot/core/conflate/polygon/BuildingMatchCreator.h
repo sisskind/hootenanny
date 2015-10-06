@@ -65,12 +65,12 @@ public:
    */
   virtual bool isMatchCandidate(ConstElementPtr element, const ConstOsmMapPtr& map);
 
-  virtual shared_ptr<MatchThreshold> getMatchThreshold();
+  virtual boost::shared_ptr<MatchThreshold> getMatchThreshold();
 
 private:
 
-  shared_ptr<BuildingRfClassifier> _rf;
-  shared_ptr<MatchThreshold> _matchThreshold;
+  boost::shared_ptr<BuildingRfClassifier> _rf;
+  boost::shared_ptr<MatchThreshold> _matchThreshold;
 
 };
 

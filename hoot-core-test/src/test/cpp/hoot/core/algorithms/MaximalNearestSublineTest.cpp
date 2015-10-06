@@ -73,20 +73,20 @@ public:
     {
       OsmReader reader;
 
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       reader.setDefaultStatus(Status::Unknown1);
       reader.setUseDataSourceIds(true);
       reader.read("test-files/MaximalNearestSubline.osm", map);
 
-      shared_ptr<OsmMap> map2(new OsmMap(map->getProjection()));
+      boost::shared_ptr<OsmMap> map2(new OsmMap(map->getProjection()));
 
-      shared_ptr<OGRSpatialReference> srs =
+      boost::shared_ptr<OGRSpatialReference> srs =
           MapReprojector::createAeacProjection(map->calculateBounds());
       MapReprojector::reproject(map, srs);
 
       stringstream ss;
 
-      shared_ptr<Way> w;
+      boost::shared_ptr<Way> w;
       w = MaximalNearestSubline::getMaximalNearestSubline(map, map->getWay(-353),
                                                           map->getWay(-313),
         10.0, 10.0);
@@ -112,7 +112,7 @@ public:
       ss << ElementConverter(map).convertToLineString(w)->toString() << endl;
 
 //      {
-//        shared_ptr<OsmMap> wgs84(new OsmMap(map2));
+//        boost::shared_ptr<OsmMap> wgs84(new OsmMap(map2));
 //        MapReprojector::reprojectToWgs84(wgs84);
 //        OsmWriter writer;
 //        QString fn = QString("test-output/algorithms/MaximalNearestSublineTestOutput.osm");
@@ -132,7 +132,7 @@ public:
 
       OsmMap::resetCounters();
 
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       reader.setDefaultStatus(Status::Unknown1);
       reader.read("test-files/MaximalNearestSubline2.osm", map);
 
@@ -140,7 +140,7 @@ public:
 
       long n1 = map->findWays("note", "1")[0];
       long n2 = map->findWays("note", "2")[0];
-      shared_ptr<Way> left = MaximalNearestSubline::getMaximalNearestSubline(map,
+      boost::shared_ptr<Way> left = MaximalNearestSubline::getMaximalNearestSubline(map,
             map->getWay(n1),
             map->getWay(n2),
             10.0, 10.0);
@@ -149,7 +149,7 @@ public:
       map->addWay(left);
       //cout << ElementConverter(map).convertToLineString(left)->toString() << endl;
 
-      shared_ptr<Way> right = MaximalNearestSubline::getMaximalNearestSubline(map,
+      boost::shared_ptr<Way> right = MaximalNearestSubline::getMaximalNearestSubline(map,
             map->getWay(n2),
             map->getWay(n1),
             10.0, 10.0);
@@ -158,7 +158,7 @@ public:
       map->addWay(right);
       //cout << ElementConverter(map).convertToLineString(right)->toString() << endl;
 
-      shared_ptr<Way> w = WayAverager::average(map, right, left);
+      boost::shared_ptr<Way> w = WayAverager::average(map, right, left);
       w->setStatus(Status::Conflated);
       w->setTag("name", "average");
       map->addWay(w);
@@ -167,7 +167,7 @@ public:
       QDir().mkpath("test-output/algorithms/");
 
       {
-        shared_ptr<OsmMap> wgs84(new OsmMap(map));
+        boost::shared_ptr<OsmMap> wgs84(new OsmMap(map));
         MapReprojector::reprojectToWgs84(wgs84);
         OsmWriter writer;
         writer.setIncludeCompatibilityTags(false);
@@ -188,7 +188,7 @@ public:
 
       OsmMap::resetCounters();
 
-      shared_ptr<OsmMap> map(new OsmMap());
+      boost::shared_ptr<OsmMap> map(new OsmMap());
       reader.setDefaultStatus(Status::Unknown1);
       reader.read("test-files/MaximalNearestSubline2.osm", map);
 
@@ -196,7 +196,7 @@ public:
 
       long n3 = map->findWays("note", "3")[0];
       long n4 = map->findWays("note", "4")[0];
-      shared_ptr<Way> left = MaximalNearestSubline::getMaximalNearestSubline(
+      boost::shared_ptr<Way> left = MaximalNearestSubline::getMaximalNearestSubline(
             map,
             map->getWay(n3),
             map->getWay(n4),
@@ -206,7 +206,7 @@ public:
       map->addWay(left);
       //cout << ElementConverter(map).convertToLineString(left)->toString() << endl;
 
-      shared_ptr<Way> right = MaximalNearestSubline::getMaximalNearestSubline(
+      boost::shared_ptr<Way> right = MaximalNearestSubline::getMaximalNearestSubline(
             map,
             map->getWay(n4),
             map->getWay(n3),
@@ -216,7 +216,7 @@ public:
       map->addWay(right);
       //cout << ElementConverter(map).convertToLineString(right)->toString() << endl;
 
-      shared_ptr<Way> w = WayAverager::average(map, right, left);
+      boost::shared_ptr<Way> w = WayAverager::average(map, right, left);
       w->setStatus(Status::Conflated);
       w->setTag("name", "average");
       map->addWay(w);
@@ -226,7 +226,7 @@ public:
       QDir().mkpath("test-output/algorithms/");
 
       {
-        shared_ptr<OsmMap> wgs84(new OsmMap(map));
+        boost::shared_ptr<OsmMap> wgs84(new OsmMap(map));
         MapReprojector::reprojectToWgs84(wgs84);
         OsmWriter writer;
         QString fn = QString("test-output/algorithms/MaximalNearestSublineOneShortTestOutput.osm");

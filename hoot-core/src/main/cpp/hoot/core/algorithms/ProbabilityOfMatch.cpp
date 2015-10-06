@@ -117,7 +117,7 @@ ProbabilityOfMatch::ProbabilityOfMatch()
 }
 
 double ProbabilityOfMatch::attributeScore(const ConstOsmMapPtr& map,
-  const shared_ptr<const Way>& w1, const shared_ptr<const Way>& w2)
+  const boost::shared_ptr<const Way>& w1, const boost::shared_ptr<const Way>& w2)
 {
   double score = 1.0;
 
@@ -155,7 +155,7 @@ double ProbabilityOfMatch::attributeScore(const ConstOsmMapPtr& map,
 }
 
 map<QString, double> ProbabilityOfMatch::calculateStats(const ConstOsmMapPtr& map,
-  const shared_ptr<const Way>& w1, const shared_ptr<const Way>& w2, double portionScore)
+  const boost::shared_ptr<const Way>& w1, const boost::shared_ptr<const Way>& w2, double portionScore)
 {
   double ds = distanceScore(map, w1, w2);
   double dsMax = _dMax;
@@ -178,14 +178,14 @@ map<QString, double> ProbabilityOfMatch::calculateStats(const ConstOsmMapPtr& ma
   return sample;
 }
 
-double ProbabilityOfMatch::distanceScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-                                         const shared_ptr<const Way>& w2)
+double ProbabilityOfMatch::distanceScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+                                         const boost::shared_ptr<const Way>& w2)
 {
   return distanceScore(map, w1, ElementConverter(map).convertToLineString(w2), w2->getCircularError());
 }
 
-double ProbabilityOfMatch::distanceScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-  const shared_ptr<const LineString>& ls2, Meters circularError)
+double ProbabilityOfMatch::distanceScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+  const boost::shared_ptr<const LineString>& ls2, Meters circularError)
 {
   Meters distanceSum = 0.0;
 
@@ -232,8 +232,8 @@ double ProbabilityOfMatch::distanceScore(const ConstOsmMapPtr& map, const shared
   return p;
 }
 
-double ProbabilityOfMatch::lengthScore(const ConstOsmMapPtr &map, const shared_ptr<const Way>& w1,
-  const shared_ptr<const Way> &w2)
+double ProbabilityOfMatch::lengthScore(const ConstOsmMapPtr &map, const boost::shared_ptr<const Way>& w1,
+  const boost::shared_ptr<const Way> &w2)
 {
   Meters l1 = ElementConverter(map).convertToLineString(w1)->getLength();
   Meters l2 = ElementConverter(map).convertToLineString(w2)->getLength();
@@ -245,15 +245,15 @@ double ProbabilityOfMatch::lengthScore(const ConstOsmMapPtr &map, const shared_p
 }
 
 double ProbabilityOfMatch::modelProbability(const ConstOsmMapPtr& map,
-  const shared_ptr<const Way>& w1, const shared_ptr<const Way>& w2, double portionScore)
+  const boost::shared_ptr<const Way>& w1, const boost::shared_ptr<const Way>& w2, double portionScore)
 {
   std::map<QString, double> sample = calculateStats(map, w1, w2, portionScore);
 
   return _model.evaluate(sample);
 }
 
-double ProbabilityOfMatch::parallelScore(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-                                         const shared_ptr<const Way>& w2)
+double ProbabilityOfMatch::parallelScore(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+                                         const boost::shared_ptr<const Way>& w2)
 {
   ParallelWayFilter pwf(map, w1, true);
 
@@ -261,8 +261,8 @@ double ProbabilityOfMatch::parallelScore(const ConstOsmMapPtr& map, const shared
   return pow(cos(delta), _parallelExp);
 }
 
-double ProbabilityOfMatch::probability(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-                                       const shared_ptr<const Way>& w2,
+double ProbabilityOfMatch::probability(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+                                       const boost::shared_ptr<const Way>& w2,
   double portionScore)
 {
   if (_useModel)
@@ -275,8 +275,8 @@ double ProbabilityOfMatch::probability(const ConstOsmMapPtr& map, const shared_p
   }
 }
 
-double ProbabilityOfMatch::expertProbability(const ConstOsmMapPtr& map, const shared_ptr<const Way>& w1,
-                                             const shared_ptr<const Way>& w2)
+double ProbabilityOfMatch::expertProbability(const ConstOsmMapPtr& map, const boost::shared_ptr<const Way>& w1,
+                                             const boost::shared_ptr<const Way>& w2)
 {
   double ds = distanceScore(map, w1, w2);
   // weight this more heavily.
@@ -298,7 +298,7 @@ double ProbabilityOfMatch::expertProbability(const ConstOsmMapPtr& map, const sh
 }
 
 double ProbabilityOfMatch::zipperScore(const ConstOsmMapPtr& /*map*/,
-  const shared_ptr<const Way>& w1, const shared_ptr<const Way>& w2)
+  const boost::shared_ptr<const Way>& w1, const boost::shared_ptr<const Way>& w2)
 {
   double result = 1.0;
 

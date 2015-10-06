@@ -52,7 +52,7 @@ UnlikelyIntersectionRemover::UnlikelyIntersectionRemover()
 
 }
 
-UnlikelyIntersectionRemover::UnlikelyIntersectionRemover(shared_ptr<const OsmMap> map)
+UnlikelyIntersectionRemover::UnlikelyIntersectionRemover(boost::shared_ptr<const OsmMap> map)
 {
   _inputMap = map;
 }
@@ -71,16 +71,16 @@ void UnlikelyIntersectionRemover::_evaluateAndSplit(long intersectingNode, const
   //
 
   // create two groups for the ways
-  vector< shared_ptr<Way> > g1, g2;
+  vector< boost::shared_ptr<Way> > g1, g2;
 
   // put the first way in the first group
   g1.push_back(_result->getWay(*wayIds.begin()));
 
-  shared_ptr<Way> first = g1[0];
+  boost::shared_ptr<Way> first = g1[0];
   // go through all the other ways
   for (set<long>::iterator it = wayIds.begin(); it != wayIds.end(); ++it)
   {
-    shared_ptr<Way> w = _result->getWay(*it);
+    boost::shared_ptr<Way> w = _result->getWay(*it);
     double p = _pIntersection(intersectingNode, first, w);
 
     // if this is a likely intersection with the first way
@@ -109,8 +109,8 @@ void UnlikelyIntersectionRemover::_evaluateAndSplit(long intersectingNode, const
   }
 }
 
-double UnlikelyIntersectionRemover::_pIntersection(long intersectingNode, shared_ptr<Way> w1,
-                                                 shared_ptr<Way> w2)
+double UnlikelyIntersectionRemover::_pIntersection(long intersectingNode, boost::shared_ptr<Way> w1,
+                                                 boost::shared_ptr<Way> w2)
 {
   // pressume it is a valid intersection
   double p = 1.0;
@@ -168,15 +168,15 @@ double UnlikelyIntersectionRemover::_pIntersection(long intersectingNode, shared
   return p;
 }
 
-shared_ptr<OsmMap> UnlikelyIntersectionRemover::removeIntersections(shared_ptr<const OsmMap> map)
+boost::shared_ptr<OsmMap> UnlikelyIntersectionRemover::removeIntersections(boost::shared_ptr<const OsmMap> map)
 {
   UnlikelyIntersectionRemover uir(map);
   return uir.removeIntersections();
 }
 
-shared_ptr<OsmMap> UnlikelyIntersectionRemover::removeIntersections()
+boost::shared_ptr<OsmMap> UnlikelyIntersectionRemover::removeIntersections()
 {
-  shared_ptr<OsmMap> result(new OsmMap(_inputMap));
+  boost::shared_ptr<OsmMap> result(new OsmMap(_inputMap));
   _result = result;
 
   // create a map from nodes to ways
@@ -198,11 +198,11 @@ shared_ptr<OsmMap> UnlikelyIntersectionRemover::removeIntersections()
 }
 
 void UnlikelyIntersectionRemover::_splitIntersection(long intersectingNode,
-                                                     const vector< shared_ptr<Way> >& g2)
+                                                     const vector< boost::shared_ptr<Way> >& g2)
 {
-  shared_ptr<Node> oldNode = _result->getNode(intersectingNode);
+  boost::shared_ptr<Node> oldNode = _result->getNode(intersectingNode);
   // create a copy of the intersecting node
-  shared_ptr<Node> newNode(new Node(oldNode->getStatus(), _result->createNextNodeId(),
+  boost::shared_ptr<Node> newNode(new Node(oldNode->getStatus(), _result->createNextNodeId(),
     oldNode->toCoordinate(), oldNode->getCircularError()));
   newNode->setTags(oldNode->getTags());
   _result->addNode(newNode);
@@ -216,7 +216,7 @@ void UnlikelyIntersectionRemover::_splitIntersection(long intersectingNode,
   }
 }
 
-void UnlikelyIntersectionRemover::apply(shared_ptr<OsmMap>& map)
+void UnlikelyIntersectionRemover::apply(boost::shared_ptr<OsmMap>& map)
 {
   map = removeIntersections(map);
 }

@@ -44,7 +44,7 @@ MapCleaner::MapCleaner()
 {
 }
 
-void MapCleaner::apply(shared_ptr<OsmMap>& map)
+void MapCleaner::apply(boost::shared_ptr<OsmMap>& map)
 {
   /// @todo move this to a config file.
   // pragmatically remove "bad" data in OSM afghanistan

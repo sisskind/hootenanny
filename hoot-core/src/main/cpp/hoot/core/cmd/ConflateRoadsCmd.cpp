@@ -74,7 +74,7 @@ public:
       throw HootException(QString("%1 takes three parameters.").arg(getName()));
     }
 
-    shared_ptr<OsmMap> map(new OsmMap());
+    boost::shared_ptr<OsmMap> map(new OsmMap());
     loadMap(map, args[0], false, Status::Unknown1);
     loadMap(map, args[1], false, Status::Unknown2);
 
@@ -83,7 +83,7 @@ public:
     conflator.loadSource(map);
     conflator.conflate();
 
-    shared_ptr<OsmMap> result(new OsmMap(conflator.getBestMap()));
+    boost::shared_ptr<OsmMap> result(new OsmMap(conflator.getBestMap()));
 
     // Apply any user specified operations.
     NamedOp(conf().getList(postOpsKey(), "")).apply(result);

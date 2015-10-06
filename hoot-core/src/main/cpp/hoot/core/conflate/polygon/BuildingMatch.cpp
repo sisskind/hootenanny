@@ -59,7 +59,7 @@
 namespace hoot
 {
 
-BuildingMatch::BuildingMatch(const ConstOsmMapPtr& map, shared_ptr<const BuildingRfClassifier> rf,
+BuildingMatch::BuildingMatch(const ConstOsmMapPtr& map, boost::shared_ptr<const BuildingRfClassifier> rf,
   const ElementId& eid1, const ElementId& eid2, ConstMatchThresholdPtr mt) :
   Match(mt),
   _eid1(eid1),
@@ -69,7 +69,7 @@ BuildingMatch::BuildingMatch(const ConstOsmMapPtr& map, shared_ptr<const Buildin
   _p = _rf->classify(map, _eid1, _eid2);
 }
 
-map<QString, double> BuildingMatch::getFeatures(const shared_ptr<const OsmMap>& m) const
+map<QString, double> BuildingMatch::getFeatures(const boost::shared_ptr<const OsmMap>& m) const
 {
   return _rf->getFeatures(m, _eid1, _eid2);
 }

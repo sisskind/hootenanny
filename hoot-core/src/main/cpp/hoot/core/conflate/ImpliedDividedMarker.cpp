@@ -54,12 +54,12 @@ ImpliedDividedMarker::ImpliedDividedMarker()
 
 }
 
-ImpliedDividedMarker::ImpliedDividedMarker(shared_ptr<const OsmMap> map)
+ImpliedDividedMarker::ImpliedDividedMarker(boost::shared_ptr<const OsmMap> map)
 {
   _inputMap = map;
 }
 
-bool ImpliedDividedMarker::_dividerSandwhich(shared_ptr<Way> w)
+bool ImpliedDividedMarker::_dividerSandwhich(boost::shared_ptr<Way> w)
 {
   long firstNodeId = w->getNodeId(0);
   long lastNodeId = w->getLastNodeId();
@@ -83,7 +83,7 @@ bool ImpliedDividedMarker::_hasDividerConnected(long nodeId, long excludedWayId)
   {
     if (*it != excludedWayId)
     {
-      shared_ptr<const Way> w = _result->getWay(*it);
+      boost::shared_ptr<const Way> w = _result->getWay(*it);
       if (w->getTags()["divider"] == "yes")
       {
         return true;
@@ -94,23 +94,23 @@ bool ImpliedDividedMarker::_hasDividerConnected(long nodeId, long excludedWayId)
   return false;
 }
 
-shared_ptr<OsmMap> ImpliedDividedMarker::markDivided(shared_ptr<const OsmMap> map)
+boost::shared_ptr<OsmMap> ImpliedDividedMarker::markDivided(boost::shared_ptr<const OsmMap> map)
 {
   ImpliedDividedMarker t(map);
   return t.markDivided();
 }
 
-shared_ptr<OsmMap> ImpliedDividedMarker::markDivided()
+boost::shared_ptr<OsmMap> ImpliedDividedMarker::markDivided()
 {
-  shared_ptr<OsmMap> result(new OsmMap(_inputMap));
+  boost::shared_ptr<OsmMap> result(new OsmMap(_inputMap));
   _result = result;
 
   // create a map from nodes to ways
   _n2w.reset(new NodeToWayMap(*_inputMap));
 
   // find all the tunnels & bridges
-  shared_ptr<WayFilter> tunnelFilter(new TagFilter(Filter::KeepMatches, "tunnel", "yes"));
-  shared_ptr<WayFilter> bridgeFilter(new TagFilter(Filter::KeepMatches, "bridge", "yes"));
+  boost::shared_ptr<WayFilter> tunnelFilter(new TagFilter(Filter::KeepMatches, "tunnel", "yes"));
+  boost::shared_ptr<WayFilter> bridgeFilter(new TagFilter(Filter::KeepMatches, "bridge", "yes"));
   WayFilterChain chain(tunnelFilter, bridgeFilter);
   chain.setAggregator(WayFilterChain::And);
 
@@ -119,7 +119,7 @@ shared_ptr<OsmMap> ImpliedDividedMarker::markDivided()
   // go through each way
   for (size_t i = 0; i < wayIds.size(); i++)
   {
-    shared_ptr<Way> w = _result->getWay(wayIds[i]);
+    boost::shared_ptr<Way> w = _result->getWay(wayIds[i]);
     // if the way has a divided road on both ends
     if (_dividerSandwhich(w))
     {
@@ -133,7 +133,7 @@ shared_ptr<OsmMap> ImpliedDividedMarker::markDivided()
   return result;
 }
 
-void ImpliedDividedMarker::apply(shared_ptr<OsmMap>& map)
+void ImpliedDividedMarker::apply(boost::shared_ptr<OsmMap>& map)
 {
   map = markDivided(map);
 }
