@@ -672,13 +672,12 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
 {
   unsigned int memberSequenceIndex = 1;
   const ElementIdDatatype relationId = relation->getId();
-  const ElementIdDatatype dbRelationId; //= _idMappings.relationIdMap->at(relationId);
   const std::vector<RelationData::Entry> relationMembers = relation->getMembers();
   rocksdb::DB* knownElementMap = nullptr;
 
   std::string value;
   if ( _idMappings.relationIdMap->Get(rocksdb::ReadOptions(),
-    boost::lexical_cast<std::string>(relationId), &value).IsNotFound() == false )
+    boost::lexical_cast<std::string>(relationId), &value).IsNotFound() == true )
   {
     throw HootException("Should have found relation ID mapping but did not");
   }
