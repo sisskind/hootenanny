@@ -48,6 +48,7 @@
 #include <hoot/core/elements/RelationData.h>
 #include <hoot/core/elements/Tags.h>
 
+#include <rocksdb/db.h>
 #include <tgs/BigContainers/BigMap.h>
 
 namespace hoot
@@ -123,7 +124,8 @@ protected:
   struct _IdMappings
   {
     ElementIdDatatype nextNodeId;
-    boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > nodeIdMap;
+    //boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > nodeIdMap;
+    rocksdb::DB* nodeIdMap;
 
     ElementIdDatatype nextWayId;
     boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > wayIdMap;

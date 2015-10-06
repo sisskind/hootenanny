@@ -34,6 +34,7 @@
 #include <vector>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <QtCore/QString>
 #include <QtCore/QTemporaryFile>
@@ -106,7 +107,8 @@ void PostgresqlDumpfileWriter::open(QString url)
   _changesetData.changesInChangeset = 0;
 
   _idMappings.nextNodeId      = _configData.startingNodeId;
-  _idMappings.nodeIdMap.reset();
+  //_idMappings.nodeIdMap.reset();
+  _idMappings.nodeIdMap = NULL;
 
   _idMappings.nextWayId       = _configData.startingWayId;
   _idMappings.wayIdMap.reset();
@@ -121,7 +123,10 @@ void PostgresqlDumpfileWriter::open(QString url)
 void PostgresqlDumpfileWriter::close()
 {
   // Not writing any new data, can drop ID mappings
-  _idMappings.nodeIdMap.reset();
+  //_idMappings.nodeIdMap.reset();
+  delete _idMappings.nodeIdMap;
+  _idMappings.nodeIdMap = NULL;
+
   _idMappings.wayIdMap.reset();
   _idMappings.relationIdMap.reset();
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
@@ -230,20 +235,32 @@ void PostgresqlDumpfileWriter::writePartial(const ConstNodePtr& n)
   if ( _writeStats.nodesWritten == 0 )
   {
     _createNodeTables();
+    /*
     _idMappings.nodeIdMap = boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >(
           new Tgs::BigMap<ElementIdDatatype, ElementIdDatatype>(_configData.maxMapElements));
+    */
+    rocksdb::Options options;
+    options.IncreaseParallelism(6);   // Set as the VM testing on has 6 VCPUs, would need to make configurable
+    options.OptimizeLevelStyleCompaction();
+    options.create_if_missing = true;
+    const rocksdb::Status rocksStatus = rocksdb::DB::Open(options, "/tmp/node_id_map", &(_idMappings.nodeIdMap));
+    if ( rocksStatus.ok() == false )
+    {
+      throw HootException("Could not open rocksdb for node id map");
+    }
   }
-
-  ElementIdDatatype nodeDbId;
-
-  // Do we already know about this node?
-  if ( _idMappings.nodeIdMap->contains(n->getId()) == true )
+  else
   {
-    throw hoot::NotImplementedException("Writer class does not support update operations");
+    // Do we already know about this node?
+    std::string value;
+    if ( _idMappings.nodeIdMap->KeyMayExist(rocksdb::ReadOptions(),
+        boost::lexical_cast<std::string>(n->getId()), &value) == true )
+    {
+      throw hoot::NotImplementedException("Writer class does not support update operations");
+    }
   }
 
-  // Have to establish new mapping
-  nodeDbId = _establishNewIdMapping(n->getElementId());
+  ElementIdDatatype nodeDbId = _establishNewIdMapping(n->getElementId());
 
   _writeNodeToTables(n, nodeDbId);
 
@@ -408,7 +425,7 @@ PostgresqlDumpfileWriter::ElementIdDatatype PostgresqlDumpfileWriter::_establish
   {
   case ElementType::Node:
     dbIdentifier = _idMappings.nextNodeId;
-    _idMappings.nodeIdMap->insert(sourceId.getId(), dbIdentifier);
+    //_idMappings.nodeIdMap->insert(sourceId.getId(), dbIdentifier);
     _idMappings.nextNodeId++;
     break;
 
@@ -560,6 +577,7 @@ void PostgresqlDumpfileWriter::_writeWaynodesToTables( const ElementIdDatatype d
   for ( std::vector<long>::const_iterator it = waynodeIds.begin();
       it != waynodeIds.end(); ++it )
   {
+    /*
     if ( _idMappings.nodeIdMap->contains(*it) == true )
     {
       const QString dbNodeIdString = QString::number( _idMappings.nodeIdMap->at(*it) );
@@ -572,6 +590,7 @@ void PostgresqlDumpfileWriter::_writeWaynodesToTables( const ElementIdDatatype d
       LOG_WARN( QString("Way %1 has reference to unknown node ID %2").arg(dbWayId, *it) );
       throw NotImplementedException("Unresolved waynodes are not supported");
     }
+    */
 
     ++nodeIndex;
   }
@@ -624,7 +643,7 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
     switch ( memberElementId.getType().getEnum() )
     {
     case ElementType::Node:
-      knownElementMap = _idMappings.nodeIdMap;
+      //knownElementMap = _idMappings.nodeIdMap;
       break;
     case ElementType::Way:
       knownElementMap = _idMappings.wayIdMap;
