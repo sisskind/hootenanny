@@ -32,6 +32,7 @@
 #include <math.h>   // for ::round (cmath header is C++11 only)
 #include <utility>  // For std::pair
 #include <vector>
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
@@ -73,6 +74,7 @@ PostgresqlDumpfileWriter::PostgresqlDumpfileWriter():
 
   _idMappings.nodeIdMap = nullptr;
   _idMappings.wayIdMap = nullptr;
+  _idMappings.relationIdMap = nullptr;
 
   _changesetData.changesetId = 1;
   _changesetData.changesInChangeset = 0;
@@ -124,7 +126,11 @@ void PostgresqlDumpfileWriter::open(QString url)
   }
 
   _idMappings.nextRelationId  = _configData.startingRelationId;
-  _idMappings.relationIdMap.reset();
+  if ( _idMappings.relationIdMap != nullptr )
+  {
+    delete _idMappings.relationIdMap;
+    _idMappings.relationIdMap = nullptr;
+  }
 
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
   _unresolvedRefs.unresolvedRelationRefs.reset();
@@ -145,7 +151,12 @@ void PostgresqlDumpfileWriter::close()
     _idMappings.wayIdMap = nullptr;
   }
 
-  _idMappings.relationIdMap.reset();
+  if ( _idMappings.relationIdMap != nullptr )
+  {
+    delete _idMappings.relationIdMap;
+    _idMappings.relationIdMap = nullptr;
+  }
+
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
   _unresolvedRefs.unresolvedRelationRefs.reset();
 
@@ -335,21 +346,28 @@ void PostgresqlDumpfileWriter::writePartial(const ConstRelationPtr& r)
   if ( _writeStats.relationsWritten == 0 )
   {
     _createRelationTables();
-
-    _idMappings.relationIdMap = boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >(
-          new Tgs::BigMap<ElementIdDatatype, ElementIdDatatype>(_configData.maxMapElements));
+    rocksdb::Options options;
+    options.IncreaseParallelism(6);   // Set as the VM testing on has 6 VCPUs, would need to make configurable
+    options.OptimizeLevelStyleCompaction();
+    options.create_if_missing = true;
+    if ( rocksdb::DB::Open(options, "/tmp/relation_id_map", &(_idMappings.relationIdMap)).ok() == false )
+    {
+      throw HootException("Could not open rocksdb for relation id map");
+    }
   }
-
-  ElementIdDatatype relationDbId;
-
-  // Do we already know about this node?
-  if ( _idMappings.relationIdMap->contains(r->getId()) == true )
+  else
   {
-    throw hoot::NotImplementedException("Writer class does not support update operations");
+    // Do we already know about this relation?
+    std::string value;
+    if ( _idMappings.relationIdMap->Get(rocksdb::ReadOptions(),
+        boost::lexical_cast<std::string>(r->getId()), &value).IsNotFound() == false )
+    {
+      throw hoot::NotImplementedException("Writer class does not support update operations");
+    }
   }
 
   // Have to establish new mapping
-  relationDbId = _establishNewIdMapping(r->getElementId());
+  const ElementIdDatatype relationDbId = _establishNewIdMapping(r->getElementId());
 
   _writeRelationToTables( relationDbId );
 
@@ -459,7 +477,8 @@ PostgresqlDumpfileWriter::ElementIdDatatype PostgresqlDumpfileWriter::_establish
     break;
   case ElementType::Relation:
     dbIdentifier = _idMappings.nextRelationId;
-    _idMappings.relationIdMap->insert(sourceId.getId(), dbIdentifier);
+    _idMappings.relationIdMap->Put(rocksdb::WriteOptions(), boost::lexical_cast<std::string>(sourceId.getId()),
+        boost::lexical_cast<std::string>(dbIdentifier));
     _idMappings.nextRelationId++;
     break;
   default:
@@ -653,9 +672,17 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
 {
   unsigned int memberSequenceIndex = 1;
   const ElementIdDatatype relationId = relation->getId();
-  const ElementIdDatatype dbRelationId = _idMappings.relationIdMap->at(relationId);
+  const ElementIdDatatype dbRelationId; //= _idMappings.relationIdMap->at(relationId);
   const std::vector<RelationData::Entry> relationMembers = relation->getMembers();
-  boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > knownElementMap;
+  rocksdb::DB* knownElementMap = nullptr;
+
+  std::string value;
+  if ( _idMappings.relationIdMap->Get(rocksdb::ReadOptions(),
+    boost::lexical_cast<std::string>(relationId), &value).IsNotFound() == false )
+  {
+    throw HootException("Should have found relation ID mapping but did not");
+  }
+  const ElementIdDatatype dbRelationId = std::stol(value);
 
   for ( vector<RelationData::Entry>::const_iterator it = relationMembers.begin();
       it != relationMembers.end(); ++it )
@@ -665,10 +692,10 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
     switch ( memberElementId.getType().getEnum() )
     {
     case ElementType::Node:
-      //knownElementMap = _idMappings.nodeIdMap;
+      knownElementMap = _idMappings.nodeIdMap;
       break;
     case ElementType::Way:
-      //knownElementMap = _idMappings.wayIdMap;
+      knownElementMap = _idMappings.wayIdMap;
       break;
     case ElementType::Relation:
       knownElementMap = _idMappings.relationIdMap;
@@ -678,10 +705,16 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
       break;
     }
 
+    std::string value;
+    /*
     if ( (knownElementMap != boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >())
           && (knownElementMap->contains(memberElementId.getId()) == true) )
+    */
+    if ( (knownElementMap != nullptr) &&
+         (knownElementMap->Get(rocksdb::ReadOptions(),
+            boost::lexical_cast<std::string>(memberElementId.getId()), &value).IsNotFound() == false) )
     {
-      _writeRelationMember(dbRelationId, *it, knownElementMap->at(memberElementId.getId()), memberSequenceIndex);
+      _writeRelationMember(dbRelationId, *it, std::stol(value), memberSequenceIndex);
     }
     else
     {
