@@ -267,7 +267,7 @@ void PostgresqlDumpfileWriter::writePartial(const ConstNodePtr& n)
     options.IncreaseParallelism(6);   // Set as the VM testing on has 6 VCPUs, would need to make configurable
     options.OptimizeLevelStyleCompaction();
     options.create_if_missing = true;
-    const rocksdb::Status rocksStatus = rocksdb::DB::Open(options, "/tmp/node_id_map", &(_idMappings.nodeIdMap));
+    const rocksdb::Status rocksStatus = rocksdb::DB::Open(options, "/planetstore/Europe/node_id_map", &(_idMappings.nodeIdMap));
     if ( rocksStatus.ok() == false )
     {
       throw HootException("Could not open rocksdb for node id map");
@@ -308,7 +308,7 @@ void PostgresqlDumpfileWriter::writePartial(const ConstWayPtr& w)
     options.IncreaseParallelism(6);   // Set as the VM testing on has 6 VCPUs, would need to make configurable
     options.OptimizeLevelStyleCompaction();
     options.create_if_missing = true;
-    if ( rocksdb::DB::Open(options, "/tmp/way_id_map", &(_idMappings.wayIdMap)).ok() == false )
+    if ( rocksdb::DB::Open(options, "/planetstore/Europe/way_id_map", &(_idMappings.wayIdMap)).ok() == false )
     {
       throw HootException("Could not open rocksdb for way id map");
     }
@@ -350,7 +350,7 @@ void PostgresqlDumpfileWriter::writePartial(const ConstRelationPtr& r)
     options.IncreaseParallelism(6);   // Set as the VM testing on has 6 VCPUs, would need to make configurable
     options.OptimizeLevelStyleCompaction();
     options.create_if_missing = true;
-    if ( rocksdb::DB::Open(options, "/tmp/relation_id_map", &(_idMappings.relationIdMap)).ok() == false )
+    if ( rocksdb::DB::Open(options, "/planetstore/Europe/relation_id_map", &(_idMappings.relationIdMap)).ok() == false )
     {
       throw HootException("Could not open rocksdb for relation id map");
     }
