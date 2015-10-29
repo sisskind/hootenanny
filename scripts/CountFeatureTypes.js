@@ -12,12 +12,12 @@ var walk = function(dir) {
                 var path = dir + "/" + file;
                 fs.stat(path, function(err, stat) {
                     if (stat && stat.isDirectory()) {
-                        if (path.toLowerCase().indexOf("osm") > -1 || path.toLowerCase().indexOf("mgcp") > -1 || path.toLowerCase().indexOf("ufd") > -1) {
-                            dive(path); // it's a directory, let's explore recursively
-                        }
+                        dive(path); // it's a directory, let's explore recursively
                     } else {
-                        if (path.split('.').pop().toLowerCase() === 'osm' || path.split('.').pop().toLowerCase() === 'shp' || path.split('.').pop().toLowerCase() === 'pbf') {
-                            processFile(path);
+                        if (findFormat(path) === "osm" || findFormat(path) === "mgcp" || findFormat(path) === "ufd") {
+                            if (path.split('.').pop().toLowerCase() === 'osm' || path.split('.').pop().toLowerCase() === 'shp' || path.split('.').pop().toLowerCase() === 'pbf') {
+                                processFile(path);
+                            }
                         }
                     }
                 });
