@@ -5,7 +5,7 @@ This service depends on the Hootenanny environment being configured, so
 
     cd hoot
     source SetupEnv.sh
-should be run before starting the server.  
+should be run before starting the server.
 The MapEdit export server is built with Node.js.  Node and the node package manager are required.  To install dependencies, run
 
     cd mapedit-export-server
@@ -13,27 +13,37 @@ The MapEdit export server is built with Node.js.  Node and the node package mana
 To start the service run
 
     npm start
-The service uses a json configuration file, `config.json`.  Any valid Hootenanny input source string (*i.e.* OGR datasource) can be configured as an export datasource.  Most commonly this will be a PostGIS Render Db generated with `osm2pgsql`.  *Note: this is the only datasource that will export with the schema/format combination of OSM/Shapefile and OSM/FileGeodatabase.*
+The service uses a json configuration file, `config.json`.  Any valid Hootenanny input source string (*i.e.* OGR datasource) can be configured as an export datasource.  Most commonly this will be a PostGIS render db generated with `osm2pgsql`.  *Note: this is the only datasource that will export with the schema/format combination of OSM/Shapefile and OSM/FileGeodatabase.*
+
 ```
 {
   "datasources": {
-      "OpenStreetMap": "PG:dbname='osmsyria' host='192.168.33.12' port='5432' user='vagrant' password=''",
-      "MapEdit": "PG:dbname='ogrsyria' host='192.168.33.12' port='5432' user='vagrant' password=''",
-      "XML": "syriasample.osm"
+    "OpenStreetMap": {
+      "conn": "PG:dbname='osmsyria' host='192.168.33.12' port='5432' user='vagrant' password=''"
+    },
+    "3785": {
+      "conn": "PG:dbname='osmsyria_3785' host='192.168.33.12' port='5432' user='vagrant' password=''"
+    },
+    "MapEdit": {
+      "conn": "PG:dbname='ogrsyria' host='192.168.33.12' port='5432' user='vagrant' password=''"
+    },
+    "XML": {
+      "conn": "syriasample.osm"
+    }
   },
   "formats": {
-      "OSM XML": ".osm",
-      "Shapefile": ".shp",
-      "File Geodatabase": ".gdb"
+    "OSM XML": ".osm",
+    "Shapefile": ".shp",
+    "File Geodatabase": ".gdb"
   },
   "schemas": {
-      "OSM": "translations/RenderDb_to_ESRI.js",
-      "TDSv40": "translations/TDSv40.js",
-      "TDSv61": "translations/TDSv61.js",
-      "MGCP": "translations/MGCP_TRD4.js"
+    "OSM": "translations/RenderDb_to_ESRI.js",
+    "TDSv40": "translations/TDSv40.js",
+    "TDSv61": "translations/TDSv61.js",
+    "MGCP": "translations/MGCP_TRD4.js"
   },
   "settings": {
-      "cleanupDelay": 30000
+    "cleanupDelay": 30000
   }
 }
 ```
