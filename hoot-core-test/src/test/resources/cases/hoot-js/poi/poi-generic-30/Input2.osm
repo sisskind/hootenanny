@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-1044954' action='modify' visible='true' lat='48.10652' lon='11.66883'>
+    <tag k='name' v='Pirajibu' />
+    <tag k='railway' v='station' />
+  </node>
+</osm>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-1044952' action='modify' visible='true' lat='48.1069059' lon='11.6689581'>
+    <tag k='barrier' v='toll_booth' />
+    <tag k='name' v='Alumínio' />
+  </node>
+</osm>
