@@ -20,161 +20,27 @@
     {
         "isA": "railway",
         "name": "railway=halt",
-        "objectType": "tag",
-        "similarTo": [
-            {
-                "name": "public_transport=platform",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            },
-            {
-                "name": "public_transport=stop_position",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            },
-            {
-                "name": "railway=station",
-                "weight": 0.8
-            },
-            {
-                "name": "railway=subway_entrance",
-                "weight": 0.8
-            },
-            {
-                "name": "station=subway_entrance",
-                "weight": 0.8
-            },
-            {
-                "name": "station=light_rail",
-                "weight": 0.8
-            },
-            {
-                "name": "transport=station",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            }
-        ]
+        "objectType": "tag"
     },
     {
         "isA": "railway",
         "name": "railway=platform",
-        "objectType": "tag",
-        "similarTo": [
-            {
-                "name": "public_transport=platform",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            },
-            {
-                "name": "public_transport=stop_position",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            },
-            {
-                "name": "railway=station",
-                "weight": 0.7
-            },
-            {
-                "name": "railway=subway_entrance",
-                "weight": 0.6
-            },
-            {
-                "name": "station=subway_entrance",
-                "weight": 0.6
-            },
-            {
-                "name": "station=light_rail",
-                "weight": 0.7
-            },
-            {
-                "name": "transport=station",
-                "weight": [
-                    0.7,
-                    0.3
-                ]
-            }
-        ]
+        "objectType": "tag"
     },
     {
         "isA": "railway",
         "name": "railway=station",
-        "objectType": "tag",
-        "similarTo": [
-            {
-                "name": "building=train_station",
-                "weight": 0.8
-            },
-            {
-                "name": "railway=halt",
-                "weight": 0.8
-            },
-            {
-                "name": "railway=subway_entrance",
-                "weight": 0.8
-            },
-            {
-                "name": "station=station",
-                "weight": [
-                    0.8,
-                    0.5
-                ]
-            },
-            {
-                "name": "station=subway_entrance",
-                "weight": 0.8
-            },
-            {
-                "name": "station=light_rail",
-                "weight": 0.8
-            },
-            {
-                "name": "transport=station",
-                "weight": [
-                    0.8,
-                    0.5
-                ]
-            }
-        ]
+        "objectType": "tag"
     },
     {
         "isA": "railway",
         "name": "railway=stop",
-        "objectType": "tag",
-        "similarTo": {
-            "name": "railway=halt",
-            "weight": 0.7
-        }
+        "objectType": "tag"
     },
     {
         "isA": "railway",
         "name": "railway=subway_entrance",
         "objectType": "tag",
-        "similarTo": [
-            {
-                "name": "station=subway_entrance",
-                "weight": 0.8
-            },
-            {
-                "name": "station=light_rail",
-                "weight": 0.8
-            },
-            {
-                "name": "transport=station",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            }
-        ]
+        "aliases": [ "station=subway_entrance" ]
     }
 ]

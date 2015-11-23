@@ -14,10 +14,5 @@
         "isA": "transport",
         "name": "transport=*",
         "objectType": "tag"
-    },
-    {
-        "isA": "transport",
-        "name": "transport=station",
-        "objectType": "tag"
     }
 ]

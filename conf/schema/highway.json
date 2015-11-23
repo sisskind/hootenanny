@@ -20,17 +20,7 @@
         "name": "highway=bus_stop",
         "objectType": "tag",
         "similarTo": [
-            {
-                "name": "amenity=bus_station",
-                "weight": 0.8
-            },
-            {
-                "name": "public_transport=stop_position",
-                "weight": [
-                    0.8,
-                    0.4
-                ]
-            }
+            { "name": "amenity=bus_station", "weight": 0.8 }
         ]
     },
     {

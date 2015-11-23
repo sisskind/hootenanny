@@ -8,10 +8,10 @@
         "isA": "public_transport=platform",
         "name": "bus_platform",
         "objectType": "compound",
-        "similarTo": {
-            "name": "highway=bus_stop",
-            "weight": 1
-        },
+        "similarTo": [
+            { "name": "highway=bus_stop", "weight": 1 },
+            { "name": "railway_platform", "weight": 0.3 }
+        ],
         "tags": [
             [
                 "public_transport=platform",
@@ -32,10 +32,10 @@
         "isA": "public_transport=station",
         "name": "bus_station",
         "objectType": "compound",
-        "similarTo": {
-            "name": "amenity=bus_station",
-            "weight": 1
-        },
+        "similarTo": [
+            { "name": "amenity=bus_station", "weight": 1 },
+            { "name": "railway_station", "weight": 0.3 }
+        ],
         "tags": [
             [
                 "public_transport=station",
@@ -45,6 +45,19 @@
                 "public_transport=station",
                 "amenity=bus_station"
             ]
+        ]
+    },
+    {
+        "isA": "public_transport=stop_position",
+        "name": "bus_stop",
+        "objectType": "compound",
+        "tags": [
+            [ "public_transport=stop_position", "bus=yes" ],
+            [ "public_transport=stop_position", "highway=bus_stop" ]
+        ],
+        "similarTo": [
+            { "name": "highway=bus_stop", "weight": 1.0 },
+            { "name": "railway_stop", "weight": 0.3 }
         ]
     },
     {
@@ -69,10 +82,7 @@
         "isA": "public_transport",
         "name": "public_transport=platform",
         "objectType": "tag",
-        "similarTo": {
-            "name": "transport=station",
-            "weight": 0.8
-        }
+        "similarTo": { "name": "public_transport=station", "weight": 0.3 }
     },
     {
         "geometries": [
@@ -81,27 +91,19 @@
         "isA": "public_transport",
         "name": "public_transport=station",
         "objectType": "tag",
-        "similarTo": {
-            "name": "transport=station",
-            "weight": 0.9
-        }
+        "aliases": [ "transport=station", "station=station" ],
+        "similarTo": [
+            { "name": "building=transportation", "weight": 0.7 }
+        ]
     },
     {
-        "geometries": [
-            "node"
-        ],
+        "geometries": [ "node" ],
         "isA": "public_transport",
         "name": "public_transport=stop_position",
         "objectType": "tag",
         "similarTo": [
-            {
-                "name": "public_transport=platform",
-                "weight": 0.8
-            },
-            {
-                "name": "public_transport=station",
-                "weight": 0.7
-            }
+            { "name": "public_transport=platform", "weight": 0.8 },
+            { "name": "public_transport=station", "weight": 0.7 }
         ]
     },
     {
@@ -118,10 +120,8 @@
             "weight": 0.9
         },
         "tags": [
-            [
-                "public_transport=platform",
-                "train=yes"
-            ]
+            [ "public_transport=platform", "train=yes" ],
+            [ "public_transport=platform", "railway=platform" ]
         ]
     },
     {
@@ -132,15 +132,32 @@
         "isA": "public_transport=station",
         "name": "railway_station",
         "objectType": "compound",
-        "similarTo": {
-            "name": "railway=station",
-            "weight": 1
-        },
+        "similarTo": [
+            { "name": "railway=station", "weight": 1 },
+            { "name": "building=train_station", "weight": 0.7 },
+            { "name": "station=light_rail", "weight": 0.7 },
+            { "name": "station=station", "weight": [ 0.7, 0.5 ] },
+            { "name": "transport=station", "weight": [ 0.7, 0.5 ] },
+            { "name": "railway=subway_entrance", "weight": 0.4 },
+            { "name": "railway_platform", "weight": 0.4 }
+        ],
         "tags": [
-            [
-                "public_transport=station",
-                "train=yes"
-            ]
+            [ "public_transport=station", "train=yes" ],
+            [ "public_transport=station", "railway=station" ]
+        ]
+    },
+    {
+        "isA": "public_transport=stop_position",
+        "name": "railway_stop",
+        "objectType": "compound",
+        "tags": [
+            [ "public_transport=stop_position", "train=yes" ],
+            [ "public_transport=stop_position", "railway=stop" ]
+        ],
+        "similarTo": [
+            { "name": "railway=halt", "weight": 0.8 },
+            { "name": "railway=stop", "weight": 1.0 },
+            { "name": "railway_station", "weight": 0.5 }
         ]
     }
 ]

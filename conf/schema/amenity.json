@@ -266,30 +266,7 @@
     {
         "isA": "amenity",
         "name": "amenity=bus_station",
-        "objectType": "tag",
-        "similarTo": [
-            {
-                "name": "public_transport=station",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            },
-            {
-                "name": "building=transportation",
-                "weight": [
-                    0.9,
-                    0.4
-                ]
-            },
-            {
-                "name": "transport=station",
-                "weight": [
-                    0.8,
-                    0.3
-                ]
-            }
-        ]
+        "objectType": "tag"
     },
     {
         "isA": "amenity",

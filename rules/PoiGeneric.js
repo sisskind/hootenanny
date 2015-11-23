@@ -42,6 +42,7 @@ var weightedWordDistance = new hoot.NameExtractor(
             new hoot.LevenshteinDistance(
                 {"levenshtein.distance.alpha": 1.5}))));
 
+// distance values in meters
 var distances = [
     {k:'historic',                      match:100,      review:200},
     {k:'place',                         match:500,      review:1000},
@@ -164,7 +165,7 @@ function additiveScore(map, e1, e2) {
 
     var reason = result.reasons;
 
-    var searchRadius = Math.max(exports.getSearchRadius(e1), 
+    var searchRadius = Math.max(exports.getSearchRadius(e1),
         exports.getSearchRadius(e2));
 
     var d = distance(e1, e2);
@@ -293,6 +294,7 @@ function additiveScore(map, e1, e2) {
 
     hoot.debug(reason);
     hoot.debug(score);
+    hoot.log(poiDistance);
 
     return result;
 }
