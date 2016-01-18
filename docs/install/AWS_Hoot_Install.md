@@ -37,22 +37,7 @@ Start by checking out the hoot code, then changing to the branch by typing:
             
         Then re-run step 10
     11) sudo ./AWSProvision-Ubuntu1404.sh
+        When interactive menus are displayed, just press [ENTER] to select default
     12) source /usr/local/hoot/SetupEnv.sh
 	
 To access the web pages you access the site in your [local Chrome browser](http://localhost:8080/hootenanny-id).
-
-TO UPDATE HOOT CODE:
-If you want the latest hoot code, connect to the AWS Instance via ssh to build and redeploy to Tomcat:
-
-    01) ssh to AWS Instance
-    02) cd /usr/local/hoot
-    03) source SetupEnv.sh
-	04) git status # Check to see which branch is selected
-		05) OPTIONAL: Change branch to build different hoot code: git checkout <BRANCH_NAME>
-	06) git pull
-    07) scripts/ezClean.sh
-	08) cp ${HOOT_HOME}/conf/DatabaseConfig.sh.orig ${HOOT_HOME}/conf/DatabaseConfig.sh
-    09) scripts/ezBuildAll.sh
-    10) sudo -u tomcat6 scripts/vagrantDeployTomcat.sh
-	11) sudo service tomcat6 restart
-	12) source ${HOOT_HOME}/SetupEnv.sh
