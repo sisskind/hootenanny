@@ -64,7 +64,7 @@ PostgresqlDumpfileWriter::PostgresqlDumpfileWriter():
   _outputFilename(),
   _writeStats(),
   _configData(),
-  _idMappings(),
+  //_idMappings(),
   _changesetData(),
   _unresolvedRefs(),
   _dataWritten(false)
@@ -106,6 +106,7 @@ void PostgresqlDumpfileWriter::open(QString url)
   _changesetData.changesetId  = _configData.startingChangesetId;
   _changesetData.changesInChangeset = 0;
 
+  /*
   _idMappings.nextNodeId      = _configData.startingNodeId;
   _idMappings.nodeIdMap.reset();
 
@@ -114,6 +115,7 @@ void PostgresqlDumpfileWriter::open(QString url)
 
   _idMappings.nextRelationId  = _configData.startingRelationId;
   _idMappings.relationIdMap.reset();
+  */
 
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
   _unresolvedRefs.unresolvedRelationRefs.reset();
@@ -124,9 +126,11 @@ void PostgresqlDumpfileWriter::open(QString url)
 void PostgresqlDumpfileWriter::close()
 {
   // Not writing any new data, can drop ID mappings
+  /*
   _idMappings.nodeIdMap.reset();
   _idMappings.wayIdMap.reset();
   _idMappings.relationIdMap.reset();
+  */
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
   _unresolvedRefs.unresolvedRelationRefs.reset();
 
@@ -243,20 +247,25 @@ void PostgresqlDumpfileWriter::writePartial(const ConstNodePtr& n)
   if ( _writeStats.nodesWritten == 0 )
   {
     _createNodeTables();
+    /*
     _idMappings.nodeIdMap = boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >(
           new Tgs::BigMap<ElementIdDatatype, ElementIdDatatype>());
+    */
   }
 
   ElementIdDatatype nodeDbId;
 
   // Do we already know about this node?
+  /*
   if ( _idMappings.nodeIdMap->contains(n->getId()) == true )
   {
     throw hoot::NotImplementedException("Writer class does not support update operations");
   }
+  */
 
   // Have to establish new mapping
-  nodeDbId = _establishNewIdMapping(n->getElementId());
+  //nodeDbId = _establishNewIdMapping(n->getElementId());
+  nodeDbId = n->getElementId().getId();
 
   _writeNodeToTables(n, nodeDbId);
 
@@ -276,24 +285,30 @@ void PostgresqlDumpfileWriter::writePartial(const ConstWayPtr& w)
   {
     _createWayTables();
 
+    /*
     _idMappings.wayIdMap = boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >(
           new Tgs::BigMap<ElementIdDatatype, ElementIdDatatype>());
+    */
   }
 
   ElementIdDatatype wayDbId;
 
   // Do we already know about this way?
+  /*
   if ( _idMappings.wayIdMap->contains(w->getId()) == true )
   {
     throw hoot::NotImplementedException("Writer class does not support update operations");
   }
+  */
 
   // Have to establish new mapping
-  wayDbId = _establishNewIdMapping(w->getElementId());
+  //wayDbId = _establishNewIdMapping(w->getElementId());
+  wayDbId = w->getElementId().getId();
 
   _writeWayToTables( wayDbId );
 
-  _writeWaynodesToTables( _idMappings.wayIdMap->at( w->getId() ), w->getNodeIds() );
+  //_writeWaynodesToTables( _idMappings.wayIdMap->at( w->getId() ), w->getNodeIds() );
+  _writeWaynodesToTables( w->getId(), w->getNodeIds() );
 
   _writeTagsToTables( w->getTags(), wayDbId,
     _outputSections["current_way_tags"].second, "%1\t%2\t%3\n",
@@ -311,20 +326,25 @@ void PostgresqlDumpfileWriter::writePartial(const ConstRelationPtr& r)
   {
     _createRelationTables();
 
+    /*
     _idMappings.relationIdMap = boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> >(
           new Tgs::BigMap<ElementIdDatatype, ElementIdDatatype>());
+    */
   }
 
   ElementIdDatatype relationDbId;
 
   // Do we already know about this node?
+  /*
   if ( _idMappings.relationIdMap->contains(r->getId()) == true )
   {
     throw hoot::NotImplementedException("Writer class does not support update operations");
   }
+  */
 
   // Have to establish new mapping
-  relationDbId = _establishNewIdMapping(r->getElementId());
+  //relationDbId = _establishNewIdMapping(r->getElementId());
+  relationDbId = r->getElementId().getId();
 
   _writeRelationToTables( relationDbId );
 
@@ -412,6 +432,7 @@ void PostgresqlDumpfileWriter::_zeroWriteStats()
   _writeStats.relationTagsWritten = 0;
 }
 
+/*
 PostgresqlDumpfileWriter::ElementIdDatatype PostgresqlDumpfileWriter::_establishNewIdMapping(
     const ElementId& sourceId)
 {
@@ -442,6 +463,7 @@ PostgresqlDumpfileWriter::ElementIdDatatype PostgresqlDumpfileWriter::_establish
 
   return dbIdentifier;
 }
+*/
 
 unsigned int PostgresqlDumpfileWriter::_tileForPoint(const double lat, const double lon) const
 {
@@ -573,18 +595,23 @@ void PostgresqlDumpfileWriter::_writeWaynodesToTables( const ElementIdDatatype d
   for ( std::vector<long>::const_iterator it = waynodeIds.begin();
       it != waynodeIds.end(); ++it )
   {
+    /*
     if ( _idMappings.nodeIdMap->contains(*it) == true )
     {
-      const QString dbNodeIdString = QString::number( _idMappings.nodeIdMap->at(*it) );
+    */
+      //const QString dbNodeIdString = QString::number( _idMappings.nodeIdMap->at(*it) );
+      const QString dbNodeIdString = QString::number( *it );
       const QString nodeIndexString( QString::number(nodeIndex) );
       *currentWayNodesStream << currentWaynodesFormat.arg(dbWayIdString, dbNodeIdString, nodeIndexString).toUtf8();
       *wayNodesStream << waynodesFormat.arg(dbWayIdString, dbNodeIdString, nodeIndexString).toUtf8();
+    /*
     }
     else
     {
       LOG_WARN( QString("Way %1 has reference to unknown node ID %2").arg(dbWayId, *it) );
       throw NotImplementedException("Unresolved waynodes are not supported");
     }
+    */
 
     ++nodeIndex;
   }
@@ -625,7 +652,8 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
 {
   unsigned int memberSequenceIndex = 1;
   const ElementIdDatatype relationId = relation->getId();
-  const ElementIdDatatype dbRelationId = _idMappings.relationIdMap->at(relationId);
+  //const ElementIdDatatype dbRelationId = _idMappings.relationIdMap->at(relationId);
+  const ElementIdDatatype dbRelationId = relationId;
   const std::vector<RelationData::Entry> relationMembers = relation->getMembers();
   boost::shared_ptr<Tgs::BigMap<ElementIdDatatype, ElementIdDatatype> > knownElementMap;
 
@@ -633,6 +661,8 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
       it != relationMembers.end(); ++it )
   {
     const ElementId memberElementId = it->getElementId();
+
+    /*
 
     switch ( memberElementId.getType().getEnum() )
     {
@@ -670,6 +700,8 @@ void PostgresqlDumpfileWriter::_writeRelationMembersToTables( const ConstRelatio
       _unresolvedRefs.unresolvedRelationRefs->insert(std::pair<ElementId,
         _UnresolvedRelationReference>(memberElementId, relationRef) );
     }
+    */
+    _writeRelationMember(dbRelationId, *it, memberElementId.getId(), memberSequenceIndex);
 
     ++memberSequenceIndex;
   }
@@ -852,6 +884,9 @@ void PostgresqlDumpfileWriter::_writeSequenceUpdates()
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("changesets_id_seq",
     QString::number(_changesetData.changesetId + 1) );
 
+  // TODO: need to track largest of each type
+
+  /*
   // Nodes
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("current_nodes_id_seq",
     QString::number(_idMappings.nextNodeId) );
@@ -863,6 +898,7 @@ void PostgresqlDumpfileWriter::_writeSequenceUpdates()
   // Relations
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("current_relations_id_seq",
     QString::number(_idMappings.nextRelationId) ) << "\n\n";
+  */
 }
 
 }

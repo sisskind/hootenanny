@@ -120,6 +120,7 @@ protected:
 
   ConfigData _configData;
 
+  /*
   struct _IdMappings
   {
     ElementIdDatatype nextNodeId;
@@ -133,6 +134,7 @@ protected:
   };
 
   _IdMappings _idMappings;
+  */
 
   struct _ChangesetData
   {
