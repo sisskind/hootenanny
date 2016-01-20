@@ -136,6 +136,15 @@ protected:
   _IdMappings _idMappings;
   */
 
+  struct _SequenceIds
+  {
+    qint64      highestNodeId;
+    qint64      highestWayId;
+    qint64      highestRelationId;
+  };
+
+  _SequenceIds _sequenceIds;
+
   struct _ChangesetData
   {
     qint64        changesetId;

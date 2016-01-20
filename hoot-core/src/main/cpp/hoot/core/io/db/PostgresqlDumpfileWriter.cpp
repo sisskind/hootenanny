@@ -116,6 +116,9 @@ void PostgresqlDumpfileWriter::open(QString url)
   _idMappings.nextRelationId  = _configData.startingRelationId;
   _idMappings.relationIdMap.reset();
   */
+  _sequenceIds.highestNodeId = 0;
+  _sequenceIds.highestWayId = 0;
+  _sequenceIds.highestRelationId = 0;
 
   _unresolvedRefs.unresolvedWaynodeRefs.reset();
   _unresolvedRefs.unresolvedRelationRefs.reset();
@@ -277,6 +280,11 @@ void PostgresqlDumpfileWriter::writePartial(const ConstNodePtr& n)
   _incrementChangesInChangeset();
 
   _checkUnresolvedReferences( n, nodeDbId );
+
+  if ( nodeDbId > _sequenceIds.highestNodeId )
+  {
+    _sequenceIds.highestNodeId = nodeDbId;
+  }
 }
 
 void PostgresqlDumpfileWriter::writePartial(const ConstWayPtr& w)
@@ -318,6 +326,12 @@ void PostgresqlDumpfileWriter::writePartial(const ConstWayPtr& w)
   _incrementChangesInChangeset();
 
   _checkUnresolvedReferences( w, wayDbId );
+
+  if ( wayDbId > _sequenceIds.highestWayId )
+  {
+    _sequenceIds.highestWayId = wayDbId;
+  }
+
 }
 
 void PostgresqlDumpfileWriter::writePartial(const ConstRelationPtr& r)
@@ -358,6 +372,12 @@ void PostgresqlDumpfileWriter::writePartial(const ConstRelationPtr& r)
   _incrementChangesInChangeset();
 
   _checkUnresolvedReferences( r, relationDbId );
+
+  if ( relationDbId > _sequenceIds.highestRelationId )
+  {
+    _sequenceIds.highestRelationId = relationDbId;
+  }
+
 }
 
 void PostgresqlDumpfileWriter::setConfiguration(const hoot::Settings &conf)
@@ -884,21 +904,17 @@ void PostgresqlDumpfileWriter::_writeSequenceUpdates()
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("changesets_id_seq",
     QString::number(_changesetData.changesetId + 1) );
 
-  // TODO: need to track largest of each type
-
-  /*
   // Nodes
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("current_nodes_id_seq",
-    QString::number(_idMappings.nextNodeId) );
+    QString::number(_sequenceIds.highestNodeId + 1) );
 
   // Ways
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("current_ways_id_seq",
-    QString::number(_idMappings.nextWayId) );
+    QString::number(_sequenceIds.highestWayId + 1) );
 
   // Relations
   *sequenceUpdatesStream << sequenceUpdateFormat.arg("current_relations_id_seq",
-    QString::number(_idMappings.nextRelationId) ) << "\n\n";
-  */
+    QString::number(_sequenceIds.highestRelationId + 1) ) << "\n\n";
 }
 
 }
