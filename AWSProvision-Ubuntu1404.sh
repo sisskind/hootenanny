@@ -233,12 +233,10 @@ cd node-mapnik-server
 sudo npm install
 cd ..
 
-# Update marker file date now that dependency and config stuff has run
-# The make command will exit and provide a warning to run 'vagrant provision'
-# if the marker file is older than this file (VagrantProvision.sh)
-#touch Vagrant.marker
-
 # Build Hoot
+cd /usr/local/hoot
+touch ChangeLog
+
 echo "Configuring Hoot"
 aclocal && autoconf && autoheader && automake && ./configure -q --with-rnd --with-services
 if [ ! -f LocalConfig.pri ] && ! grep --quiet QMAKE_CXX LocalConfig.pri; then
@@ -246,6 +244,10 @@ if [ ! -f LocalConfig.pri ] && ! grep --quiet QMAKE_CXX LocalConfig.pri; then
     cp $HOOT_HOME/LocalConfig.pri.orig $HOOT_HOME/LocalConfig.pri
     echo 'QMAKE_CXX=ccache g++' >> LocalConfig.pri
 fi
+
+# Make sure DatabaseConfig.sh file exists for clean and make
+cp $HOOT_HOME/conf/DatabaseConfig.sh.org $HOOT_HOME/conf/DatabaseConfig.sh
+
 echo "Building Hoot"
 make clean -sj$(nproc)
 make -sj$(nproc)
@@ -268,3 +270,6 @@ sudo service tomcat6 restart
 
 # Source Hoot Environments - Added by Mitul
 source ${HOOT_HOME}/SetupEnv.sh
+
+#Start nodejs
+nohup npm start &
