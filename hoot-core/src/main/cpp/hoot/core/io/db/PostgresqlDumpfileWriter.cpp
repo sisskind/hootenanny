@@ -223,6 +223,7 @@ void PostgresqlDumpfileWriter::finalizePartial()
       throw HootException("Could not flush tempfile for table " + *it);
     }
 
+    /*
     // Append contents of file to output file
     QString cmdToExec(
       QString("/bin/cat ") + (_outputSections[*it].first)->fileName() +
@@ -238,6 +239,7 @@ void PostgresqlDumpfileWriter::finalizePartial()
                 QString::number(systemRetval));
       throw HootException("Error generating output file " + _outputFilename);
     }
+    */
 
     LOG_DEBUG( "Wrote contents of section " + *it );
   }
