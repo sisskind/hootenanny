@@ -223,7 +223,6 @@ void PostgresqlDumpfileWriter::finalizePartial()
       throw HootException("Could not flush tempfile for table " + *it);
     }
 
-    /*
     // Append contents of file to output file
     QString cmdToExec(
       QString("/bin/cat ") + (_outputSections[*it].first)->fileName() +
@@ -239,7 +238,6 @@ void PostgresqlDumpfileWriter::finalizePartial()
                 QString::number(systemRetval));
       throw HootException("Error generating output file " + _outputFilename);
     }
-    */
 
     LOG_DEBUG( "Wrote contents of section " + *it );
   }
@@ -564,11 +562,23 @@ void PostgresqlDumpfileWriter::_writeTagsToTables(
 
   for ( Tags::const_iterator it = tags.begin(); it != tags.end(); ++it )
   {
+
     const QString key = _escapeCopyToData( it.key() );
     const QString value = _escapeCopyToData( it.value() );
 
+    // See Github issue 47: doing toUtf8() on these strings on the way out does something harmful.
+    //     Not sure why, but have confirmed that without UTF-8, we get byte-identical strings to
+    //     input OSM which is UTF-8, so calling it a better day.
+
+    /*
     *currentTable << currentTableFormatString.arg(nodeDbIdString, key, value ).toUtf8();
     *historicalTable << historicalTableFormatString.arg(nodeDbIdString, key, value ).toUtf8();
+    */
+
+    // Just escape, don't convert to UTF-8 on the way out
+    *currentTable << currentTableFormatString.arg(nodeDbIdString, key, value );
+    *historicalTable << historicalTableFormatString.arg(nodeDbIdString, key, value );
+
   }
 }
 
