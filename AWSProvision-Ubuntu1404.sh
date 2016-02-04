@@ -272,4 +272,4 @@ sudo service tomcat6 restart
 source ${HOOT_HOME}/SetupEnv.sh
 
 #Start nodejs
-nohup npm start &
+nohup npm start
