@@ -246,7 +246,7 @@ if [ ! -f LocalConfig.pri ] && ! grep --quiet QMAKE_CXX LocalConfig.pri; then
 fi
 
 # Make sure DatabaseConfig.sh file exists for clean and make
-cp $HOOT_HOME/conf/DatabaseConfig.sh.org $HOOT_HOME/conf/DatabaseConfig.sh
+cp $HOOT_HOME/conf/DatabaseConfig.sh.orig $HOOT_HOME/conf/DatabaseConfig.sh
 
 echo "Building Hoot"
 make clean -sj$(nproc)
