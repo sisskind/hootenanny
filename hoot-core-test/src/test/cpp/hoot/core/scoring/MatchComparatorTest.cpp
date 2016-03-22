@@ -103,10 +103,10 @@ public:
     OsmWriter writer;
     writer.write(copy, "test-output/scoring/MatchComparatorTest.osm");
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.75, tpr, 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.85714, tpr, 0.001);
     CPPUNIT_ASSERT_EQUAL(6, comparator.getTp());
     CPPUNIT_ASSERT_EQUAL(1, comparator.getFn());
-    CPPUNIT_ASSERT_EQUAL(1, comparator.getFp());
+    CPPUNIT_ASSERT_EQUAL(0, comparator.getFp());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.857143, comparator.getPertyScore(), 0.000001);
   }
 
