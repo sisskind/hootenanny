@@ -59,7 +59,7 @@ if ! grep --quiet "export JAVA_HOME" ~/.profile; then
     source ~/.profile
 fi
 
-if ! grep --quiet "PATH=" ~/.profile; then
+if ! grep --quiet "export PATH=" ~/.profile; then
     echo "Adding path vars to profile..."
     echo "export PATH=\$PATH:\$HOME/.gem/ruby/1.9.1/bin:\$HOME/bin:$HOOT_HOME/bin" >> ~/.profile
     source ~/.profile
@@ -248,7 +248,6 @@ sudo service postgresql restart
 
 if ! grep --quiet TOMCAT6_HOME ~/.profile; then
     echo "### Adding Tomcat to profile..."
-    #echo "export TOMCAT6_HOME=/usr/share/tomcat6" >> ~/.profile
     echo "export TOMCAT6_HOME=/var/lib/tomcat6" >> ~/.profile
     source ~/.profile
 fi
@@ -264,6 +263,7 @@ fi
 
 if ! grep -i --quiet HOOT /etc/default/tomcat6; then
 echo "Configuring tomcat6 environment..."
+
 # This echo properly substitutes the home path dir and keeps it from having to be hardcoded, but 
 # fails on permissions during write...so hardcoding the home path here instead for now.  This 
 # hardcode needs to be removed in order for hoot dev env install script to work correctly.
