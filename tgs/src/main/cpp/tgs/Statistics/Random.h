@@ -40,7 +40,7 @@
 
 #include "../TgsExport.h"
 
-//#define NEW_RAND
+#define NEW_RAND
 
 namespace Tgs
 {
@@ -81,10 +81,13 @@ namespace Tgs
       for (unsigned int i = 0; i < v.size() * 2; i++)
         std::swap(v[Random::instance()->generateInt(v.size())], v[Random::instance()->generateInt(v.size())]);
     }
+
+    static void setSeedOffset(unsigned int offset) { _offset = offset; }
   private:
     Random();
 
     static boost::shared_ptr<Random> _instance;
+    static unsigned int _offset;
 
 #ifdef NEW_RAND
     static boost::shared_ptr<random_type> _gen;

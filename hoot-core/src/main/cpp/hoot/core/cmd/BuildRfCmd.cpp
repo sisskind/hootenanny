@@ -68,6 +68,10 @@ public:
                           arg(getName()));
     }
 
+    unsigned int seedOffset = conf().getInt("random.offset", 0);
+    Random::setSeedOffset(seedOffset);
+    LOG_VARW(seedOffset);
+
     QString input = args[0];
     QString output = args[1];
 

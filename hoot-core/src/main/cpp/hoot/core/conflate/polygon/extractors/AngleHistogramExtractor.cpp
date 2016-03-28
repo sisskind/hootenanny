@@ -85,7 +85,7 @@ AngleHistogramExtractor::AngleHistogramExtractor()
 Histogram* AngleHistogramExtractor::_createHistogram(const OsmMap& map, const ConstElementPtr& e)
   const
 {
-  Histogram* result = new Histogram(16);
+  Histogram* result = new Histogram(32);
   HistogramVisitor v(*result, map);
   e->visitRo(map, v);
   return result;
@@ -96,6 +96,8 @@ double AngleHistogramExtractor::extract(const OsmMap& map, const ConstElementPtr
 {
   auto_ptr<Histogram> h1(_createHistogram(map, target));
   auto_ptr<Histogram> h2(_createHistogram(map, candidate));
+  h1->smooth(M_PI / 8);
+  h2->smooth(M_PI / 8);
   h1->normalize();
   h2->normalize();
 

@@ -39,6 +39,8 @@ namespace Tgs
   boost::shared_ptr<generator_type> Random::_rnd;
 #endif
 
+  unsigned int Random::_offset = 0;
+
   Random::Random()
   {
 #ifdef NEW_RAND
@@ -89,10 +91,11 @@ namespace Tgs
   void Random::seed(unsigned int s)
   {
 #ifdef NEW_RAND
-    _gen.reset(new random_type(s));
+    _gen.reset(new random_type(s + _offset));
     _rnd.reset(new generator_type(*_gen, number_type(0, RAND_MAX)));
 #else
-    srand(s);
+    //std::cerr << "seed: " << (s + _offset) << std::endl;
+    srand(s + _offset);
 #endif
   }
 
@@ -103,7 +106,8 @@ namespace Tgs
     generator_type rnd(gen, number_type(0, RAND_MAX));
     seed(rnd());
 #else
-    seed(0);
+    //std::cerr << "seed: " << (_offset) << std::endl;
+    seed(0 + _offset);
 #endif
   }
 }

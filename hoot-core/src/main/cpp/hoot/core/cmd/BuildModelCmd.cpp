@@ -67,6 +67,11 @@ public:
                           arg(getName()));
     }
 
+    #warning Either remove random.offset or put it into Hoot::init or similar.
+    unsigned int seedOffset = conf().getInt("random.offset", 0);
+    Random::setSeedOffset(seedOffset);
+    LOG_VARW(seedOffset);
+
     QString output = args.last();
 
     if (output.endsWith(".rf"))
