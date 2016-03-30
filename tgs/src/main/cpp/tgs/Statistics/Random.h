@@ -5,7 +5,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -32,15 +32,29 @@
 #include <stdlib.h>
 #include <vector>
 
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "../TgsExport.h"
 
+//#define NEW_RAND
+
 namespace Tgs
 {
+#ifdef NEW_RAND
+  typedef boost::minstd_rand random_type;
+  typedef boost::uniform_int<> number_type;
+  typedef boost::variate_generator<random_type&, number_type> generator_type;
+#endif
+
   class TGS_EXPORT Random
   {
   public:
+    Random(unsigned int seed);
+
     static boost::shared_ptr<Random> instance()
     {
       if (!_instance)
@@ -74,6 +88,13 @@ namespace Tgs
 
     static boost::shared_ptr<Random> _instance;
 
+    unsigned int _seed;
+    bool _is_single;
+
+#ifdef NEW_RAND
+    static boost::shared_ptr<random_type> _gen;
+    static boost::shared_ptr<generator_type> _rnd;
+#endif
   };
 }
 

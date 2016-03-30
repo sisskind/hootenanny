@@ -5,7 +5,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,9 +34,23 @@
 namespace Tgs
 {
   boost::shared_ptr<Random> Random::_instance;
+#ifdef NEW_RAND
+  boost::shared_ptr<random_type> Random::_gen;
+  boost::shared_ptr<generator_type> Random::_rnd;
+#endif
+
+  Random::Random(unsigned int seed)
+    : _seed(seed), _is_single(false)
+  {
+
+  }
 
   Random::Random()
+    : _seed(0), _is_single(true)
   {
+#ifdef NEW_RAND
+    seed();
+#endif
   }
 
   double Random::generateGaussian(double mean, double sigma)
@@ -72,16 +86,40 @@ namespace Tgs
 
   int Random::generateInt()
   {
-    return rand();
+#ifdef NEW_RAND
+    return _rnd->operator ()();
+#else
+    if (_is_single)
+      return rand();
+    else
+      return rand_r(&_seed);
+#endif
   }
 
   void Random::seed(unsigned int s)
   {
-    srand(s);
+#ifdef NEW_RAND
+    _gen.reset(new random_type(s));
+    _rnd.reset(new generator_type(*_gen, number_type(0, RAND_MAX)));
+#else
+    if (_is_single)
+      srand(s);
+    else
+      _seed = s;
+#endif
   }
 
   void Random::seed()
   {
-    seed(0);
+#ifdef NEW_RAND
+    random_type gen = random_type(time(0));
+    generator_type rnd(gen, number_type(0, RAND_MAX));
+    seed(rnd());
+#else
+    if (_is_single)
+      seed(0);
+    else
+      _seed = 0;
+#endif
   }
 }
