@@ -41,7 +41,14 @@ namespace Tgs
 
   unsigned int Random::_offset = 0;
 
+  Random::Random(unsigned int seed)
+    : _seed(seed), _is_single(false)
+  {
+
+  }
+
   Random::Random()
+    : _seed(0), _is_single(true)
   {
 #ifdef NEW_RAND
     seed();
@@ -84,7 +91,10 @@ namespace Tgs
 #ifdef NEW_RAND
     return _rnd->operator ()();
 #else
-    return rand();
+    if (_is_single)
+      return rand();
+    else
+      return rand_r(&_seed);
 #endif
   }
 
@@ -94,8 +104,10 @@ namespace Tgs
     _gen.reset(new random_type(s + _offset));
     _rnd.reset(new generator_type(*_gen, number_type(0, RAND_MAX)));
 #else
-    //std::cerr << "seed: " << (s + _offset) << std::endl;
-    srand(s + _offset);
+    if (_is_single)
+      srand(s + _offset);
+    else
+      _seed = s + _offset;
 #endif
   }
 
@@ -106,8 +118,10 @@ namespace Tgs
     generator_type rnd(gen, number_type(0, RAND_MAX));
     seed(rnd());
 #else
-    //std::cerr << "seed: " << (_offset) << std::endl;
-    seed(0 + _offset);
+    if (_is_single)
+      seed(0 + _offset);
+    else
+      _seed = 0 + _offset;
 #endif
   }
 }
