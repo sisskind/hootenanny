@@ -10,11 +10,6 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/trusty64"
-  config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
-
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -45,8 +40,29 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder ".", "/home/vagrant/hoot"#, group: "tomcat6"#, mount_options: ["dmode=775,fmode=775"]
-  # UNCOMMENT group after initial provisioning, then run vagrant reload
+  #config.vm.synced_folder ".", "/home/vagrant/hoot"#, group: "tomcat6"#, mount_options: ["dmode=775,fmode=775"]
+
+  # If hoot is checked out as a submodule, then mount the parent directory.
+  # This is most common when using the hoot-release repo
+  if File.file?(".git") and File.directory?("../.git")
+    config.nfs.map_uid = Process.uid
+    config.nfs.map_gid = Process.gid
+    config.vm.synced_folder "..", "/home/vagrant/.hoot-release-nfs",
+      :mount_options => ['vers=3','udp','noatime','nodiratime','nocto'],
+      :linux__nfs_options => ['rw','no_subtree_check','all_squash','async']
+    config.bindfs.bind_folder "/home/vagrant/.hoot-release-nfs/hoot",
+      "/home/vagrant/hoot",
+      chgrp_ignore: true,
+      chown_ignore: true,
+      perms: nil
+    config.bindfs.bind_folder "/home/vagrant/.hoot-release-nfs",
+      "/home/vagrant/hoot-release",
+      chgrp_ignore: true,
+      chown_ignore: true,
+      perms: nil
+  else
+    config.vm.synced_folder ".", "/home/vagrant/hoot"
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -59,6 +75,10 @@ Vagrant.configure(2) do |config|
   #   # Customize the amount of memory on the VM:
      vb.memory = 8192
      vb.cpus = 4
+     # Every Vagrant development environment requires a box. You can search for
+     # boxes at https://atlas.hashicorp.com/search.
+     config.vm.box = "ubuntu/trusty64"
+     config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
   end
 
   # This is a provider for the Parallels Virtualization Software
@@ -78,6 +98,18 @@ Vagrant.configure(2) do |config|
       override.vm.box = "puphpet/ubuntu1404-x64"
       override.vm.box_url = "https://atlas.hashicorp.com/puphpet/boxes/ubuntu1404-x64"
   end
+
+  # This is a provider for KVM
+  # See https://github.com/pradels/vagrant-libvirt for install instructions
+  # Run "vagrant up --provider=libvirt" to spin up using KVM.
+  config.vm.provider "libvirt" do |domain|
+    domain.memory = 8192
+    domain.cpus = 8
+    config.vm.box = "trusty64"
+    config.vm.box_url = "http://linuxsimba.com/vagrantbox/ubuntu-trusty.box"
+    usingNfs = true
+  end
+
   #
   # View the documentation for the provider you are using for more
   # information on available options.
